@@ -117,11 +117,11 @@ class box:
 	def set_line(self, line):
 		self.has_line = line
 	
-	def.has_line(self):
+	def has_line(self):
 		return self.has_line
 
 def main():
-	picture = Image.open("testing.png")
+	picture = Image.open("testing2.png")
 	screenSize = (800,480)
 
 	picture = picture.resize(screenSize)
