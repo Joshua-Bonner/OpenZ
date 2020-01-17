@@ -13,6 +13,12 @@ class box_matrix:
 		
 		self.avg_colorL = 0
 		self.avg_colorR = 0
+
+		top_left = 0
+		bottom_left = 0
+
+		top_right = 0
+		bottom_right = 0
 	
 	def add_box(self, square, pic, side):
 		square.set_avg(pic)
@@ -46,8 +52,10 @@ class box_matrix:
 			square_xy = square.get_xy()
 			
 			if (square.get_avg() < self.avg_colorL):
+				square.has_line = False
 				current_color = black
 			else:
+				square.has_line = True
 				current_color = white
 
 			for i in range (square_xy[0], square_xy[0] + 10, 1):
@@ -58,10 +66,10 @@ class box_matrix:
 			square_xy = square.get_xy()
 			
 			if (square.get_avg() < self.avg_colorR):
-				square.set_line(False)
+				square.has_line = False
 				current_color = black
 			else:
-				square.set_line(True)
+				square.has_line = True
 				current_color = white
 
 			for i in range(square_xy[0], square_xy[0] + 10, 1):
@@ -79,6 +87,7 @@ class box_matrix:
 			if (last_xy[1] < current_xy[1]):
 				self.bmL_matrix.append([])
 				row += 1
+			last_xy = square.get_xy()
 
 			(self.bmL_matrix[row]).append(square)
 		
@@ -89,8 +98,71 @@ class box_matrix:
 			if (last_xy[1] < current_xy[1]):
 				self.bmR_matrix.append([])
 				row += 1
+			last_xy = square.get_xy()
 
-			(self.bmR_matrix[row]).append(square)				
+			(self.bmR_matrix[row]).append(square)
+	
+	def calculate_distances(self, pic):
+		rows = len(self.bmR_matrix)
+		top_row = rows / 3
+		bottom_row = 2 * (rows / 3)
+		
+		left_top_dist = 0
+		left_bottom_dist = 0
+		right_top_dist = 0
+		right_bottom_dist = 0
+
+		box_counter = 0
+
+		green = (0, 255, 0)
+		
+		for square in reversed(self.bmL_matrix[top_row]):
+			if (square.get_line()):
+				self.top_left = box_counter
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+						pic.putpixel((i,j), green)
+				break
+			box_counter += 1
+
+		box_counter = 0
+		
+		for square in reversed(self.bmL_matrix[bottom_row]):
+			if (square.get_line()):
+				self.bottom_left = box_counter
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+						pic.putpixel((i,j), green)
+				break
+			box_counter += 1
+
+		box_counter = 0	
+		
+		for square in (self.bmR_matrix[top_row]):
+			if (square.get_line()):
+				self.top_right = box_counter
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+						pic.putpixel((i,j), green)
+				break
+			box_counter += 1
+
+		box_counter = 0
+		
+		for square in (self.bmR_matrix[bottom_row]):
+			if (square.get_line()):
+				self.bottom_right = box_counter
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+						pic.putpixel((i,j), green)
+				break
+			box_counter += 1
+
+		box_counter = 0
+
+
+		return pic
+				
 
 class box:
 	def __init__(self, x, y):
@@ -117,11 +189,11 @@ class box:
 	def set_line(self, line):
 		self.has_line = line
 	
-	def has_line(self):
+	def get_line(self):
 		return self.has_line
 
 def main():
-	picture = Image.open("testing2.png")
+	picture = Image.open("testing.png")
 	screenSize = (800,480)
 
 	picture = picture.resize(screenSize)
@@ -152,6 +224,13 @@ def draw_gafbm(pic):
 	
 	matrix.find_avg_color()
 	pic = matrix.paint_lines(pic)
+	matrix.init_matrices()
+	pic = matrix.calculate_distances(pic)
+
+	print "TOP LEFT: ", matrix.top_left
+	print "BOTTOM LEFT: ", matrix.bottom_left
+	print "TOP RIGHT: ", matrix.top_right
+	print "BOTTOM RIGHT: ", matrix.bottom_right
 	
 	del drawer
 
