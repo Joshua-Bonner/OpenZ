@@ -1,3 +1,4 @@
+import io
 import pygame
 import math
 import time
@@ -113,7 +114,10 @@ class box_matrix:
 		left_bottom_dist = 0
 		right_top_dist = 0
 		right_bottom_dist = 0
-
+		self.top_left = 0
+		self.top_right = 0
+		self.bottom_left = 0
+		self.bottom_right = 0
 		box_counter = 0
 
 		green = (0, 255, 0)
@@ -199,17 +203,25 @@ def main():
 	pygame.init()
 	#picture = Image.open("testing.png")
 	screen = pygame.display.set_mode(screenSize, pygame.HWSURFACE)
+	
+	
+	with picamera.PiCamera() as camera:
+		camera.resolution = screenSize
+		camera.start_preview()
+		camera.shutter_speed = 1000
+		time.sleep(2)
 	while True:
 		stream = io.BytesIO()
 		with picamera.PiCamera() as camera:
-			camera.start_preview()
-			time.sleep(1)
-			camera.capture(stream, format='jpeg')
+			#camera.resolution = screenSize
+			#camera.start_preview()
+			#time.sleep(4)
+			camera.capture(stream, format='jpeg', use_video_port=True)
 		stream.seek(0)
 		picture = Image.open(stream)
 		picture = picture.resize(screenSize)
 		picture = picture.convert('LA')
-		picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
+		#picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
 		picture = picture.convert('RGB')
 		draw_gafbm(picture)
 
