@@ -208,10 +208,7 @@ def main():
 	with picamera.PiCamera() as camera:
 		camera.resolution = screenSize
 		camera.start_preview()
-<<<<<<< HEAD
 		camera.shutter_speed = 1000
-=======
->>>>>>> 40067a547ffef1746d6731c043fe2122bb7397d0
 		time.sleep(2)
 	while True:
 		stream = io.BytesIO()
@@ -219,11 +216,7 @@ def main():
 			#camera.resolution = screenSize
 			#camera.start_preview()
 			#time.sleep(4)
-<<<<<<< HEAD
-			camera.capture(stream, format='jpeg', use_video_port=True)
-=======
-			camera.capture(stream, format='jpeg')
->>>>>>> 40067a547ffef1746d6731c043fe2122bb7397d0
+		camera.capture(stream, format='jpeg', use_video_port=True)
 		stream.seek(0)
 		picture = Image.open(stream)
 		picture = picture.resize(screenSize)
