@@ -1,5 +1,7 @@
 import pygame
 import math
+import time
+import picamera
 from PIL import Image, ImageDraw, ImageFilter
 import sys
 
@@ -193,17 +195,29 @@ class box:
 		return self.has_line
 
 def main():
-	picture = Image.open("testing.png")
 	screenSize = (800,480)
+	pygame.init()
+	#picture = Image.open("testing.png")
+	screen = pygame.display.set_mode(screenSize, pygame.HWSURFACE)
+	while True:
+		stream = io.BytesIO()
+		with picamera.PiCamera() as camera:
+			camera.start_preview()
+			time.sleep(1)
+			camera.capture(stream, format='jpeg')
+		stream.seek(0)
+		picture = Image.open(stream)
+		picture = picture.resize(screenSize)
+		picture = picture.convert('LA')
+		picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
+		picture = picture.convert('RGB')
+		draw_gafbm(picture)
 
-	picture = picture.resize(screenSize)
-	picture = picture.convert('LA')
-	picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
-	picture = picture.convert('RGB')
-	
-	draw_gafbm(picture)
+		pic_str = picture.tobytes("raw", 'RGB')
+		pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
+		screen.blit(pygame_surface, (0,0))
+		pygame.display.flip()
 
-	picture.show()
 
 def draw_gafbm(pic):
 	matrix = box_matrix()
