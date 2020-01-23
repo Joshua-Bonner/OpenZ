@@ -68,7 +68,7 @@ class box_matrix:
 		for square in self.bmR:
 			square_xy = square.get_xy()
 			
-			if (square.get_avg() < self.avg_colorR):
+			if (square.get_avg() < (self.avg_colorR + 10)):
 				square.has_line = False
 				current_color = black
 			else:
@@ -216,7 +216,7 @@ def main():
 			#camera.resolution = screenSize
 			#camera.start_preview()
 			#time.sleep(4)
-		camera.capture(stream, format='jpeg', use_video_port=True)
+			camera.capture(stream, format='jpeg', use_video_port=True)
 		stream.seek(0)
 		picture = Image.open(stream)
 		picture = picture.resize(screenSize)
@@ -240,12 +240,12 @@ def draw_gafbm(pic):
 
 	#drawer.rectangle((690, 200, 790, 300), fill=None, outline=255)
 	
-	for y in range (200, 291, 10):
-		for x in range (10, 151, 10):
+	for y in range (180, 271, 10):
+		for x in range (40, 181, 10):
 			matrix.add_box(box(x,y), pic, 0)
 
-	for y in range (200, 291, 10):
-		for x in range( 640, 781, 10):
+	for y in range (180, 271, 10):
+		for x in range( 610, 751, 10):
 			matrix.add_box(box(x,y), pic, 1)
 	
 	matrix.find_avg_color()
