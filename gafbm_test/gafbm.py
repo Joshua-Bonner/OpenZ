@@ -54,7 +54,7 @@ class box_matrix:
 		for square in self.bmL:
 			square_xy = square.get_xy()
 			
-			if (square.get_avg() < self.avg_colorL):
+			if (square.get_avg() < (self.avg_colorL + 5)):
 				square.has_line = False
 				current_color = black
 			else:
@@ -68,7 +68,7 @@ class box_matrix:
 		for square in self.bmR:
 			square_xy = square.get_xy()
 			
-			if (square.get_avg() < (self.avg_colorR + 10)):
+			if (square.get_avg() < (self.avg_colorR + 5)):
 				square.has_line = False
 				current_color = black
 			else:
@@ -107,8 +107,8 @@ class box_matrix:
 	
 	def calculate_distances(self, pic):
 		rows = len(self.bmR_matrix)
-		top_row = rows / 3
-		bottom_row = 2 * (rows / 3)
+		top_row = 1
+		bottom_row = rows - 1
 		
 		left_top_dist = 0
 		left_bottom_dist = 0
@@ -204,32 +204,51 @@ def main():
 	#picture = Image.open("testing.png")
 	screen = pygame.display.set_mode(screenSize, pygame.HWSURFACE)
 	
-	
+	start_time = time.time()
+
 	with picamera.PiCamera() as camera:
 		camera.resolution = screenSize
 		camera.start_preview()
 		camera.shutter_speed = 1000
-		camera.constrast = 50
+		camera.framerate = 30
 		time.sleep(2)
+	
+	print "Init Time: ", (time.time() - start_time)
+
 	while True:
 		stream = io.BytesIO()
+		start_time = time.time()
 		with picamera.PiCamera() as camera:
+			camera.contrast = 25
+			camera.exposure_mode = 'night'
 			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
 				stream.truncate()
 				stream.seek(0)
-				if process(stream):
-					break
+				break
+		
+		print "Time to take pic: ", (time.time() - start_time)
+		start_time = time.time()
+		
 		picture = Image.open(stream)
 		picture = picture.resize(screenSize)
 		picture = picture.convert('LA')
 		#picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
 		picture = picture.convert('RGB')
+		
+		print "Time to process image in PIL: ", (time.time() - start_time)
+		start_time = time.time()
+
 		draw_gafbm(picture)
+		
+		print "Time to algorithm on picture: ", (time.time() - start_time)
+		start_time = time.time()
 
 		pic_str = picture.tobytes("raw", 'RGB')
 		pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
 		screen.blit(pygame_surface, (0,0))
 		pygame.display.flip()
+
+		print "Time to draw pic on pygame: " (time.time() - start_time)
 
 
 def draw_gafbm(pic):
@@ -241,12 +260,12 @@ def draw_gafbm(pic):
 
 	#drawer.rectangle((690, 200, 790, 300), fill=None, outline=255)
 	
-	for y in range (180, 271, 10):
-		for x in range (40, 181, 10):
+	for y in range (220, 271, 10):
+		for x in range (175, 276, 10):
 			matrix.add_box(box(x,y), pic, 0)
 
-	for y in range (180, 271, 10):
-		for x in range( 610, 751, 10):
+	for y in range (220, 271, 10):
+		for x in range( 505, 606, 10):
 			matrix.add_box(box(x,y), pic, 1)
 	
 	matrix.find_avg_color()
