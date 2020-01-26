@@ -110,10 +110,6 @@ class box_matrix:
 		top_row = 1
 		bottom_row = rows - 1
 		
-		left_top_dist = 0
-		left_bottom_dist = 0
-		right_top_dist = 0
-		right_bottom_dist = 0
 		self.top_left = 0
 		self.top_right = 0
 		self.bottom_left = 0
@@ -218,9 +214,7 @@ def main():
 	while True:
 		stream = io.BytesIO()
 		start_time = time.time()
-		with picamera.PiCamera() as camera:
-			camera.contrast = 25
-			camera.exposure_mode = 'night'
+		with picamera.PiCamera(resolution=screenSize, framerate=30) as camera:
 			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
 				stream.truncate()
 				stream.seek(0)
@@ -254,12 +248,6 @@ def main():
 def draw_gafbm(pic):
 	matrix = box_matrix()
 
-	drawer = ImageDraw.Draw(pic)
-
-	#drawer.rectangle((10, 200, 110, 300), fill=None, outline=255)
-
-	#drawer.rectangle((690, 200, 790, 300), fill=None, outline=255)
-	
 	for y in range (220, 271, 10):
 		for x in range (175, 276, 10):
 			matrix.add_box(box(x,y), pic, 0)
