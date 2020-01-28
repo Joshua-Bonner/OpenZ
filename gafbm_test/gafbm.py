@@ -266,8 +266,6 @@ def draw_gafbm(pic):
 	print "TOP RIGHT: ", matrix.top_right
 	print "BOTTOM RIGHT: ", matrix.bottom_right
 	
-	del drawer
-
 main()
 
 
