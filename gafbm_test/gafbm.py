@@ -243,8 +243,8 @@ def main():
 		screen.blit(pygame_surface, (0,0))
 		
 		if (in_lines):
-			pygame.draw.line(screen, (255,0,0), (0,0), (800,600))
-			pygame.draw.line(screen, (255,0,0), (800,0), (0, 600)) 
+			pygame.draw.line(screen, (255,0,0), (0,0), (800,480))
+			pygame.draw.line(screen, (255,0,0), (800,0), (0, 480)) 
 
 		pygame.display.flip()
 
