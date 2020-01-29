@@ -109,6 +109,7 @@ class box_matrix:
 		rows = len(self.bmR_matrix)
 		top_row = 1
 		bottom_row = rows - 1
+		found = False;
 		
 		self.top_left = 0
 		self.top_right = 0
@@ -215,7 +216,7 @@ def main():
 		stream = io.BytesIO()
 		start_time = time.time()
 		with picamera.PiCamera(resolution=screenSize, framerate=30) as camera:
-			for foo in camera.capture_continuous(stream, format='raw', use_video_port=True):
+			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
 				stream.truncate()
 				stream.seek(0)
 				break
@@ -232,7 +233,7 @@ def main():
 		print "Time to process image in PIL: ", (time.time() - start_time)
 		start_time = time.time()
 
-		draw_gafbm(picture)
+		in_lines = draw_gafbm(picture)
 		
 		print "Time to algorithm on picture: ", (time.time() - start_time)
 		start_time = time.time()
@@ -240,6 +241,11 @@ def main():
 		pic_str = picture.tobytes("raw", 'RGB')
 		pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
 		screen.blit(pygame_surface, (0,0))
+		
+		if (in_lines):
+			pygame.draw.line(screen, (255,0,0), (0,0), (800,600))
+			pygame.draw.line(screen, (255,0,0), (800,0), (0, 600)) 
+
 		pygame.display.flip()
 
 		print "Time to draw pic on pygame: ", (time.time() - start_time)
@@ -265,6 +271,12 @@ def draw_gafbm(pic):
 	print "BOTTOM LEFT: ", matrix.bottom_left
 	print "TOP RIGHT: ", matrix.top_right
 	print "BOTTOM RIGHT: ", matrix.bottom_right
+	
+	avgL = (matrix.top_left + matrix.bottom_left) / 2
+	avgR = (matrix.top_right + matrix.bottom_right) / 2
+
+	return (avgL in range(avgR - 1, avgR + 1))
+	
 	
 main()
 
