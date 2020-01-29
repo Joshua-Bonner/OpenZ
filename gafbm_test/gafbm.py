@@ -215,7 +215,7 @@ def main():
 		stream = io.BytesIO()
 		start_time = time.time()
 		with picamera.PiCamera(resolution=screenSize, framerate=30) as camera:
-			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
+			for foo in camera.capture_continuous(stream, format='raw', use_video_port=True):
 				stream.truncate()
 				stream.seek(0)
 				break
@@ -242,7 +242,7 @@ def main():
 		screen.blit(pygame_surface, (0,0))
 		pygame.display.flip()
 
-		print "Time to draw pic on pygame: " (time.time() - start_time)
+		print "Time to draw pic on pygame: ", (time.time() - start_time)
 
 
 def draw_gafbm(pic):
