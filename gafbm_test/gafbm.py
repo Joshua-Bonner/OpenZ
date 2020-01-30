@@ -5,7 +5,11 @@ import time
 import picamera
 from PIL import Image, ImageDraw, ImageFilter
 import sys
+night_threshold = 15
+day_threshold = 5
 
+
+threshold = night_threshold
 class box_matrix:
 	def __init__(self):
 		self.bmL = []
@@ -54,29 +58,29 @@ class box_matrix:
 		for square in self.bmL:
 			square_xy = square.get_xy()
 			
-			if (square.get_avg() < (self.avg_colorL + 5)):
+			if (square.get_avg() < (self.avg_colorL + threshold)):
 				square.has_line = False
 				current_color = black
 			else:
 				square.has_line = True
 				current_color = white
 
-			for i in range (square_xy[0], square_xy[0] + 10, 1):
-				for j in range (square_xy[1], square_xy[1] + 10, 1):
+			for i in range (square_xy[0], square_xy[0] + 5, 1):
+				for j in range (square_xy[1], square_xy[1] + 5, 1):
 					pic.putpixel((i,j), current_color)
 
 		for square in self.bmR:
 			square_xy = square.get_xy()
 			
-			if (square.get_avg() < (self.avg_colorR + 5)):
+			if (square.get_avg() < (self.avg_colorR + threshold)):
 				square.has_line = False
 				current_color = black
 			else:
 				square.has_line = True
 				current_color = white
 
-			for i in range(square_xy[0], square_xy[0] + 10, 1):
-				for j in range (square_xy[1], square_xy[1] + 10, 1):
+			for i in range(square_xy[0], square_xy[0] + 5, 1):
+				for j in range (square_xy[1], square_xy[1] + 5, 1):
 					pic.putpixel((i,j), current_color)
 
 		return pic
@@ -107,8 +111,8 @@ class box_matrix:
 	
 	def calculate_distances(self, pic):
 		rows = len(self.bmR_matrix)
-		top_row = 1
-		bottom_row = rows - 1
+		top_row = 3
+		bottom_row = rows - 5
 		found = False;
 		
 		self.top_left = 0
@@ -122,8 +126,8 @@ class box_matrix:
 		for square in reversed(self.bmL_matrix[top_row]):
 			if (square.get_line()):
 				self.top_left = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
 						pic.putpixel((i,j), green)
 				break
 			box_counter += 1
@@ -133,8 +137,8 @@ class box_matrix:
 		for square in reversed(self.bmL_matrix[bottom_row]):
 			if (square.get_line()):
 				self.bottom_left = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
 						pic.putpixel((i,j), green)
 				break
 			box_counter += 1
@@ -144,8 +148,8 @@ class box_matrix:
 		for square in (self.bmR_matrix[top_row]):
 			if (square.get_line()):
 				self.top_right = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
 						pic.putpixel((i,j), green)
 				break
 			box_counter += 1
@@ -155,8 +159,8 @@ class box_matrix:
 		for square in (self.bmR_matrix[bottom_row]):
 			if (square.get_line()):
 				self.bottom_right = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 10, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 10, 1):
+				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
+					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
 						pic.putpixel((i,j), green)
 				break
 			box_counter += 1
@@ -176,8 +180,8 @@ class box:
 	
 	def set_avg(self, picture):
 		total_pix = 0
-		for i in range(self.x, self.x + 10, 1):
-			for j in range(self.y, self.y + 10, 1):
+		for i in range(self.x, self.x + 5, 1):
+			for j in range(self.y, self.y + 5, 1):
 				self.avg_color += picture.getpixel((i,j))[0]
 				total_pix += 1
 
@@ -242,9 +246,9 @@ def main():
 		pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
 		screen.blit(pygame_surface, (0,0))
 		
-		if (in_lines):
+		if (not in_lines):
 			pygame.draw.line(screen, (255,0,0), (0,0), (800,480))
-			pygame.draw.line(screen, (255,0,0), (800,0), (0, 480)) 
+			pygame.draw.line(screen, (255,0,0), (800,0), (0, 480))
 
 		pygame.display.flip()
 
@@ -253,13 +257,13 @@ def main():
 
 def draw_gafbm(pic):
 	matrix = box_matrix()
-
-	for y in range (220, 271, 10):
-		for x in range (175, 276, 10):
+	#left box
+	for y in range (240, 291, 5):
+		for x in range (150, 311, 5):
 			matrix.add_box(box(x,y), pic, 0)
-
-	for y in range (220, 271, 10):
-		for x in range( 505, 606, 10):
+	#right box
+	for y in range (240, 291, 5):
+		for x in range( 485, 646, 5):
 			matrix.add_box(box(x,y), pic, 1)
 	
 	matrix.find_avg_color()
@@ -275,7 +279,10 @@ def draw_gafbm(pic):
 	avgL = (matrix.top_left + matrix.bottom_left) / 2
 	avgR = (matrix.top_right + matrix.bottom_right) / 2
 
-	return (avgL in range(avgR - 1, avgR + 1))
+	print "AVG L: ", avgL
+	print "AVG R: ", avgR
+	print (avgL in range(avgR - 2, avgR + 2))
+	return (avgL in range(avgR - 2, avgR + 2))
 	
 	
 main()
