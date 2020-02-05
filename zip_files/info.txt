@@ -1,0 +1,2 @@
+Mapsforge - possibly used for displaying maps
+GraphHopper - possibly used for turn by turn directions
