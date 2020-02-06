@@ -1,2 +1,5 @@
 Mapsforge - possibly used for displaying maps
 GraphHopper - possibly used for turn by turn directions
+
+Side Note:
+While pushing the zip files, Git gave the error: warning: LF will be replaced by CRLF. Line feeds were changed to Carriage Returns and Line Feeds. See https://stackoverflow.com/questions/5834014/lf-will-be-replaced-by-crlf-in-git-what-is-that-and-is-it-important for more info.
