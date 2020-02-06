@@ -1,0 +1,29 @@
+# Maven
+target
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Eclipse
+.settings
+bin
+gen
+.classpath
+.project
+project.properties
+
+# IntelliJ
+.idea
+*.iml
+local.properties
+
+# Gradle
+build
+.gradle
+
+# Emacs
+*~
+[#]*[#]
+.\#*

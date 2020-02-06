@@ -1,0 +1,40 @@
+apply plugin: 'java-library'
+apply plugin: 'maven'
+
+dependencies {
+    implementation project(":mapsforge-poi")
+    implementation 'com.google.guava:guava:28.1-jre'
+    implementation 'javax.activation:activation:1.1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.2'
+    implementation 'org.locationtech.jts:jts-core:1.16.1'
+    implementation 'org.xerial:sqlite-jdbc:3.28.0'
+    compileOnly 'org.openstreetmap.osmosis:osmosis-core:0.47'
+}
+
+jar {
+    from('src/main/config/') {
+        filter {
+            line -> line.replace('${poi.writer.version}', version)
+        }
+    }
+}
+
+task fatJar(type: Jar, dependsOn: classes) {
+    classifier = 'jar-with-dependencies'
+    from {
+        (configurations.compileClasspath - configurations.compileOnly).collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    with jar
+}
+
+artifacts {
+    archives fatJar
+}
+
+if (project.hasProperty("SONATYPE_USERNAME")) {
+    afterEvaluate {
+        project.apply from: "${rootProject.projectDir}/deploy.gradle"
+    }
+}

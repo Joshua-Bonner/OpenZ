@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <org.mapsforge.map.android.view.MapView
+                android:id="@+id/mapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#8fff"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:textSize="10sp"
+                android:visibility="gone"
+                tools:text="Upper map view"
+                tools:visibility="visible" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <org.mapsforge.map.android.view.MapView
+                android:id="@+id/mapView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/description2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#8fff"
+                android:padding="2dp"
+                android:textColor="#000"
+                android:textSize="10sp"
+                android:visibility="gone" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/attribution"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/attribution_margin"
+        android:gravity="center"
+        android:singleLine="true"
+        android:text="@string/copyright_osm"
+        android:textColor="#000"
+        android:textSize="@dimen/attribution_size" />
+
+</RelativeLayout>
