@@ -21,10 +21,10 @@ class box_matrix:
 		self.avg_colorL = 0
 		self.avg_colorR = 0
 
-		top_left = 0
+		left_avg = 0
 		bottom_left = 0
 
-		top_right = 0
+		right_avg = 0
 		bottom_right = 0
 	
 	def add_box(self, square, pic, side):
@@ -111,63 +111,42 @@ class box_matrix:
 	
 	def calculate_distances(self, pic):
 		rows = len(self.bmR_matrix)
-		top_row = 3
-		bottom_row = rows - 5
 		found = False;
 		
-		self.top_left = 0
-		self.top_right = 0
-		self.bottom_left = 0
-		self.bottom_right = 0
+		self.left_avg = 0
+		self.right_avg = 0
 		box_counter = 0
 
 		green = (0, 255, 0)
 		
-		for square in reversed(self.bmL_matrix[top_row]):
-			if (square.get_line()):
-				self.top_left = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
-						pic.putpixel((i,j), green)
-				break
-			box_counter += 1
+		for row in self.bmL_matrix:
+			for square in reversed(row):
+				if (square.get_line()):
+					self.left_avg += box_counter
+					for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
+						for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
+							pic.putpixel((i,j), green)
+					break
+				box_counter += 1
+			box_counter = 0
 
-		box_counter = 0
+		self.left_avg /= rows
 		
-		for square in reversed(self.bmL_matrix[bottom_row]):
-			if (square.get_line()):
-				self.bottom_left = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
-						pic.putpixel((i,j), green)
-				break
-			box_counter += 1
-
 		box_counter = 0	
 		
-		for square in (self.bmR_matrix[top_row]):
-			if (square.get_line()):
-				self.top_right = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
-						pic.putpixel((i,j), green)
-				break
-			box_counter += 1
+		for row in self.bmR_matrix:
+			for square in (self.bmR_matrix[top_row]):
+				if (square.get_line()):
+					self.right_avg += box_counter
+					for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
+						for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
+							pic.putpixel((i,j), green)
+					break
+				box_counter += 1
+			box_counter = 0
 
-		box_counter = 0
+		self.right_avg /= rows
 		
-		for square in (self.bmR_matrix[bottom_row]):
-			if (square.get_line()):
-				self.bottom_right = box_counter
-				for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
-					for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
-						pic.putpixel((i,j), green)
-				break
-			box_counter += 1
-
-		box_counter = 0
-
-
 		return pic
 				
 
@@ -277,18 +256,11 @@ def draw_gafbm(pic):
 	matrix.init_matrices()
 	pic = matrix.calculate_distances(pic)
 
-	print "TOP LEFT: ", matrix.top_left
-	print "BOTTOM LEFT: ", matrix.bottom_left
-	print "TOP RIGHT: ", matrix.top_right
-	print "BOTTOM RIGHT: ", matrix.bottom_right
+	print "TOP LEFT: ", matrix.left_avg
+	print "TOP RIGHT: ", matrix.right_avg
 	
-	avgL = (matrix.top_left + matrix.bottom_left) / 2
-	avgR = (matrix.top_right + matrix.bottom_right) / 2
-
-	print "AVG L: ", avgL
-	print "AVG R: ", avgR
-	print (avgL in range(avgR - 10, avgR + 10))
-	return (avgL in range(avgR - 10, avgR + 10))
+	print (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
+	return (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
 	
 	
 main()
