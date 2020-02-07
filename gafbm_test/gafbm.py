@@ -8,8 +8,8 @@ import sys
 night_threshold = 15
 day_threshold = 5
 
+threshold =  night_threshold
 
-threshold = night_threshold
 class box_matrix:
 	def __init__(self):
 		self.bmL = []
@@ -200,6 +200,7 @@ class box:
 		return self.has_line
 
 def main():
+	frame_time = 0
 	screenSize = (800,480)
 	pygame.init()
 	#picture = Image.open("testing.png")
@@ -210,7 +211,7 @@ def main():
 	with picamera.PiCamera() as camera:
 		camera.resolution = screenSize
 		camera.start_preview()
-		camera.shutter_speed = 1000
+		camera.shutter_speed = 100
 		camera.framerate = 30
 		time.sleep(2)
 	
@@ -219,27 +220,30 @@ def main():
 	while True:
 		stream = io.BytesIO()
 		start_time = time.time()
-		with picamera.PiCamera(resolution=screenSize, framerate=30) as camera:
+		with picamera.PiCamera(resolution=screenSize, framerate=35) as camera:
 			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
 				stream.truncate()
 				stream.seek(0)
 				break
 		
-		print "Time to take pic: ", (time.time() - start_time)
+		frame_time += (time.time() - start_time)
+		print "Time to take pic: ", (time.time() - start_time) * 1000, "ms"
 		start_time = time.time()
 		
 		picture = Image.open(stream)
-		picture = picture.resize(screenSize)
+		#picture = picture.resize(screenSize)
 		picture = picture.convert('LA')
 		#picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
 		picture = picture.convert('RGB')
 		
-		print "Time to process image in PIL: ", (time.time() - start_time)
+		frame_time += (time.time() - start_time)
+		print "Time to process image in PIL: ", (time.time() - start_time) * 1000, "ms"
 		start_time = time.time()
 
 		in_lines = draw_gafbm(picture)
 		
-		print "Time to algorithm on picture: ", (time.time() - start_time)
+		frame_time += (time.time() - start_time)
+		print "Time to algorithm on picture: ", (time.time() - start_time) * 1000, "ms"
 		start_time = time.time()
 
 		pic_str = picture.tobytes("raw", 'RGB')
@@ -251,8 +255,10 @@ def main():
 			pygame.draw.line(screen, (255,0,0), (800,0), (0, 480))
 
 		pygame.display.flip()
-
-		print "Time to draw pic on pygame: ", (time.time() - start_time)
+		frame_time += (time.time() - start_time)
+		print "Time to draw pic on pygame: ", (time.time() - start_time) * 1000, "ms"
+		print "TOTAL FRAME TIME: ", frame_time * 1000 , "ms"
+		frame_time = 0
 
 
 def draw_gafbm(pic):
@@ -281,8 +287,8 @@ def draw_gafbm(pic):
 
 	print "AVG L: ", avgL
 	print "AVG R: ", avgR
-	print (avgL in range(avgR - 2, avgR + 2))
-	return (avgL in range(avgR - 2, avgR + 2))
+	print (avgL in range(avgR - 10, avgR + 10))
+	return (avgL in range(avgR - 10, avgR + 10))
 	
 	
 main()
