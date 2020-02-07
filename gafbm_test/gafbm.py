@@ -271,9 +271,12 @@ def draw_gafbm(pic):
 	# IF ONLY LEFT LINE DETECTED
 	elif ((matrix.left_percent > 0.5) and (matrix.right_percent < 0.5)):
 		# calculate centered of left line
+		return True
 	# IF ONLY RIGHT LINE DETECTED
 	elif ((matrix.left_percent < 0.5) and (matrix.right_percent > 0.5)):
 		# calculate centered of right line
+		return True
+	# Both Lanes Detected
 	else:
 		print (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
 		return (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
