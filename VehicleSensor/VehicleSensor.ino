@@ -2,13 +2,21 @@
 #define TRIG_PIN 12
 #define ECHO_PIN 11
 #define TRIG_PIN2 10
-#define ECHO_PIN2 9 
+#define ECHO_PIN2 9
+#define TRIG_PIN3 8
+#define ECHO_PIN3 7
+#define TRIG_PIN4 6
+#define ECHO_PIN4 5
 SR04 sensor1 = SR04(ECHO_PIN,TRIG_PIN);
 SR04 sensor2 = SR04(ECHO_PIN2,TRIG_PIN2);
+SR04 sensor3 = SR04(ECHO_PIN3,TRIG_PIN3);
+SR04 sensor4 = SR04(ECHO_PIN4,TRIG_PIN4);
 long distance1;
 long distance2;
-long buzzTime1;
-long buzzTime2;
+long distance3;
+long distance4;
+long minDist;
+int buzzTime;
 const int buzz = 13;
 
 void setup() {
@@ -17,26 +25,26 @@ void setup() {
 }
 
 void loop() {
+   minDist = 1000;
    distance1 = sensor1.Distance();
    distance2 = sensor2.Distance();
-   buzzTime1 =  50 / 50 + distance1;
-   buzzTime2 =  50 / 50 + distance2;
+   distance3 = sensor3.Distance();
+   distance4 = sensor4.Distance();
+
+   if (minDist >= distance1) minDist = distance1;
+   if (minDist >= distance2) minDist = distance2;
+   if (minDist >= distance3) minDist = distance3;
+   if (minDist >= distance4) minDist = distance4;
+
+   buzzTime = 50 / 50 + minDist;
    
-   // For 1st Sensor
-   if (distance1 <= 50){
+   if (minDist <= 50){
     tone(buzz, 2000);
-    delay(buzzTime1);
+    delay(buzzTime);
     noTone(buzz);
-    delay(buzzTime1);
+    delay(buzzTime);
    }
    
-   // For 2nd Sensor
-   if (distance2 <= 50){
-    tone(buzz, 2000);
-    delay(buzzTime2);
-    noTone(buzz);
-    delay(buzzTime2);
-   }
 
    // Prints out distance via the serial monitor found under the tools tab
    // Press ctrl+shift+m to bring up serial monitor
@@ -45,5 +53,11 @@ void loop() {
    Serial.println("cm");
    Serial.print("Distance2: ");
    Serial.print(distance2);
+   Serial.println("cm");
+   Serial.print("Distance3: ");
+   Serial.print(distance3);
+   Serial.println("cm");
+   Serial.print("Distance4: ");
+   Serial.print(distance4);
    Serial.println("cm");
 }
