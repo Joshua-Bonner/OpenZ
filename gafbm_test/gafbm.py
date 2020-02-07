@@ -22,10 +22,10 @@ class box_matrix:
 		self.avg_colorR = 0
 
 		left_avg = 0
-		bottom_left = 0
-
 		right_avg = 0
-		bottom_right = 0
+
+		right_percent = 0.0
+		left_percent = 0.0
 	
 	def add_box(self, square, pic, side):
 		square.set_avg(pic)
@@ -116,12 +116,14 @@ class box_matrix:
 		self.left_avg = 0
 		self.right_avg = 0
 		box_counter = 0
+		num_detected = 0
 
 		green = (0, 255, 0)
 		
 		for row in self.bmL_matrix:
 			for square in reversed(row):
 				if (square.get_line()):
+					num_detect += 1
 					self.left_avg += box_counter
 					for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
 						for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
@@ -129,24 +131,28 @@ class box_matrix:
 					break
 				box_counter += 1
 			box_counter = 0
-
+	
 		self.left_avg /= rows
-		
+		self.left_percent = (num_detected * 1.0) / rows
+
+		num_detected = 0
 		box_counter = 0	
 		
 		for row in self.bmR_matrix:
 			for square in (self.bmR_matrix[top_row]):
 				if (square.get_line()):
 					self.right_avg += box_counter
+					num_detected += 1
 					for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
 						for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
 							pic.putpixel((i,j), green)
 					break
 				box_counter += 1
 			box_counter = 0
-
-		self.right_avg /= rows
 		
+		self.right_avg /= rows
+		self.right_percent = (num_detected * 1.0) / rows
+
 		return pic
 				
 
@@ -258,9 +264,19 @@ def draw_gafbm(pic):
 
 	print "TOP LEFT: ", matrix.left_avg
 	print "TOP RIGHT: ", matrix.right_avg
-	
-	print (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
-	return (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
+
+	# IF NO LINES DETECTED
+	if ((matrix.left_percent < 0.5) and (matrix.right_percent < 0.5)):
+		return True
+	# IF ONLY LEFT LINE DETECTED
+	elif ((matrix.left_percent > 0.5) and (matrix.right_percent < 0.5)):
+		# calculate centered of left line
+	# IF ONLY RIGHT LINE DETECTED
+	elif ((matrix.left_percent < 0.5) and (matrix.right_percent > 0.5)):
+		# calculate centered of right line
+	else:
+		print (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
+		return (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
 	
 	
 main()
