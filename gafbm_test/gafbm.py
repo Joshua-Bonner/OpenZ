@@ -123,7 +123,7 @@ class box_matrix:
 		for row in self.bmL_matrix:
 			for square in reversed(row):
 				if (square.get_line()):
-					num_detect += 1
+					num_detected += 1
 					self.left_avg += box_counter
 					for i in range ((square.get_xy())[0], (square.get_xy())[0] + 5, 1):
 						for j in range ((square.get_xy())[1], (square.get_xy())[1] + 5, 1):
@@ -139,7 +139,7 @@ class box_matrix:
 		box_counter = 0	
 		
 		for row in self.bmR_matrix:
-			for square in (self.bmR_matrix[top_row]):
+			for square in (row):
 				if (square.get_line()):
 					self.right_avg += box_counter
 					num_detected += 1
@@ -276,7 +276,6 @@ def draw_gafbm(pic):
 	elif ((matrix.left_percent < 0.5) and (matrix.right_percent > 0.5)):
 		# calculate centered of right line
 		return True
-	# Both Lanes Detected
 	else:
 		print (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
 		return (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
