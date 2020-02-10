@@ -23,6 +23,9 @@ class box_matrix:
 
 		left_avg = 0
 		right_avg = 0
+		
+		left_density = 0.0
+		right_density = 0.0
 
 		right_percent = 0.0
 		left_percent = 0.0
@@ -54,6 +57,11 @@ class box_matrix:
 	def paint_lines(self, pic):
 		black = (0,0,0)
 		white = (255,255,255)
+
+		left_total = 0
+		right_total = 0
+		count = 0
+
 		current_color = black
 		for square in self.bmL:
 			square_xy = square.get_xy()
@@ -63,11 +71,18 @@ class box_matrix:
 				current_color = black
 			else:
 				square.has_line = True
+				left_total += 1
 				current_color = white
+
+			count += 1
 
 			for i in range (square_xy[0], square_xy[0] + 5, 1):
 				for j in range (square_xy[1], square_xy[1] + 5, 1):
 					pic.putpixel((i,j), current_color)
+		
+		self.left_density = (1.0 * left_total) / count
+
+		count = 0
 
 		for square in self.bmR:
 			square_xy = square.get_xy()
@@ -77,11 +92,16 @@ class box_matrix:
 				current_color = black
 			else:
 				square.has_line = True
+				right_total += 1
 				current_color = white
+
+			count += 1
 
 			for i in range(square_xy[0], square_xy[0] + 5, 1):
 				for j in range (square_xy[1], square_xy[1] + 5, 1):
 					pic.putpixel((i,j), current_color)
+		
+		self.right_density = (1.0 * right_total) / count
 
 		return pic
 	
@@ -248,6 +268,8 @@ def main():
 
 def draw_gafbm(pic):
 	matrix = box_matrix()
+	matrix_length = 32
+
 	#left box
 	for y in range (240, 291, 5):
 		for x in range (150, 311, 5):
@@ -265,20 +287,17 @@ def draw_gafbm(pic):
 	print "TOP LEFT: ", matrix.left_avg
 	print "TOP RIGHT: ", matrix.right_avg
 
-	# IF NO LINES DETECTED
-	if ((matrix.left_percent < 0.5) and (matrix.right_percent < 0.5)):
+	if (matrix.left_percent < 0.5) and (matrix.right_percent < 0.5):
 		return True
-	# IF ONLY LEFT LINE DETECTED
-	elif ((matrix.left_percent > 0.5) and (matrix.right_percent < 0.5)):
-		# calculate centered of left line
-		return True
-	# IF ONLY RIGHT LINE DETECTED
-	elif ((matrix.left_percent < 0.5) and (matrix.right_percent > 0.5)):
-		# calculate centered of right line
-		return True
+	elif (matrix.left_percent > 0.5) and (matrix.right_percent < 0.5):
+		print (matrix.left_avg in range((matrix_length / 2) - 8, (matrix_length / 2) + 8))
+		return (matrix.left_avg in range((matrix_length / 2) - 8, (matrix_length / 2) + 8))
+	elif (matrix.left_percent < 0.5) and (matrix.right_percent > 0.5):
+		print (matrix.right_avg in range((matrix_length / 2) - 8, (matrix_length / 2) + 8))
+		return (matrix.right_avg in range((matrix_length / 2) - 8, (matrix_length / 2) + 8))
 	else:
-		print (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
-		return (matrix.left_avg in range(matrix.right_avg - 10, matrix.right_avg + 10))
+		print (matrix.left_avg in range(matrix.right_avg - 8, matrix.right_avg + 8))
+		return (matrix.left_avg in range(matrix.right_avg - 8, matrix.right_avg + 8))
 	
 	
 main()
