@@ -16,7 +16,7 @@ long distance2;
 long distance3;
 long distance4;
 long minDist;
-int buzzTime;
+float buzzTime;
 const int buzz = 13;
 
 void setup() {
@@ -25,24 +25,29 @@ void setup() {
 }
 
 void loop() {
+   delay(50);
    minDist = 1000;
    distance1 = sensor1.Distance();
    distance2 = sensor2.Distance();
    distance3 = sensor3.Distance();
    distance4 = sensor4.Distance();
 
-   if (minDist >= distance1) minDist = distance1;
-   if (minDist >= distance2) minDist = distance2;
-   if (minDist >= distance3) minDist = distance3;
-   if (minDist >= distance4) minDist = distance4;
+   if (distance1 != 0) 
+      if (minDist >= distance1) minDist = distance1;
+   if (distance2 != 0) 
+      if (minDist >= distance2) minDist = distance2;
+   if (distance3 != 0) 
+      if (minDist >= distance3) minDist = distance3;
+   if (distance4 != 0) 
+      if (minDist >= distance4) minDist = distance4;
 
-   buzzTime = 50 / 50 + minDist;
+   buzzTime = 150 / 50 + minDist;
    
-   if (minDist <= 50){
+   if (minDist <= 75){
     tone(buzz, 2000);
-    delay(buzzTime);
+    delay(buzzTime*5);
     noTone(buzz);
-    delay(buzzTime);
+    delay(buzzTime*5);
    }
    
 
