@@ -3,11 +3,17 @@ public class song{
 	private String songLocation;
 	private String songName;
 	
-  song(){
-  	songLength = this.getSongLength();
-  	songLocation = this.getSongLocation();
-  	getSongName = this.getSongName();
-  }
+	song(){
+  		songLength = 0;
+  		songLocation = "";
+  		songName = "";
+  	}
+
+	song(int length, String location, String name){
+		songLength = length;
+		songLocation = location;
+		songName = name;
+	}
 	
 	public int getSongLength(){
 		return songLength;
