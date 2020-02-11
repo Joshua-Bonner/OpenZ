@@ -1,0 +1,18 @@
+https://github.com/junjunguo/PocketMaps - this application appears to do everything we want to do
+	using the same library's and file types. (mapsforge, graphhopper, .osm files)
+	It appears to also be easier to understand the implementation when compared to the documentation 
+	provided by mapsforge and graphhopper. Try to use this as a guide for implementating ours as a
+	Java swing (or similar) program instead of Java Android Application.
+	
+https://www.viaboxx.de/route-optimization/distances-for-vehicle-routing-with-graphhopper/ - almost
+	step by step guide for vehicle routing using graphhopper. 
+	
+https://github.com/Arman92/Mapsforge-OsmDroid-GraphHopper - another application that could be useful
+	as a guide for integrating mapsforge and graphhopper (an android application)
+	
+https://medium.com/@parthdave93/find-routes-around-the-world-without-internet-for-developers-5bd97b32c1b8
+	could be useful in understanding how to use mapsforge and graphhopper
+	
+Mapsforge: https://github.com/mapsforge/mapsforge
+			http://download.mapsforge.org/maps/
+GraphHopper: https://github.com/graphhopper/graphhopper
