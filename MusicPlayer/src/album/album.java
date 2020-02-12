@@ -43,8 +43,11 @@ public class album {
 
     public int previousSong() {
         currentSongIndex--;
-        if (currentSongIndex < 0)
+        
+		if (currentSongIndex < 0)
             currentSongIndex = songs.length() - 1;
+
+		return currentSongIndex;
     }
 
     public String getCover() {
