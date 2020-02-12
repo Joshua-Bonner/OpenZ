@@ -1,21 +1,24 @@
 public class song{
-    private int songLength;
+    private long songLength;
     private String songLocation;
     private String songName;
+    private int tagType;
 
     public song(){
         songLength = 0;
         songLocation = "";
         songName = "";
+        tagType = 0;
     }
 
-    public song(int length, String location, String name){
+    public song(long length, String location, String name, int tagVersion){
         songLength = length;
         songLocation = location;
         songName = name;
+        tagType = tagVersion;
     }
 
-    public int getSongLength(){
+    public long getSongLength(){
         return songLength;
     }
 
