@@ -7,7 +7,7 @@ public class album {
 	private int currentSongIndex;
 	private ArrayList<song> songs;
 
-	album() {
+	public album() {
 		albumArtist = "";
 		albumCoverLocation = "";
 		albumLocation = "";
@@ -16,7 +16,7 @@ public class album {
 
 	}
 
-	album(String artist, String coverLoc, String albumLoc) {
+	public album(String artist, String coverLoc, String albumLoc) {
 		albumArtist = artist;
 		albumCoverLocation = coverLoc;
 		albumLocation = albumLoc;
