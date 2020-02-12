@@ -1,4 +1,7 @@
+import org.farng.mp3.MP3File;
+
 import java.util.ArrayList;
+import java.io.File;
 
 public class album {
     private String albumArtist;
@@ -12,7 +15,7 @@ public class album {
         albumCoverLocation = "";
         albumLocation = "";
         currentSongIndex = 0;
-        songs = new ArrayList<song>();
+        songs = new ArrayList<>();
 
     }
 
@@ -25,17 +28,28 @@ public class album {
         //#TODO Here: Fill AList w/ songs using albumLoc
         // https://stackoverflow.com/questions/1844688/how-to-read-all-files-in-a-folder-from-java
         // May be useful.. will need to type case "File" MP3 related object to obtain tags
+        File folder = new File(albumLoc);
+        String[] filesInDir = folder.list();
+        String[] fileTokens;
+
+        for (int i = 0; i < filesInDir.length; i++) {
+            fileTokens = filesInDir[i].split(".");
+
+            if (fileTokens[1].equals("mp3")){
+
+            }
+        }
     }
 
     //#TODO Impliment these functions
-    public song getSong(int) {
-        return songs.get(currentSongIndex);
+    public song getSong(int songIndex) {
+        return songs.get(songIndex);
     }
 
     public int nextSong() {
         currentSongIndex++;
 
-        if (currentSongIndex >= songs.length())
+        if (currentSongIndex >= songs.size())
             currentSongIndex = 0;
 
         return currentSongIndex;
@@ -43,11 +57,11 @@ public class album {
 
     public int previousSong() {
         currentSongIndex--;
-        
-		if (currentSongIndex < 0)
-            currentSongIndex = songs.length() - 1;
 
-		return currentSongIndex;
+        if (currentSongIndex < 0)
+            currentSongIndex = songs.size() - 1;
+
+        return currentSongIndex;
     }
 
     public String getCover() {
@@ -60,3 +74,5 @@ public class album {
 
     public String getLocation() {
         return albumLocation;
+    }
+}
