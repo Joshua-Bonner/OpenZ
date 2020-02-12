@@ -43,7 +43,7 @@ void loop() {
 
    buzzTime = 150 / 50 + minDist;
    
-   if (minDist <= 75){
+   if (minDist <= 50){
     tone(buzz, 2000);
     delay(buzzTime*5);
     noTone(buzz);
