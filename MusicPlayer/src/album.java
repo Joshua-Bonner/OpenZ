@@ -5,6 +5,10 @@ import org.farng.mp3.TagException;
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.ID3v1;
 import org.jaudiotagger.audio.AudioFile;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioSystem;
@@ -36,6 +40,7 @@ public class album {
         albumLocation = albumLoc;
         currentSongIndex = 0;
         songs = new ArrayList<>();
+        System.out.println("In Album Constructor");
 
         //#TODO Here: Fill AList w/ songs using albumLoc
         // https://stackoverflow.com/questions/1844688/how-to-read-all-files-in-a-folder-from-java
@@ -44,7 +49,7 @@ public class album {
         String[] filesInDir = folder.list();
         String[] fileTokens;
         File tempFile;
-        AudioFileFormat base;
+        AudioFile base;
         MP3File tempMp3;
         Map properties;
         ID3v1 tempIDv1;
@@ -58,22 +63,19 @@ public class album {
                 try {
                     tempFile = new File(albumLoc + s);
                     // issues getting time w/ VVVVVVVVVV tried mutiple packages
-                    base = new MpegAudioFileReader().getAudioFileFormat(tempFile);
-                    properties = base.properties();
+                    //base = AudioFileIO.read(new File(albumLoc + s));
                     tempMp3 = new MP3File(tempFile);
 
                     if (tempMp3.hasID3v1Tag()) {
                         tempIDv1 = tempMp3.getID3v1Tag();
-                        songs.add(new song((long) properties.get("duration"), albumLoc + s, tempIDv1.getArtist(), 1));
+                        songs.add(new song(1, albumLoc + s, tempIDv1.getSongTitle(), 1));
                     } else if (tempMp3.hasID3v2Tag()) {
                         tempIDv2 = tempMp3.getID3v2Tag();
-                        songs.add(new song((long) properties.get("duration"), albumLoc + s, tempIDv2.getLeadArtist(), 2));
+                        songs.add(new song(1, albumLoc + s, tempIDv2.getSongTitle(), 2));
                     } else {
-                        songs.add(new song((long) properties.get("duration"), albumLoc + s, "UNKNOWN", 0));
+                        songs.add(new song(1, albumLoc + s, "UNKNOWN", 0));
                     }
 
-                } catch (UnsupportedAudioFileException e) {
-                    System.err.println("ERROR FILE UNSUPPORTED");
                 } catch (IOException e) {
                     System.err.println("ERROR FINDING FILE");
                 } catch (TagException e) {
