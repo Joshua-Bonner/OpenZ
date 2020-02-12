@@ -29,29 +29,33 @@ public class album {
 
 	//#TODO Impliment these functions
 	public song getSong(int) {
-		// return song from index from array
-		// usage: For display on UI
+		return songs.get(currentSongIndex);
 	}
 
 	public int nextSong() {
-		// return song index of next song
-		// usage: To begin playing next song from MusicPlayer class
+		currentSongIndex++;
+
+		if (currentSongIndex >= songs.length())
+			currentSongIndex = 0;
+
+		return currentSongIndex;
 	}
 
 	public int previousSong() {
-		// return song index of prev song
-		// usage: To begin playing previous song from MusicPlayer class
+		currentSongIndex--;
+		if (currentSongIndex < 0)
+			currentSongIndex = songs.length() - 1;
 	}
 
 	public String getCover() {
-	
+		return albumCoverLocation;
 	}
 	
 	public String getArtist() {
-	
+		return albumArtist;
 	}
 
 	public String getLocation() {
-	
+		return albumLocation;
 	}
 }

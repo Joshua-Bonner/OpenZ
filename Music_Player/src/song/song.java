@@ -3,13 +3,13 @@ public class song{
 	private String songLocation;
 	private String songName;
 	
-	song(){
+	public song(){
   		songLength = 0;
   		songLocation = "";
   		songName = "";
   	}
 
-	song(int length, String location, String name){
+	public song(int length, String location, String name){
 		songLength = length;
 		songLocation = location;
 		songName = name;
