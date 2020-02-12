@@ -13,6 +13,8 @@ https://github.com/Arman92/Mapsforge-OsmDroid-GraphHopper - another application 
 https://medium.com/@parthdave93/find-routes-around-the-world-without-internet-for-developers-5bd97b32c1b8
 	could be useful in understanding how to use mapsforge and graphhopper
 	
+https://learnosm.org/en/osm-data/postgresql/ - demonstrates how to import .osm files into a postgresql or postgis database
+	
 Mapsforge: https://github.com/mapsforge/mapsforge
 			http://download.mapsforge.org/maps/
 GraphHopper: https://github.com/graphhopper/graphhopper
