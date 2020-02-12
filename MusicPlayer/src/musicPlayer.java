@@ -5,6 +5,4 @@ public class musicPlayer {
     private ArrayList<album> albums;
     private int currentAlbumIndex;
     private int librarySize;
-
-
 }
