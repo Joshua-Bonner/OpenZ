@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 
 public class musicPlayer {
@@ -7,14 +8,18 @@ public class musicPlayer {
     private int librarySize;
     private boolean isPaused;
     private int pausedSongTime;
+    private String musicLib;
 
     public musicPlayer(){
+        musicLib = "/home/jacob/Music/";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
         librarySize = 0;
         isPaused = false;
         pausedSongTime = 0;
+
+        File musicDir = new File(musicLib);
     }
 
     public album getAlbum(int albumIndex){

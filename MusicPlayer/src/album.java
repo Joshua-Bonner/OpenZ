@@ -38,11 +38,11 @@ public class album {
                 song[] songBucket = new song[songs.size()];
 
                 for (song s : songs ) {
-                    tempMP3 = new MP3File(new File(s.getSongName()));
+                    tempMP3 = new MP3File(new File(s.getSongLocation()));
                     tempID = tempMP3.getID3v1Tag();
 
                     bucketLoc = Integer.parseInt(tempID.getTrackNumberOnAlbum());
-                    songBucket[bucketLoc] =  s;
+                    songBucket[bucketLoc - 1] =  s;
                 }
 
                 for (int i = 0; i < songs.size(); i++) {
@@ -57,7 +57,7 @@ public class album {
                 song[] songBucketv2 = new song[songs.size()];
 
                 for (song s : songs ) {
-                    tempMP3v2 = new MP3File(new File(s.getSongName()));
+                    tempMP3v2 = new MP3File(new File(s.getSongLocation()));
                     tempIDv2 = tempMP3v2.getID3v2Tag();
 
                     bucketLocv2 = Integer.parseInt(tempIDv2.getTrackNumberOnAlbum());
