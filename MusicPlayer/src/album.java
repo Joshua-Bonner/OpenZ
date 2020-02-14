@@ -27,6 +27,7 @@ public class album {
     private ArrayList<song> songs;
 
     private void trackSort(int tagVersion) throws IOException, TagException {
+        String[] trackNumTokens;
         switch (tagVersion) {
             case 0: // Unknown ID version
                 break;
@@ -40,8 +41,8 @@ public class album {
                 for (song s : songs ) {
                     tempMP3 = new MP3File(new File(s.getSongLocation()));
                     tempID = tempMP3.getID3v1Tag();
-
-                    bucketLoc = Integer.parseInt(tempID.getTrackNumberOnAlbum());
+                    trackNumTokens = (tempID.getTrackNumberOnAlbum()).split("/");
+                    bucketLoc = Integer.parseInt(trackNumTokens[0]);
                     songBucket[bucketLoc - 1] =  s;
                 }
 
@@ -59,9 +60,9 @@ public class album {
                 for (song s : songs ) {
                     tempMP3v2 = new MP3File(new File(s.getSongLocation()));
                     tempIDv2 = tempMP3v2.getID3v2Tag();
-
-                    bucketLocv2 = Integer.parseInt(tempIDv2.getTrackNumberOnAlbum());
-                    songBucketv2[bucketLocv2] =  s;
+                    trackNumTokens = (tempIDv2.getTrackNumberOnAlbum()).split("/");
+                    bucketLocv2 = Integer.parseInt(trackNumTokens[0]);
+                    songBucketv2[bucketLocv2 - 1] =  s;
                 }
 
                 for (int i = 0; i < songs.size(); i++) {
@@ -69,7 +70,6 @@ public class album {
                 }
                 break;
         }
-        return;
     }
 
     public album() {
@@ -151,8 +151,8 @@ public class album {
             System.out.println(s.getSongName() + " By: " + albumArtist);
         }
     }
-    public song getSong(int songIndex) {
-        return songs.get(songIndex);
+    public song getSong() {
+        return songs.get(currentSongIndex);
     }
 
     public int nextSong() {
