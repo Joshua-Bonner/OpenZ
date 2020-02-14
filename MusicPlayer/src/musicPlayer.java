@@ -1,9 +1,13 @@
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+import javazoom.jl.player.advanced.AdvancedPlayer;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.TagException;
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.ID3v1;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -13,7 +17,6 @@ public class musicPlayer {
     private ArrayList<album> albums;
     private int currentAlbumIndex;
     private int librarySize;
-    private boolean isPaused;
     private int pausedSongTime;
     private String musicLib;
 
@@ -23,7 +26,6 @@ public class musicPlayer {
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
         librarySize = 0;
-        isPaused = false;
         pausedSongTime = 0;
 
         ArrayList<File> albumDirs = new ArrayList<File>();
@@ -110,14 +112,10 @@ public class musicPlayer {
 
     public void pause(){
         //TODO: Implement this method
-        isPaused = true;
     }
 
-    public void play(){
+    public void play()  {
         //TODO: Implement this method
-        if (isPaused) {
-            isPaused = false;
-        }
         song currentSong;
 
         currentSong = albums.get(currentAlbumIndex).getSong();
