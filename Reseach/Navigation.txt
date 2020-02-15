@@ -19,5 +19,7 @@ Mapsforge: https://github.com/mapsforge/mapsforge
 			http://download.mapsforge.org/maps/
 GraphHopper: https://github.com/graphhopper/graphhopper
 
-After more research that didn't reveal much more in the way of how to use the above librarys and such, I discovered a software program, ArcGIS, that has a mapping program for creating maps with various layers as well as an SDK library for the route generation, route parameters, and such. ArcGIS Pro is available through PSU for free for students.
+After more research that didn't reveal much more in the way of how to use the above librarys and such, I discovered a software program, 
+ArcGIS, that has a mapping program for creating maps with various layers as well as an SDK library for the route generation, route 
+parameters, and such. ArcGIS Pro is available through PSU for free for students.
 https://www.esri.com/en-us/arcgis/products/arcgis-pro/overview
