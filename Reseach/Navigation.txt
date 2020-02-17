@@ -23,3 +23,7 @@ After more research that didn't reveal much more in the way of how to use the ab
 ArcGIS, that has a mapping program for creating maps with various layers as well as an SDK library for the route generation, route 
 parameters, and such. ArcGIS Pro is available through PSU for free for students.
 https://www.esri.com/en-us/arcgis/products/arcgis-pro/overview
+
+
+Searching for information on how to make antenna talk to the GPS system
+https://learn.sparkfun.com/tutorials/gps-basics/all
