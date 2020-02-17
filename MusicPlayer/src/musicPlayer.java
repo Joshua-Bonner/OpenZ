@@ -21,7 +21,7 @@ public class musicPlayer {
     private String musicLib;
 
     public musicPlayer(){
-        musicLib = "/home/jacob/Music/";
+        musicLib = "/home/jacob/MusicTest";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
@@ -98,9 +98,10 @@ public class musicPlayer {
     }
 
     public void outAll() {
+        int count = 1;
         for (album alb : albums) {
-            alb.outAll();
-            System.out.println("////////");
+            System.out.println(count + ". " + alb.getAlbumName() + " By: " + alb.getArtist());
+            count++;
         }
     }
 

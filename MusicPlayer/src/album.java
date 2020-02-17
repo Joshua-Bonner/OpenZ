@@ -102,12 +102,12 @@ public class album {
                     if (tempMp3.hasID3v1Tag()) {
                         tempIDv1 = tempMp3.getID3v1Tag();
                         songs.add(new song(1, albumLoc + s, tempIDv1.getSongTitle(), 1));
-                        // TODO: Pull tag here in if block for album name using foundAlbumName bool, switch to true when found
+                        albumName = tempIDv1.getAlbumTitle();
                         tagVersion = 1;
                     } else if (tempMp3.hasID3v2Tag()) {
                         tempIDv2 = tempMp3.getID3v2Tag();
                         songs.add(new song(1, albumLoc + s, tempIDv2.getSongTitle(), 2));
-                        // TODO: Pull tag here in if block for album name using foundAlbumName bool, switch to true when found
+                        albumName = tempIDv2.getAlbumTitle();
                         tagVersion = 2;
                     } else {
                         songs.add(new song(1, albumLoc + s, "UNKNOWN", 0));
@@ -135,12 +135,17 @@ public class album {
 
     // Delete this later :) or not.. who knows!
     public void outAll() {
+        int count = 1;
         for (song s : songs) {
-            System.out.println(s.getSongName() + " By: " + albumArtist);
+            System.out.println(count + ". " + s.getSongName() + " By " + albumArtist);
+            count++;
         }
     }
     public song getSong() {
         return songs.get(currentSongIndex);
+    }
+    public song getSong(int x) {
+        return songs.get(x);
     }
 
     public int nextSong() {
