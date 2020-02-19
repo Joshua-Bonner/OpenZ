@@ -32,6 +32,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
             @Override
             public void playbackFinished(PlaybackEvent playbackEvent) {
                 pauseFrame = playbackEvent.getFrame();
+                System.out.println(pauseFrame);
                 trackFinished = true;
             }
         });
@@ -57,11 +58,13 @@ public class MusicDriver extends PlaybackListener implements Runnable{
                     @Override
                     public void playbackFinished(PlaybackEvent playbackEvent) {
                         pauseFrame = playbackEvent.getFrame();
+                        System.out.println(pauseFrame);
                         trackFinished = true;
                     }
                 });
+                System.out.println(pauseFrame);
                 player.play(pauseFrame, Integer.MAX_VALUE);
-                STATE = FINISHED_STATE;
+                //STATE = FINISHED_STATE;
                 stopThread();
             }
         } catch (JavaLayerException | FileNotFoundException e) {
