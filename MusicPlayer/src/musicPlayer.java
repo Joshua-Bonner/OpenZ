@@ -21,7 +21,7 @@ public class musicPlayer {
     private String musicLib;
 
     public musicPlayer(){
-        musicLib = "/home/jacob/MusicTest";
+        musicLib = "/home/jacob/Music";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;

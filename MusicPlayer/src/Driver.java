@@ -22,11 +22,32 @@ public class Driver {
         song songChoice = albumChoice.getSong(choice - 1);
 
         try {
-            Thread thread = new Thread(new MusicDriver(songChoice.getSongLocation()));
+            MusicDriver musicDriver = new MusicDriver(songChoice.getSongLocation());
+            Thread thread = new Thread(musicDriver);
             thread.start();
+
+            while (true) {
+                System.out.println("%%%%%%%%%%%%%%%%%%% CONTROLS %%%%%%%%%%%%%%%%%%%%%%%");
+                System.out.println("1 - PAUSE");
+                System.out.println("2 - START");
+                choice = Integer.parseInt(input.readLine());
+
+                if (choice == 1) {
+                    musicDriver.stopThread();
+                }
+                else {
+
+                    thread = new Thread(musicDriver);
+                    thread.start();
+                }
+            }
+
         }catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
 
     }
 }
