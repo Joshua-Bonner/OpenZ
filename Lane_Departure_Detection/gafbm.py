@@ -290,14 +290,14 @@ def draw_gafbm(pic):
 	if (matrix.left_percent < 0.5) and (matrix.right_percent < 0.5):
 		return True
 	elif (matrix.left_percent > 0.5) and (matrix.right_percent < 0.5):
-		print (matrix.left_avg in range((matrix_length / 4) - 8, (matrix_length / 4) + 8))
-		return (matrix.left_avg in range((matrix_length / 4) - 8, (matrix_length / 4) + 8))
+		print (matrix.left_avg in range(4, (matrix_length / 4) + 8))
+		return (matrix.left_avg in range(4, (matrix_length / 4) + 8))
 	elif (matrix.left_percent < 0.5) and (matrix.right_percent > 0.5):
-		print (matrix.right_avg in range((matrix_length / 4) - 8, (matrix_length / 4) + 8))
-		return (matrix.right_avg in range((matrix_length / 4) - 8, (matrix_length / 4) + 8))
+		print (matrix.right_avg in range(4 , (matrix_length / 4) + 8))
+		return (matrix.right_avg in range(4, (matrix_length / 4) + 8))
 	else:
-		print (matrix.left_avg in range(matrix.right_avg - 8, matrix.right_avg + 8))
-		return (matrix.left_avg in range(matrix.right_avg - 8, matrix.right_avg + 8))
+		print (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9))
+		return (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9))
 	
 	
 main()
