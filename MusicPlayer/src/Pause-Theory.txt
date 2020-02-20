@@ -1,0 +1,23 @@
+Jacob's Pause wonkiness theory:
+Mp3 has mutliple different versions for how you encode the music
+CBR - 320, 256 ... etc.
+VBR - V0, V1, V2 ... etc.
+
+CBR Stands for "Constant Bit Rate", VBR Stands for "Variable Bit Rate"
+I'm pausing it based on the # of byte frames passed, while I'm not 100% why it might matter
+    I suspect that songs encoded with VBR V0 vs. CBR 320 will result in the difference
+    between some songs / albums playing nice with pause and others not depending on how Javazoom (API I'm using)
+    handles variable bit rates.
+
+Example of what i think is happening...
+    Think of CBR 320 as this
+    [320KB | 320 KB | 320 KB ... ]
+    each second contains 320 KB, reguardless
+    Think of VBR V0 as this
+    [230 KB | 256 KB | 212 KB ... ]
+
+    If Javazoom is assuming a constant bitrate, it may pick up in a spot that is unexpected ...
+    I may need to obtain the source code for Javazoom and change it to fix this........................
+    Unfortunately, you can find VBR much more commonly than CBR (due to the file size being better for minimal quality loss)
+
+TL;DR - Variable bit rates may the the culprit for this weird behavior

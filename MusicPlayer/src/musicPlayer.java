@@ -1,13 +1,9 @@
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
-import javazoom.jl.player.advanced.AdvancedPlayer;
 import org.farng.mp3.MP3File;
 import org.farng.mp3.TagException;
 import org.farng.mp3.id3.AbstractID3v2;
 import org.farng.mp3.id3.ID3v1;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -21,7 +17,7 @@ public class musicPlayer {
     private String musicLib;
 
     public musicPlayer(){
-        musicLib = "/home/jacob/MusicTest";
+        musicLib = "/home/jacob/Music";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
@@ -123,12 +119,12 @@ public class musicPlayer {
 
     }
 
-    public void nextSong(){
-        //TODO: Implement this method
+    public int nextSong(){
+        return albums.get(currentAlbumIndex).nextSong();
     }
 
-    public void previousSong(){
-        //TODO: Implement this method
+    public int previousSong(){
+        return albums.get(currentAlbumIndex).previousSong();
     }
 
     public void selectAlbum(int selection){
