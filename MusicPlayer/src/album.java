@@ -145,6 +145,7 @@ public class album {
         return songs.get(currentSongIndex);
     }
     public song getSong(int x) {
+        currentSongIndex = x;
         return songs.get(x);
     }
 

@@ -27,13 +27,17 @@ public class Driver {
             thread.start();
 
             while (choice != 0) {
-                System.out.println("%%%%%%%%%%%%%%%%%%% CONTROLS %%%%%%%%%%%%%%%%%%%%%%%");
-                System.out.println("0 - Exit");
-                System.out.println("1 - PAUSE");
-                System.out.println("2 - START");
-                System.out.println("3 - NEXT");
-                System.out.println("4 - PREV");
-                System.out.println("5 - NEW ALBUM");
+                System.out.println("%%%%%%%%%% OPENZ TUI PLAYER %%%%%%%%%%");
+                System.out.println("%%%  0 - EXIT                      %%%");
+                System.out.println("%%%  1 - PAUSE                     %%%");
+                System.out.println("%%%  2 - START                     %%%");
+                System.out.println("%%%  3 - NEXT                      %%%");
+                System.out.println("%%%  4 - PREV                      %%%");
+                System.out.println("%%%  5 - NEW ALBUM                 %%%");
+                System.out.println("%%%  6 - WAIT                      %%%");
+                System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+                System.out.println("%%% " + "PLAYING: "  + albumChoice.getSong().getSongName() + " BY: "
+                                          + albumChoice.getArtist() + "  FROM: " + albumChoice.getAlbumName() + " %%%%");
                 choice = Integer.parseInt(input.readLine());
 
                 if (choice == 1) {
@@ -70,6 +74,14 @@ public class Driver {
                     musicDriver = new MusicDriver(songChoice.getSongLocation());
                     thread = new Thread(musicDriver);
                     thread.start();
+                }
+                else if (choice == 6) {
+                    if (musicDriver.getState() == MusicDriver.FINISHED_STATE) {
+                        musicDriver.stopThread();
+                        musicDriver = new MusicDriver(albumChoice.getSong(player.nextSong()).getSongLocation());
+                        thread = new Thread(musicDriver);
+                        thread.start();
+                    }
                 }
                 else {
                     choice = 0;

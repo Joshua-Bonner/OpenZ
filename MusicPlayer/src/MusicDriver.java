@@ -94,4 +94,5 @@ public class MusicDriver extends PlaybackListener implements Runnable{
             stopThread();
         }
     }
+    public int getState() {return STATE;}
 }
