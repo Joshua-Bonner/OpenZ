@@ -2,10 +2,13 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import org.farng.mp3.MP3File;
+import org.farng.mp3.TagException;
 
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MusicDriver extends PlaybackListener implements Runnable{
     private AdvancedPlayer player;
@@ -13,6 +16,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     private FileInputStream mp3File;
     private int pauseFrame = 0;
     private int STATE = 0;
+    private int songBytes;
     private boolean trackFinished = false;
 
     public static final int PLAY_STATE     = 1;
@@ -20,8 +24,9 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     public static final int FINISHED_STATE = 3;
     public static final int NO_STATE       = 0;
 
-    public MusicDriver(String path) throws JavaLayerException {
+    public MusicDriver(String path) throws JavaLayerException, IOException, TagException {
         songPath = path;
+        songBytes = (int) (new MP3File(songPath)).getMp3StartByte();
         try {
             mp3File = new FileInputStream(songPath);
         }catch (FileNotFoundException ex) {
@@ -31,7 +36,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
         player.setPlayBackListener(new PlaybackListener() {
             @Override
             public void playbackFinished(PlaybackEvent playbackEvent) {
-                pauseFrame = playbackEvent.getFrame();
+                pauseFrame = (int) (((double) songBytes) / (Integer.MAX_VALUE - pauseFrame)) * playbackEvent.getFrame();
                 System.out.println(pauseFrame);
                 trackFinished = true;
             }
@@ -57,17 +62,19 @@ public class MusicDriver extends PlaybackListener implements Runnable{
                 player.setPlayBackListener(new PlaybackListener() {
                     @Override
                     public void playbackFinished(PlaybackEvent playbackEvent) {
-                        pauseFrame = playbackEvent.getFrame();
+                        pauseFrame  = (int) (((double) songBytes) / (Integer.MAX_VALUE - pauseFrame)) * playbackEvent.getFrame();
+
                         System.out.println(pauseFrame);
                         trackFinished = true;
                     }
                 });
                 System.out.println(pauseFrame);
                 player.play(pauseFrame, Integer.MAX_VALUE);
-                //STATE = FINISHED_STATE;
                 stopThread();
             }
         } catch (JavaLayerException | FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -77,21 +84,6 @@ public class MusicDriver extends PlaybackListener implements Runnable{
             STATE = PAUSE_STATE;
             player.stop();
             trackFinished = false;
-        }
-    }
-    public void startThread() throws JavaLayerException {
-        System.out.println(STATE);
-        if (STATE == NO_STATE || STATE == FINISHED_STATE) {
-            STATE = PLAY_STATE;
-            player.play(0, Integer.MAX_VALUE);
-            STATE = FINISHED_STATE;
-            stopThread();
-        }
-        else if (STATE == PAUSE_STATE) {
-            STATE = PLAY_STATE;
-            player.play(pauseFrame, Integer.MAX_VALUE);
-            STATE = FINISHED_STATE;
-            stopThread();
         }
     }
     public int getState() {return STATE;}
