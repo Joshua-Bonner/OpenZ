@@ -1,4 +1,3 @@
-
 #include "SR04.h"
 
 SR04::SR04(int echoPin, int triggerPin) {
@@ -71,10 +70,5 @@ long SR04::getDistance() {
 
 long SR04::MicrosecondsToCentimeter(long duration) {
     long d = (duration * 100) / 5882;
-    //d = (d == 0)?999:d;
     return d;
 }
-
-
-
-
