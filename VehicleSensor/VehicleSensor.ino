@@ -7,17 +7,20 @@
 #define ECHO_PIN3 7
 #define TRIG_PIN4 6
 #define ECHO_PIN4 5
+
 SR04 sensor1 = SR04(ECHO_PIN,TRIG_PIN);
 SR04 sensor2 = SR04(ECHO_PIN2,TRIG_PIN2);
 SR04 sensor3 = SR04(ECHO_PIN3,TRIG_PIN3);
 SR04 sensor4 = SR04(ECHO_PIN4,TRIG_PIN4);
+
+const int buzz = 13;
+
 long distance1;
 long distance2;
 long distance3;
 long distance4;
 long minDist;
 float buzzTime;
-const int buzz = 13;
 
 void setup() {
    Serial.begin(9600);
@@ -32,14 +35,10 @@ void loop() {
    distance3 = sensor3.Distance();
    distance4 = sensor4.Distance();
 
-   if (distance1 != 0) 
-      if (minDist >= distance1) minDist = distance1;
-   if (distance2 != 0) 
-      if (minDist >= distance2) minDist = distance2;
-   if (distance3 != 0) 
-      if (minDist >= distance3) minDist = distance3;
-   if (distance4 != 0) 
-      if (minDist >= distance4) minDist = distance4;
+   if (distance1 != 0 && minDist >= distance1) minDist = distance1;
+   if (distance2 != 0 && minDist >= distance2) minDist = distance2;
+   if (distance3 != 0 && minDist >= distance3) minDist = distance3;
+   if (distance4 != 0 && minDist >= distance4) minDist = distance4;
 
    buzzTime = 150 / 50 + minDist;
    
@@ -50,7 +49,6 @@ void loop() {
     delay(buzzTime*5);
    }
    
-
    // Prints out distance via the serial monitor found under the tools tab
    // Press ctrl+shift+m to bring up serial monitor
    Serial.print("Distance1: ");
