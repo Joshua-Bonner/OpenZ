@@ -4,11 +4,13 @@ import obd
 
 connection = obd.Async()
 connection.watch(obd.commands.RPM)
-connection.watch(obd.commands.INTAKE_TEMP)
-connection.watch(obd.commands.THROTTLE_POS)
-connection.watch(GET_DTC)
-connection.watch(CLEAR_DTC)
-connection.watch(COOLANT_TEMP)
+#connection.watch(obd.commands.INTAKE_TEMP)
+#connection.watch(obd.commands.THROTTLE_POS)
+#connection.watch(obd.commands.GET_DTC)
+#connection.watch(obd.commands.CLEAR_DTC)
+#connection.watch(obd.commands.COOLANT_TEMP)
+connection.start()
+
 
 class OBDServer(SocketServer.BaseRequestHandler):
     HOST = "localhost"
@@ -17,22 +19,33 @@ class OBDServer(SocketServer.BaseRequestHandler):
     def handle(self):
         time.sleep(0.01)
         self.data = self.request.recv(1024).strip()
-        return_query = ""
+        response = ""
         for query in self.data.split('/'):
-            query_switch = {
-                "RPM": obd.commands.RPM,
-                "INTAKE_TEMP": obd.commands.INTAKE_TEMP,
-                "THROTTLE_POS": obd.commands.THROTTLE_POS,
-                "GET_DTC": obd.commands.GET_DTC,
-                "CLEAR_DTC": obd.commands.CLEAR_DTC,
-                "COOLANT_TEMP": obd.commands.COOLANT_TEMP
-            }
-            return_query += connection.query(query_switch.get(query)) + '/'
+            if query == 'CLEAR_DTC':
+                connection.stop()
+                connection.watch(obd.commands.CLEAR_DTC)
+                connection.start()
+                connection.query(obd.commands.CLEAR_DTC)
+                connection.stop()
+                connection.unwatch(obd.commands.CLEAR_DTC)
+                connection.start()
+            elif query == 'GET_DTC':
+                connection.stop()
+                connection.watch(obd.commands.GET_DTC)
+                connection.start()
+                connection.query(obd.commands.GET_DTC)
+                connection.stop()
+                connection.unwatch(obd.commands.GET_DTC)
+                connection.start()
 
-        print("{} wrote:".format(self.client_address[0]))
-        self.request.sendall("Pong")
-        print(self.data)
+            #return_query = connection.query(query_switch.get(query))
+            return_query = (connection.query(obd.commands[query]))
+            response += str(return_query.value) + '/'
+            print(return_query.value)
 
+        #print("{} wrote:".format(self.client_address[0]))
+        self.request.sendall(response)
+        #print(self.data)
 
 
 if __name__ == "__main__":

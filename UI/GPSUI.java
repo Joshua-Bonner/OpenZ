@@ -3,6 +3,7 @@ import java.awt.event.*;
 
 public class GPSUI
 {
+    private static OBDClient obd = new OBDClient();
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 480;
 
@@ -131,7 +132,8 @@ public class GPSUI
 	    obd_2 = new JButton("Speed: 100 MPH     Throttle Position: 50%");
 	    obd_3 = new JButton("Vehicle Identification Number: 7H15154P....");
 	    obd_4 = new JButton("Mileage: 50000");
-	    obd_5 = new JLabel("Other statistics shown here");
+	    obd_5 = new JLabel("");
+	    updateCodes();
 	    showCodes = new JButton("View Trouble Codes");
 	    clearCodes = new JButton("Clear Trouble Codes");
 	    obd_1.setPreferredSize(obd_dim);
@@ -222,6 +224,34 @@ public class GPSUI
 	    music_button_3.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { System.out.println("Paused Music"); music_button_2.setVisible(true); music_button_3.setVisible(false); }});
 	    music_button_next.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { currentSong = (currentSong+1)%ALBUM_COUNT; music_label_1.setText("Playing song " + (currentSong+1) + "/" + ALBUM_COUNT); }});
 	    music_button_prev.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { currentSong = (currentSong-1); if(currentSong<0) { currentSong=ALBUM_COUNT-1; } music_label_1.setText("Playing song " + (currentSong+1) + "/" + ALBUM_COUNT); }});
+	    showCodes.addActionListener(new ActionListener() {
+	        @Override
+	        public void actionPerformed(ActionEvent e) {
+	            updateCodes();
+	        }
+	    });
+	    clearCodes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    obd.clearCode();
+                    updateCodes();
+                }
+                catch (OBDConnectionException ex) {
+                    obd_5.setText(ex.getMessage());
+                }
+
+            }
+        });
 	}
+
+	public static void updateCodes() {
+	    try {
+            obd_5.setText(obd.readCode());
+        }
+	    catch (OBDConnectionException e) {
+	        obd_5.setText(e.getMessage());
+        }
+    }
 
 }
