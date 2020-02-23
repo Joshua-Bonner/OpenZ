@@ -27,3 +27,6 @@ https://www.esri.com/en-us/arcgis/products/arcgis-pro/overview
 
 Searching for information on how to make antenna talk to the GPS system
 https://learn.sparkfun.com/tutorials/gps-basics/all
+
+How to make GPS threaded
+https://developers.arcgis.com/net/10-2/store/guide/threading-considerations.htm
