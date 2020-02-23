@@ -1,7 +1,5 @@
 import com.esri.arcgisruntime.data.TransportationNetworkDataset;
-import com.esri.arcgisruntime.geometry.Geometry;
-import com.esri.arcgisruntime.geometry.Point;
-import com.esri.arcgisruntime.geometry.SpatialReference;
+import com.esri.arcgisruntime.geometry.*;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.MobileMapPackage;
@@ -52,7 +50,9 @@ public class TurnByTurn extends Application
     private Graphic routeGraphic;
     private GraphicsOverlay routeGraphicsOverlay;
 
-    private final SpatialReference ESPG_3857 = SpatialReference.create( 102100 );
+    //private final SpatialReference ESPG_3857 = SpatialReference.create( 102100 );
+    private final SpatialReference _4326 = SpatialReference.create( 4326 );
+    //private SpatialReference sr;
 
     private static final int WHITE_COLOR = 0xffffffff;
     private static final int BLUE_COLOR = 0xFF0000FF;
@@ -65,7 +65,7 @@ public class TurnByTurn extends Application
     private VBox controlsVBox;
     private VBox searchBox;
 
-    private TextField startPointBox;
+    //private TextField startPointBox;
     private TextField endPointBox;
 
     private GeocodeParameters geocodeParameters;
@@ -88,8 +88,8 @@ public class TurnByTurn extends Application
         Scene scene = new Scene( stackPane );
 
         stage.setTitle( "Navigation" );
-        stage.setWidth( 900 );
-        stage.setHeight( 800 );
+        stage.setWidth( 800 );
+        stage.setHeight( 480 );
         stage.show();
         stage.setScene( scene );
 
@@ -132,31 +132,17 @@ public class TurnByTurn extends Application
         searchBox.setPadding( new Insets( 5.0 ) );
         searchBox.setMaxSize( 400,100 );
 
-        startPointBox = new TextField(  );
-        startPointBox.setMaxWidth( 300 );
-        startPointBox.setPromptText( "Enter starting address" );
-
         endPointBox = new TextField(  );
         endPointBox.setMaxWidth( 300 );
         endPointBox.setPromptText( "Enter destination address" );
 
-        searchBox.getChildren().addAll( startPointBox, endPointBox );
-
-        startPointBox.setOnAction( event -> {
-            String query = startPointBox.getText();
-            if(! "".equals( query ))
-            {
-                geocodeQuery(query, "start");
-                //createRouteAndDisplay();
-            }
-        } );
+        searchBox.getChildren().addAll(  endPointBox );
 
         endPointBox.setOnAction( event -> {
             String query = endPointBox.getText();
             if(! "".equals( query ))
             {
-                    geocodeQuery( query, "end" );
-                    //createRouteAndDisplay();
+                geocodeQuery( query, "end" );
             }
         } );
     }
@@ -167,7 +153,6 @@ public class TurnByTurn extends Application
 
         if(mapView != null)
         {
-            Thread.sleep( 2000 );
             mapPackage.addDoneLoadingListener( () -> {
 
                 if(mapPackage.getLoadStatus() == LoadStatus.LOADED && mapPackage.getMaps().size() > 0)
@@ -175,6 +160,8 @@ public class TurnByTurn extends Application
                     double latitude = 34.05293;
                     double longitude = -118.24368;
                     double scale = 220000;
+
+                    startPoint = new Point(-118.252855, 33.861863, _4326);
 
                     ArcGISMap map = mapPackage.getMaps().get(0);
                     transportationNetwork = map.getTransportationNetworks().get( 0 );
@@ -186,7 +173,6 @@ public class TurnByTurn extends Application
                     StackPane.setMargin(controlsVBox, new Insets(10, 10, 0, 0));
                     StackPane.setAlignment( searchBox, Pos.TOP_LEFT );
                     StackPane.setMargin( searchBox, new Insets( 10, 5, 0, 0 ) );
-
 
                     System.out.println( "Calling setupRouteTask" );
                     setupRouteTask();
@@ -224,13 +210,11 @@ public class TurnByTurn extends Application
                 try
                 {
                     routeParameters = routeTask.createDefaultParametersAsync().get();
-                    routeParameters.setOutputSpatialReference( ESPG_3857 );
+                    routeParameters.setOutputSpatialReference( mapView.getSpatialReference() );
 
                     routeParameters.setReturnStops( true );
                     routeParameters.setReturnDirections( true );
 
-                    //createRouteAndDisplay();
-                    //solveForRoute();
 
                 } catch (InterruptedException | ExecutionException e )
                 {
@@ -280,54 +264,9 @@ public class TurnByTurn extends Application
         geocodeParameters.setOutputSpatialReference( mapView.getSpatialReference() );
     }
 
-    public void createRouteAndDisplay()
-    {
-        System.out.println( "CreateRouteAndDisplay Function" );
-
-//        mapView.setOnMouseClicked( e -> {
-//            if(e.getButton() == MouseButton.PRIMARY && e.isStillSincePress() )
-//            {
-                //Point2D point = new Point2D(e.getX(), e.getY());
-                //Point mapPoint = mapView.screenToLocation( point );
-
-                //List< Stop > routeStops = new ArrayList<>(  );
-//                if(startPoint != null)
-//                {
-//                    //setStartMarker( mapPoint );
-////                    TextSymbol startText = new TextSymbol( 10, "1", WHITE_COLOR,
-////                            TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.MIDDLE );
-////                    routeGraphicsOverlay.getGraphics().add( new Graphic( startPoint,startText ) );
-//                    routeStops.add(new Stop(startPoint));
-//                }else if (endPoint != null)
-//                {
-//                    //setEndMarker( mapPoint );
-////                    TextSymbol endText = new TextSymbol( 10, "2", WHITE_COLOR,
-////                            TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.MIDDLE );
-////                    routeGraphicsOverlay.getGraphics().add( new Graphic( endPoint, endText ) );
-//                    routeStops.add(new Stop(endPoint));
-//                }else
-//                {
-//                    //setStartMarker( mapPoint );
-////                    TextSymbol startText = new TextSymbol( 10, "1", WHITE_COLOR,
-////                            TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.MIDDLE );
-////                    routeGraphicsOverlay.getGraphics().add( new Graphic( startPoint,startText ) );
-//                    System.out.println( "some weird stuff happened" );
-//                }
-
-//                routeParameters.setStops(routeStops);
-
-//                if(startPoint != null && endPoint != null)
-//                {
-//                    solveForRoute();
-//                }
-//            }
-//        } );
-    }
-
     private void displayResult(GeocodeResult geocodeResult, String which)
     {
         String label = geocodeResult.getLabel();
-
 
         TextSymbol textSymbol = new TextSymbol( 18, label, 0xFF000000,
                 TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.BOTTOM );
@@ -338,34 +277,25 @@ public class TurnByTurn extends Application
 
         mapView.setViewpointCenterAsync( geocodeResult.getDisplayLocation() );
 
-        if(which.equals( "start" ))
-        {
-            startPoint = geocodeResult.getDisplayLocation();
-            //createRouteAndDisplay();
-            routeStops.add(new Stop(startPoint));
-        } else if (which.equals( "end" ))
+        if (which.equals( "end" ))
         {
             endPoint = geocodeResult.getDisplayLocation();
-            //createRouteAndDisplay();
+
             routeStops.add(new Stop(endPoint));
-        } else
-        {
-            startPoint = geocodeResult.getDisplayLocation();
-            //createRouteAndDisplay();
-            routeStops.add(new Stop(startPoint));
         }
+
+        routeStops.add(new Stop(startPoint));
         routeParameters.setStops(routeStops);
 
         if(startPoint != null && endPoint != null)
         {
             solveForRoute();
         }
-
-
     }
 
     private void geocodeQuery(String query, String which)
     {
+        System.out.println( query );
         ListenableFuture<List<GeocodeResult>> geocode = locatorTask.geocodeAsync( query, geocodeParameters );
 
         geocode.addDoneListener( () ->{
