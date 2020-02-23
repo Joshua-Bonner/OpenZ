@@ -3,54 +3,55 @@ import java.awt.event.*;
 
 public class GPSUI
 {
-    private static OBDClient obd = new OBDClient();
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 480;
-
-	private static SpringLayout layout_obd;
-	private static SpringLayout layout_musicplayer;
-	private static SpringLayout layout_gps;
-
-	private static JFrame top_panel;
-
-	private static JTabbedPane tab_panel;
-	private static JPanel musicplayer_panel;
-	private static JPanel obd_panel;
-	private static JPanel gps_panel;
-
-	private static JButton music_button_1;
-	private static JButton music_button_2;
-	private static JButton music_button_3;
-	private static JButton music_button_prev;
-	private static JButton music_button_next;
-	private static JLabel music_label_1;
-
-	private static JButton obd_1;
-	private static JButton obd_2;
-	private static JButton obd_3;
-	private static JButton obd_4;
 	private static JLabel obd_5;
-
-	private static JButton showCodes;
-	private static JButton clearCodes;
-
-	private static JButton gps_home;
-	private static JButton gps_destination;
-	private static JButton gps_turn;
-	private static JButton gps_eat;
-
-	private static JButton album_cover;
-
-	public static int ALBUM_COUNT = 15;
-	public static int currentSong = 5;
+	private static OBDClient obd;
+	private static int ALBUM_COUNT = 15;
+	private static int currentSong = 5;
 
 	public static void main(String[] args)
 	{
+		obd = new OBDClient();
+
+		SpringLayout layout_obd;
+		SpringLayout layout_musicplayer;
+		SpringLayout layout_gps;
+
+		JFrame top_panel;
+
+		JTabbedPane tab_panel;
+		JPanel musicplayer_panel;
+		JPanel obd_panel;
+		JPanel gps_panel;
+
+		JButton music_button_1;
+		JButton music_button_2;
+		JButton music_button_3;
+		JButton music_button_prev;
+		JButton music_button_next;
+		JLabel music_label_1;
+
+		JButton obd_1;
+		JButton obd_2;
+		JButton obd_3;
+		JButton obd_4;
+
+		JButton showCodes;
+		JButton clearCodes;
+
+		JButton gps_home;
+		JButton gps_destination;
+		JButton gps_turn;
+		JButton gps_eat;
+
+		JButton album_cover;
+
 		layout_obd = new SpringLayout();
 		layout_musicplayer = new SpringLayout();
 		layout_gps = new SpringLayout();
 
-		JFrame top_panel = new JFrame("H&B GPS Device");
+		top_panel = new JFrame("H&B GPS Device");
 		top_panel.setSize(WIDTH,HEIGHT);
 		top_panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		top_panel.setVisible(true);
@@ -132,7 +133,7 @@ public class GPSUI
 	    obd_2 = new JButton("Speed: 100 MPH     Throttle Position: 50%");
 	    obd_3 = new JButton("Vehicle Identification Number: 7H15154P....");
 	    obd_4 = new JButton("Mileage: 50000");
-	    obd_5 = new JLabel("");
+	    obd_5 = new JLabel("Other statistics shown here");
 	    updateCodes();
 	    showCodes = new JButton("View Trouble Codes");
 	    clearCodes = new JButton("Clear Trouble Codes");
@@ -218,18 +219,28 @@ public class GPSUI
 	    cons.setX(Spring.constant(325));
 	    cons.setY(Spring.constant(0));
 
+	    AlbumSelect album_panel = new AlbumSelect();
+	    album_panel.setVisible(false);
+	    album_panel.addAlbum("Album 1");
+	    album_panel.addAlbum("Album 2");
+	    album_panel.refreshAlbums();
+	    album_panel.addSong("Song 1",0);
+	    album_panel.addSong("Song 2",0);
+	    album_panel.addSong("Song 3",1);
 
-	    music_button_1.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { System.out.println("Album Select screen would trigger"); } } );
+	    music_button_1.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { album_panel.setVisible(true); } } );
 	    music_button_2.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { System.out.println("Started Playing"); music_button_2.setVisible(false); music_button_3.setVisible(true); }});
 	    music_button_3.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { System.out.println("Paused Music"); music_button_2.setVisible(true); music_button_3.setVisible(false); }});
 	    music_button_next.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { currentSong = (currentSong+1)%ALBUM_COUNT; music_label_1.setText("Playing song " + (currentSong+1) + "/" + ALBUM_COUNT); }});
 	    music_button_prev.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { currentSong = (currentSong-1); if(currentSong<0) { currentSong=ALBUM_COUNT-1; } music_label_1.setText("Playing song " + (currentSong+1) + "/" + ALBUM_COUNT); }});
+	
 	    showCodes.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
 	            updateCodes();
 	        }
 	    });
+
 	    clearCodes.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -252,6 +263,6 @@ public class GPSUI
 	    catch (OBDConnectionException e) {
 	        obd_5.setText(e.getMessage());
         }
-    }
 
+	}
 }
