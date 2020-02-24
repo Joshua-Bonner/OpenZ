@@ -1,5 +1,6 @@
 import com.esri.arcgisruntime.data.TransportationNetworkDataset;
 import com.esri.arcgisruntime.geometry.*;
+import com.esri.arcgisruntime.internal.httpclient.conn.routing.RouteTracker;
 import com.esri.arcgisruntime.loadable.LoadStatus;
 import com.esri.arcgisruntime.mapping.ArcGISMap;
 import com.esri.arcgisruntime.mapping.MobileMapPackage;
@@ -36,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 
 public class TurnByTurn extends Application
@@ -50,9 +54,7 @@ public class TurnByTurn extends Application
     private Graphic routeGraphic;
     private GraphicsOverlay routeGraphicsOverlay;
 
-    //private final SpatialReference ESPG_3857 = SpatialReference.create( 102100 );
     private final SpatialReference _4326 = SpatialReference.create( 4326 );
-    //private SpatialReference sr;
 
     private static final int WHITE_COLOR = 0xffffffff;
     private static final int BLUE_COLOR = 0xFF0000FF;
@@ -60,12 +62,12 @@ public class TurnByTurn extends Application
 
     private Point startPoint = null;
     private Point endPoint = null;
+    private Point currentPoint = null;
 
     private StackPane stackPane;
     private VBox controlsVBox;
     private VBox searchBox;
 
-    //private TextField startPointBox;
     private TextField endPointBox;
 
     private GeocodeParameters geocodeParameters;
@@ -74,16 +76,18 @@ public class TurnByTurn extends Application
     private String mmpkFile = "Greater_Los_Angeles.mmpk";
     private final MobileMapPackage mapPackage = new MobileMapPackage( mmpkFile );
 
+    int count = 0;
+
     public static void main ( String[] args )
     {
         Application.launch( args );
+
     }
 
     @Override
     public void start ( Stage stage ) throws InterruptedException
     {
         System.out.println( "Start Function" );
-
         stackPane = new StackPane(  );
         Scene scene = new Scene( stackPane );
 
@@ -138,6 +142,8 @@ public class TurnByTurn extends Application
 
         searchBox.getChildren().addAll(  endPointBox );
 
+        getGPSStartPoint();
+
         endPointBox.setOnAction( event -> {
             String query = endPointBox.getText();
             if(! "".equals( query ))
@@ -145,6 +151,18 @@ public class TurnByTurn extends Application
                 geocodeQuery( query, "end" );
             }
         } );
+    }
+
+    public void getGPSStartPoint()
+    {
+        MockCoordinates mc = new MockCoordinates();
+        startPoint = new Point(mc.x, mc.y, _4326);
+    }
+
+    public void getGPSCurrentPoint()
+    {
+        MockCoordinates mc = new MockCoordinates();
+        currentPoint = new Point(mc.getCurrentXCoord(), mc.getCurrentYCoord(), _4326);
     }
 
     private void setupMobileMap() throws InterruptedException
@@ -160,8 +178,6 @@ public class TurnByTurn extends Application
                     double latitude = 34.05293;
                     double longitude = -118.24368;
                     double scale = 220000;
-
-                    startPoint = new Point(-118.252855, 33.861863, _4326);
 
                     ArcGISMap map = mapPackage.getMaps().get(0);
                     transportationNetwork = map.getTransportationNetworks().get( 0 );
@@ -207,6 +223,7 @@ public class TurnByTurn extends Application
         {
             if(routeTask.getLoadStatus() == LoadStatus.LOADED)
             {
+
                 try
                 {
                     routeParameters = routeTask.createDefaultParametersAsync().get();
@@ -239,18 +256,12 @@ public class TurnByTurn extends Application
 
     public void setStartMarker(Point location)
     {
-        System.out.println( "SetStartMarker Function" );
-
-        routeGraphicsOverlay.getGraphics().clear();
         setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND,RED_COLOR,BLUE_COLOR );
-        startPoint = location;
-        endPoint = null;
+        mapView.setViewpointCenterAsync( startPoint );
     }
 
     public void setEndMarker( Point location )
     {
-        System.out.println( "SetEndMarker Function" );
-
         setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE,BLUE_COLOR,RED_COLOR);
         endPoint = location;
     }
@@ -266,25 +277,17 @@ public class TurnByTurn extends Application
 
     private void displayResult(GeocodeResult geocodeResult, String which)
     {
-        String label = geocodeResult.getLabel();
+        //mapView.setViewpointCenterAsync( geocodeResult.getDisplayLocation() );
 
-        TextSymbol textSymbol = new TextSymbol( 18, label, 0xFF000000,
-                TextSymbol.HorizontalAlignment.CENTER, TextSymbol.VerticalAlignment.BOTTOM );
-        Graphic textGraphic = new Graphic (geocodeResult.getDisplayLocation(), textSymbol);
-        SimpleMarkerSymbol markerSymbol = new SimpleMarkerSymbol( SimpleMarkerSymbol.Style.SQUARE, 0xFFFF0000, 12.0f );
-        Graphic markerGraphic = new Graphic( geocodeResult.getDisplayLocation(), geocodeResult.getAttributes(), markerSymbol );
-        routeGraphicsOverlay.getGraphics().addAll( Arrays.asList(markerGraphic,textGraphic));
-
-        mapView.setViewpointCenterAsync( geocodeResult.getDisplayLocation() );
+        setStartMarker( startPoint );
+        routeStops.add(new Stop(startPoint));
 
         if (which.equals( "end" ))
         {
             endPoint = geocodeResult.getDisplayLocation();
-
+            setEndMarker( endPoint );
             routeStops.add(new Stop(endPoint));
         }
-
-        routeStops.add(new Stop(startPoint));
         routeParameters.setStops(routeStops);
 
         if(startPoint != null && endPoint != null)
@@ -329,12 +332,14 @@ public class TurnByTurn extends Application
             try
             {
                 RouteResult result = routeTask.solveRouteAsync( routeParameters ).get();
+
                 List< Route > routes = result.getRoutes();
                 if ( routes.size() < 1 )
                 {
                     directionsList.getItems().add( "No Routes" );
                 }
                 Route route = routes.get( 0 );
+
                 Geometry shape = route.getRouteGeometry();
                 routeGraphic = new Graphic( shape, new SimpleLineSymbol( SimpleLineSymbol.Style.SOLID, BLUE_COLOR, 2 ) );
                 routeGraphicsOverlay.getGraphics().add( routeGraphic );
@@ -342,15 +347,52 @@ public class TurnByTurn extends Application
                 for ( DirectionManeuver step : route.getDirectionManeuvers() )
                 {
                     directionsList.getItems().add( step.getDirectionText() );
+                    System.out.println( step.getDirectionText() );
                 }
+                System.out.println( "------------------------------------------------------------------" );
+
+                reRoute();
 
             }
             catch ( InterruptedException | ExecutionException e )
             {
                 e.printStackTrace();
-                new Alert( Alert.AlertType.ERROR, "Here" + e.getMessage() + e.getMessage() ).show();
+                new Alert( Alert.AlertType.ERROR,  e.getMessage() + e.getMessage() ).show();
             }
         }
+    }
+
+    public void reRoute()
+    {
+        Runnable runnable = new Runnable()
+        {
+            @Override
+            public void run ()
+            {
+                getGPSCurrentPoint();
+                if(startPoint != currentPoint && currentPoint != endPoint && count < 3)
+                {
+                    startPoint = currentPoint;
+                    System.out.println( "reroute" );
+                    routeStops.clear();
+                    routeStops.add( new Stop(startPoint) );
+                    routeStops.add(new Stop(endPoint));
+
+                    routeParameters.clearStops();
+                    routeParameters.setStops(routeStops);
+
+                    routeGraphicsOverlay.getGraphics().clear();
+                    setStartMarker( startPoint );
+                    setEndMarker( endPoint );
+
+                    solveForRoute();
+                }
+                count++;
+            }
+        };
+
+        ScheduledExecutorService svc = Executors.newSingleThreadScheduledExecutor();
+        svc.scheduleAtFixedRate( runnable, 1,1, TimeUnit.SECONDS );
     }
 
     @Override
