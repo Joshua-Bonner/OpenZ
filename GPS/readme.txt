@@ -8,4 +8,4 @@ As the mmpk file is only for Los Angeles, here are two address that I know are i
 Extensive testing on how to input the addresses has not been done so input the address exactly are they are above with the exception
 of captiol and lower case letters.
 
-This is a ROUGH draft of the program. Please disregard extraneous code, comments, format, indentation, etc.
+MockCoordinates is an additional java class for feeding coordinates to the map to simulate getting GPS coordinates from an antenna.
