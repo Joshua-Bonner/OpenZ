@@ -14,6 +14,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     private AdvancedPlayer player;
     private String songPath;
     private FileInputStream mp3File;
+    private long startTime;
     private int pauseFrame = 0;
     private int STATE = 0;
     private int songBytes;
@@ -36,7 +37,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
         player.setPlayBackListener(new PlaybackListener() {
             @Override
             public void playbackFinished(PlaybackEvent playbackEvent) {
-                pauseFrame = (int) (((double) songBytes) / (Integer.MAX_VALUE - pauseFrame)) * playbackEvent.getFrame();
+                pauseFrame += (int) ((System.currentTimeMillis() - startTime) / 26);
                 System.out.println(pauseFrame);
                 trackFinished = true;
             }
@@ -44,6 +45,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     }
     public void run(){
         System.out.println("Running thread");
+        startTime = System.currentTimeMillis();
         try {
             if (STATE == NO_STATE || STATE == FINISHED_STATE) {
                 STATE = PLAY_STATE;
@@ -62,8 +64,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
                 player.setPlayBackListener(new PlaybackListener() {
                     @Override
                     public void playbackFinished(PlaybackEvent playbackEvent) {
-                        pauseFrame  = (int) (((double) songBytes) / (Integer.MAX_VALUE - pauseFrame)) * playbackEvent.getFrame();
-
+                        pauseFrame  += (int) ((System.currentTimeMillis() - startTime) / 26);
                         System.out.println(pauseFrame);
                         trackFinished = true;
                     }
