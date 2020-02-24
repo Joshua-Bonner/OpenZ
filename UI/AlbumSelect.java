@@ -40,8 +40,22 @@ public class AlbumSelect extends JFrame
 		cons.setX(Spring.constant(400));
 		cons.setY(Spring.constant(0));
 		JFrame thisPanel = this;
-		albumList.addListSelectionListener(new ListSelectionListener() { public void valueChanged(ListSelectionEvent e) { songList.clearSelection(); songList.setListData(map.get(albumList.getSelectedIndex()).toArray(new String[0]));  }});
-		songList.addListSelectionListener(new ListSelectionListener() { public void valueChanged(ListSelectionEvent e) { if (songList.getSelectedIndex() >= 0) { System.out.println("Playing song " + songList.getSelectedIndex() + " of album " + albumList.getSelectedIndex() + "!"); thisPanel.setVisible(false); }} });
+		
+		albumList.addListSelectionListener(new ListSelectionListener() { 
+			public void valueChanged(ListSelectionEvent e) { 
+				songList.clearSelection(); 
+				songList.setListData(map.get(albumList.getSelectedIndex()).toArray(new String[0]));  
+			}
+		});
+
+		songList.addListSelectionListener(new ListSelectionListener() { 
+			public void valueChanged(ListSelectionEvent e) { 
+				if (songList.getSelectedIndex() >= 0) { 
+					System.out.println("Playing song " + songList.getSelectedIndex() + " of album " + albumList.getSelectedIndex() + "!"); 
+					thisPanel.setVisible(false); 
+				}
+			}
+		});
 	}
 
 	public void addAlbum(String name)
