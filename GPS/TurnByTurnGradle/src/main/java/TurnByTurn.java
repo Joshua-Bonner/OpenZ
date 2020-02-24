@@ -22,6 +22,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -50,6 +51,7 @@ public class TurnByTurn extends Application
     private TransportationNetworkDataset transportationNetwork;
     private ListView<String> directionsList = new ListView<>(  );
     List< Stop > routeStops = new ArrayList<>(  );
+    private ListView<String> NextTurn = new ListView<>(  );
 
     private Graphic routeGraphic;
     private GraphicsOverlay routeGraphicsOverlay;
@@ -67,6 +69,7 @@ public class TurnByTurn extends Application
     private StackPane stackPane;
     private VBox controlsVBox;
     private VBox searchBox;
+    private VBox turnByTurnBox;
 
     private TextField endPointBox;
 
@@ -109,6 +112,18 @@ public class TurnByTurn extends Application
         directionsLabel.getStyleClass().add( "panel-label" );
 
         controlsVBox.getChildren().addAll( directionsLabel, directionsList);
+
+        turnByTurnBox = new VBox( 6 );
+        turnByTurnBox.setBackground( new Background( new BackgroundFill( Paint.valueOf( "rgba(0,0,0,0.3)" ),
+                CornerRadii.EMPTY, Insets.EMPTY ) ) );
+        turnByTurnBox.setPadding( new Insets(5.0 ) );
+        turnByTurnBox.setMaxSize( 200, 200 );
+        turnByTurnBox.getStyleClass().add("panel-region");
+        Label turnLabel = new Label ("Next Turn");
+        turnLabel.getStyleClass().add("panel-region");
+
+        turnByTurnBox.getChildren().addAll( turnLabel, NextTurn );
+
         mapView = new MapView();
         setupMobileMap();
         setupGraphicsOverlay();
@@ -128,6 +143,7 @@ public class TurnByTurn extends Application
             mapView.getGraphicsOverlays().add( routeGraphicsOverlay );
 
         }
+        System.out.println( "Exit SetupGraphicsOverlay Function" );
     }
 
     private void setupTextField()
@@ -151,6 +167,7 @@ public class TurnByTurn extends Application
                 geocodeQuery( query, "end" );
             }
         } );
+        System.out.println( "exit setupT ext Field" );
     }
 
     public void getGPSStartPoint()
@@ -184,11 +201,14 @@ public class TurnByTurn extends Application
                     mapView.setMap( map );
                     map.setInitialViewpoint( new Viewpoint( latitude,longitude,scale ) );
 
-                    stackPane.getChildren().addAll(mapView, controlsVBox, searchBox);
+                   stackPane.getChildren().addAll(mapView, controlsVBox, searchBox, turnByTurnBox);
+                    //stackPane.getChildren().addAll(mapView, controlsVBox, searchBox);
                     StackPane.setAlignment(controlsVBox, Pos.TOP_RIGHT);
                     StackPane.setMargin(controlsVBox, new Insets(10, 10, 0, 0));
                     StackPane.setAlignment( searchBox, Pos.TOP_LEFT );
                     StackPane.setMargin( searchBox, new Insets( 10, 5, 0, 0 ) );
+                    StackPane.setAlignment(turnByTurnBox, Pos.BOTTOM_CENTER);
+                    StackPane.setMargin(turnByTurnBox, new Insets(0, 0, 10, 0));
 
                     System.out.println( "Calling setupRouteTask" );
                     setupRouteTask();
@@ -209,7 +229,6 @@ public class TurnByTurn extends Application
         {
             System.out.println( "MapView was Null" );
         }
-        System.out.println( "Exit SetupMobileMap Function" );
     }
 
     public void setupRouteTask()
@@ -243,6 +262,7 @@ public class TurnByTurn extends Application
                 new Alert( Alert.AlertType.ERROR, "Unable to load RouteTask" + routeTask.getLoadStatus().toString() ).show();
             }
         });
+        System.out.println( "Exit setup route task" );
     }
 
     public void setMapMarker(Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor){
@@ -277,8 +297,6 @@ public class TurnByTurn extends Application
 
     private void displayResult(GeocodeResult geocodeResult, String which)
     {
-        //mapView.setViewpointCenterAsync( geocodeResult.getDisplayLocation() );
-
         setStartMarker( startPoint );
         routeStops.add(new Stop(startPoint));
 
@@ -349,6 +367,12 @@ public class TurnByTurn extends Application
                     directionsList.getItems().add( step.getDirectionText() );
                     System.out.println( step.getDirectionText() );
                 }
+                
+                NextTurn.getItems().clear();
+                List< DirectionManeuver > directionManeuvers = route.getDirectionManeuvers();
+                DirectionManeuver step = directionManeuvers.get( 1 );
+                NextTurn.getItems().add( step.getDirectionText()  );
+
                 System.out.println( "------------------------------------------------------------------" );
 
                 reRoute();
@@ -392,7 +416,7 @@ public class TurnByTurn extends Application
         };
 
         ScheduledExecutorService svc = Executors.newSingleThreadScheduledExecutor();
-        svc.scheduleAtFixedRate( runnable, 1,1, TimeUnit.SECONDS );
+        svc.scheduleAtFixedRate( runnable, 1,3, TimeUnit.SECONDS );
     }
 
     @Override
