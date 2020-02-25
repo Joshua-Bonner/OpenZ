@@ -135,7 +135,6 @@ public class GPSUI
 	    updateCodes();
 	    showCodes = new JButton("View Trouble Codes");
 	    clearCodes = new JButton("Clear Trouble Codes");
-	    obd.start();
 	    obd_1.setPreferredSize(obd_dim);
 	    obd_panel.add(obd_1);
 	    obd_panel.add(obd_2);
@@ -175,8 +174,8 @@ public class GPSUI
 	    cons2.setY(Spring.constant(250));
 
 	    cons2 = layout_obd.getConstraints(obd_5);
-	    cons2.setX(Spring.constant(300));
-	    cons2.setY(Spring.constant(200));
+	    cons2.setX(Spring.constant(100));
+	    cons2.setY(Spring.constant(135));
 
 	    gps_home = new JButton("Go Home");
 	    gps_destination = new JButton("Enter Destination");
@@ -244,25 +243,30 @@ public class GPSUI
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    if(obd.isRunning()) {
+                        obd.stop();
+                    }
                     obd.clearCode();
                     updateCodes();
                 }
                 catch (OBDConnectionException ex) {
                     obd_5.setText(ex.getMessage());
                 }
-
             }
         });
 	}
 
 	public static void updateCodes() {
 	    try {
+	        if(obd.isRunning()) {
+                obd.stop();
+            }
             obd_5.setText(obd.readCode());
         }
 	    catch (OBDConnectionException e) {
 	        obd_5.setText(e.getMessage());
         }
-
+        obd.start();
 	}
 
 	public static void updateEngineLoad(String load) {

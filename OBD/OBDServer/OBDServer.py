@@ -22,7 +22,8 @@ class OBDServer(SocketServer.BaseRequestHandler):
                 connection.stop()
                 connection.watch(obd.commands.CLEAR_DTC)
                 connection.start()
-                connection.query(obd.commands.CLEAR_DTC)
+                time.sleep(0.01)
+                response = str(connection.query(obd.commands.CLEAR_DTC).value)
                 connection.stop()
                 connection.unwatch(obd.commands.CLEAR_DTC)
                 connection.start()
@@ -30,19 +31,19 @@ class OBDServer(SocketServer.BaseRequestHandler):
                 connection.stop()
                 connection.watch(obd.commands.GET_DTC)
                 connection.start()
-                connection.query(obd.commands.GET_DTC)
+                while response == 'None' or response == '':
+                    response = str(connection.query(obd.commands.GET_DTC).value)
+                    print(response)
                 connection.stop()
                 connection.unwatch(obd.commands.GET_DTC)
                 connection.start()
+            else:
+                # return_query = connection.query(query_switch.get(query))
+                return_query = (connection.query(obd.commands[query]))
+                response += str(return_query.value) + '/'
+                #print(return_query.value)
 
-            #return_query = connection.query(query_switch.get(query))
-            return_query = (connection.query(obd.commands[query]))
-            response += str(return_query.value) + '/'
-            print(return_query.value)
-
-        #print("{} wrote:".format(self.client_address[0]))
         self.request.sendall(response)
-        #print(self.data)
 
 
 if __name__ == "__main__":
