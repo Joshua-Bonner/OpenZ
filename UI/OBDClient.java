@@ -4,12 +4,26 @@ import java.net.*;
 import java.util.concurrent.CompletionException;
 
 public class OBDClient extends Thread {
+public boolean query = true;
 
-
-    public String query = "";
 
     public void run() {
         //constant queries
+        while(query) {
+            try {
+               String[] response = query("ENGINE_LOAD/INTAKE_TEMP/INTAKE_PRESSURE").split("/");
+                GPSUI.updateEngineLoad(response[0]);
+                GPSUI.updateIntakeTemp(response[1]);
+                GPSUI.updateIntakePressure(response[2]);
+            } catch (OBDConnectionException e) {
+                e.printStackTrace();
+                try {
+                    sleep(10000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
     }
 
     public String readCode() throws OBDConnectionException {

@@ -3,12 +3,9 @@ import time
 import obd
 
 connection = obd.Async()
-connection.watch(obd.commands.RPM)
-#connection.watch(obd.commands.INTAKE_TEMP)
-#connection.watch(obd.commands.THROTTLE_POS)
-#connection.watch(obd.commands.GET_DTC)
-#connection.watch(obd.commands.CLEAR_DTC)
-#connection.watch(obd.commands.COOLANT_TEMP)
+connection.watch(obd.commands['ENGINE_LOAD'])
+connection.watch(obd.commands['INTAKE_TEMP'])
+connection.watch(obd.commands['INTAKE_PRESSURE'])
 connection.start()
 
 

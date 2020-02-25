@@ -5,6 +5,7 @@ public class GPSUI
 {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 480;
+    private static JButton obd_1, obd_2, obd_3, obd_4;
 	private static JLabel obd_5;
 	private static OBDClient obd;
 	private static int ALBUM_COUNT = 15;
@@ -32,10 +33,7 @@ public class GPSUI
 		JButton music_button_next;
 		JLabel music_label_1;
 
-		JButton obd_1;
-		JButton obd_2;
-		JButton obd_3;
-		JButton obd_4;
+
 
 		JButton showCodes;
 		JButton clearCodes;
@@ -129,14 +127,15 @@ public class GPSUI
 	    cons.setY(Spring.constant(250));
 
 	    java.awt.Dimension obd_dim = new java.awt.Dimension(700,40);
-	    obd_1 = new JButton("Real Time Parameters: 2345 RPM Current Temperature: XX Celsius");
-	    obd_2 = new JButton("Speed: 100 MPH     Throttle Position: 50%");
-	    obd_3 = new JButton("Vehicle Identification Number: 7H15154P....");
+	    obd_1 = new JButton("Intake Pressure: ");
+	    obd_2 = new JButton("Intake Temperature: ");
+	    obd_3 = new JButton("Engine Load");
 	    obd_4 = new JButton("Mileage: 50000");
 	    obd_5 = new JLabel("Other statistics shown here");
 	    updateCodes();
 	    showCodes = new JButton("View Trouble Codes");
 	    clearCodes = new JButton("Clear Trouble Codes");
+	    obd.start();
 	    obd_1.setPreferredSize(obd_dim);
 	    obd_panel.add(obd_1);
 	    obd_panel.add(obd_2);
@@ -265,4 +264,16 @@ public class GPSUI
         }
 
 	}
+
+	public static void updateEngineLoad(String load) {
+	    obd_3.setText("Engine Load: " + load);
+    }
+
+    public static void updateIntakeTemp(String temp) {
+	    obd_2.setText("Intake Temp: " + temp);
+    }
+
+    public static void updateIntakePressure(String pressure) {
+	    obd_1.setText("Intake Pressure: " + pressure);
+    }
 }
