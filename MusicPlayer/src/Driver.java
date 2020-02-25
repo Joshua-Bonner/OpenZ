@@ -25,7 +25,8 @@ public class Driver {
             MusicDriver musicDriver = new MusicDriver(songChoice.getSongLocation());
             Thread thread = new Thread(musicDriver);
             thread.start();
-
+            boolean newSong = true;
+            int frames = 0;
             while (choice != 0) {
                 System.out.println("%%%%%%%%%% OPENZ TUI PLAYER %%%%%%%%%%");
                 System.out.println("%%%  0 - EXIT                      %%%");
@@ -35,31 +36,42 @@ public class Driver {
                 System.out.println("%%%  4 - PREV                      %%%");
                 System.out.println("%%%  5 - NEW ALBUM                 %%%");
                 System.out.println("%%%  6 - WAIT                      %%%");
+                System.out.println("%%%  7 - SELECT POSITION IN SONG   %%%");
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println("%%% " + "PLAYING: "  + albumChoice.getSong().getSongName() + " BY: "
                                           + albumChoice.getArtist() + "  FROM: " + albumChoice.getAlbumName() + " %%%%");
+
+                if (newSong) {
+                    frames = musicDriver.getSongFrames();
+                    newSong = false;
+                }
+                System.out.println("DURATION: " + frames);
+
                 choice = Integer.parseInt(input.readLine());
 
                 if (choice == 1) {
-                    musicDriver.stopThread();
+                    musicDriver.stopThread(false);
                 }
                 else if (choice == 2) {
                     thread = new Thread(musicDriver);
                     thread.start();
                 }
                 else if (choice  == 3) {
-                    musicDriver.stopThread();
+                    newSong = true;
+                    musicDriver.stopThread(false);
                     musicDriver = new MusicDriver(albumChoice.getSong(player.nextSong()).getSongLocation());
                     thread = new Thread(musicDriver);
                     thread.start();
                 }
                 else if (choice == 4) {
-                    musicDriver.stopThread();
+                    newSong = true;
+                    musicDriver.stopThread(false);
                     musicDriver = new MusicDriver(albumChoice.getSong(player.previousSong()).getSongLocation());
                     thread = new Thread(musicDriver);
                     thread.start();
                 }
                 else if (choice == 5) {
+                    newSong = true;
                     player.outAll();
 
                     choice = Integer.parseInt(input.readLine());
@@ -70,18 +82,28 @@ public class Driver {
                     choice = Integer.parseInt(input.readLine());
                     songChoice = albumChoice.getSong(choice - 1);
 
-                    musicDriver.stopThread();
+                    musicDriver.stopThread(false);
                     musicDriver = new MusicDriver(songChoice.getSongLocation());
                     thread = new Thread(musicDriver);
                     thread.start();
                 }
                 else if (choice == 6) {
                     if (musicDriver.getState() == MusicDriver.FINISHED_STATE) {
-                        musicDriver.stopThread();
+                        newSong = true;
+                        musicDriver.stopThread(false);
                         musicDriver = new MusicDriver(albumChoice.getSong(player.nextSong()).getSongLocation());
                         thread = new Thread(musicDriver);
                         thread.start();
                     }
+                }
+                else if (choice == 7) {
+                    System.out.println("0% -> 100% Of the way through the song?");
+                    choice = Integer.parseInt(input.readLine());
+                    musicDriver.stopThread(false);
+                    int pauseFrame = (int) ((choice * 1.0 / 100) * frames);
+                    musicDriver.setPauseFrame(pauseFrame / 26);
+                    thread = new Thread(musicDriver);
+                    thread.start();
                 }
                 else {
                     choice = 0;

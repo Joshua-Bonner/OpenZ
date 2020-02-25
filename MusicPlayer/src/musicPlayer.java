@@ -17,7 +17,7 @@ public class musicPlayer {
     private String musicLib;
 
     public musicPlayer(){
-        musicLib = "/home/jacob/MusicTest";
+        musicLib = "/home/jacob/Music";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
@@ -57,12 +57,10 @@ public class musicPlayer {
                     try {
                         tempMp3 = new MP3File(new File(tempLocation));
                         if (tempMp3.hasID3v1Tag()) {
-                            pulledTag = true;
                             tempID1 = tempMp3.getID3v1Tag();
                             albumArtist = tempID1.getArtist();
                         }
                         else if (tempMp3.hasID3v2Tag()) {
-                            pulledTag = true;
                             tempID2 = tempMp3.getID3v2Tag();
                             albumArtist = tempID2.getLeadArtist();
                         }
@@ -76,14 +74,15 @@ public class musicPlayer {
                     pulledCover = true;
                     coverLocation = tempLocation;
                 }
-
-                if (pulledCover && pulledTag) {
-                    albums.add(new album(albumArtist, coverLocation, albumLocation ));
-                    pulledCover = false;
-                    pulledTag = false;
-                    break;
-                }
             }
+            if (pulledCover) {
+                albums.add(new album(albumArtist, coverLocation, albumLocation ));
+                pulledCover = false;
+            }
+            else {
+                albums.add(new album(albumArtist, "Change this later to path to dummy file", albumLocation));
+            }
+
         }
 
 
