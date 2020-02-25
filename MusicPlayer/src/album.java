@@ -98,7 +98,6 @@ public class album {
                 try {
                     tempFile = new File(albumLoc + s);
                     tempMp3 = new MP3File(tempFile);
-
                     if (tempMp3.hasID3v1Tag()) {
                         tempIDv1 = tempMp3.getID3v1Tag();
                         songs.add(new song(1, albumLoc + s, tempIDv1.getSongTitle(), 1));
