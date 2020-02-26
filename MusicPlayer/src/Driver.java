@@ -37,9 +37,10 @@ public class Driver {
                 System.out.println("%%%  5 - NEW ALBUM                 %%%");
                 System.out.println("%%%  6 - WAIT                      %%%");
                 System.out.println("%%%  7 - SELECT POSITION IN SONG   %%%");
+                System.out.println("%%%  8 - CHANGE VOLUME             %%%");
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println("%%% " + "PLAYING: "  + albumChoice.getSong().getSongName() + " BY: "
-                                          + albumChoice.getArtist() + "  FROM: " + albumChoice.getAlbumName() + " %%%%");
+                                          + albumChoice.getArtist() + "  FROM: " + albumChoice.getAlbumName() + " %%%");
 
                 if (newSong) {
                     frames = musicDriver.getSongFrames();
@@ -104,6 +105,11 @@ public class Driver {
                     musicDriver.setPauseFrame(pauseFrame / 26);
                     thread = new Thread(musicDriver);
                     thread.start();
+                }
+                else if (choice == 8) {
+                    System.out.println("0% -> 100% Volume");
+                    choice = Integer.parseInt(input.readLine());
+                    Runtime.getRuntime().exec("amixer -D pulse sset Master " + choice + "%");
                 }
                 else {
                     choice = 0;
