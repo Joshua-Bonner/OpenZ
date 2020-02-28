@@ -80,7 +80,18 @@ public class TurnByTurn extends Application
     private final MobileMapPackage mapPackage = new MobileMapPackage( mmpkFile );
 
     int count = 0;
-
+    
+    // THE FOLLOWING IS USED TO ACCESS DATA FROM THE ANTENNA
+    // UNBLOCK FOLLOWING BLOCK ONCE THE ANTENNA HAS BEEN CONNECTED
+    /*
+    SerialPortInfo myPortInfo = new SerialPortInfo(
+    	"/dev/ttyUSB0", BaudRate.BAUD_4800, Parity.NONE, StopBits.ONE, 7);
+		SerialPortGPSWatcher myWatcher = new SerialPortGPSWatcher(myPortInfo);
+		GPSLayer gpsLayer = new GPSLayer(myWatcher);
+		gpsLayer.setMode(Mode.NAVIGATION);
+		gpsLayer.setNavigationPointHeightFactor(0.3);
+		*/
+		
     public static void main ( String[] args )
     {
         Application.launch( args );
