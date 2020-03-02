@@ -1,11 +1,12 @@
 import javax.swing.*;
+import javax.swing.event.*;
 import java.awt.event.*;
 
 public class GPSUI
 {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 480;
-    private static JButton obd_1, obd_2, obd_3, obd_4;
+	private static JButton obd_1, obd_2, obd_3, obd_4;
 	private static JLabel obd_5;
 	private static OBDClient obd;
 	private static int ALBUM_COUNT = 15;
@@ -32,8 +33,10 @@ public class GPSUI
 		JButton music_button_prev;
 		JButton music_button_next;
 		JLabel music_label_1;
-
-
+		JLabel volumeLabel;
+		JLabel startTime;
+		JLabel endTime;
+		JLabel currentTime;
 
 		JButton showCodes;
 		JButton clearCodes;
@@ -42,6 +45,9 @@ public class GPSUI
 		JButton gps_destination;
 		JButton gps_turn;
 		JButton gps_eat;
+
+		JSlider songTime;
+		JSlider volumeSlider;
 
 		JButton album_cover;
 
@@ -98,7 +104,25 @@ public class GPSUI
 	    music_button_prev.setVisible(true);
 
 	    music_label_1 = new JLabel("temp");
+	    volumeLabel = new JLabel("Volume: 50");
+	    startTime = new JLabel("0:00");
+	    if (args.length > 0) { endTime = new JLabel(numToMS(Integer.parseInt(args[0]))); songTime = new JSlider(0, Integer.parseInt(args[0]), 0); } else { endTime = new JLabel("0:30"); songTime = new JSlider(0, 30, 0); }
 	    musicplayer_panel.add(music_label_1);
+	    currentTime = new JLabel("0:00");
+
+	    musicplayer_panel.add(volumeLabel);
+	    musicplayer_panel.add(startTime);
+	    musicplayer_panel.add(endTime);
+	    musicplayer_panel.add(currentTime);
+
+	    musicplayer_panel.add(songTime);
+	    songTime.setVisible(true);
+	    songTime.setPreferredSize(new java.awt.Dimension(400,15));
+
+	    volumeSlider = new JSlider(0, 100, 50);
+	    musicplayer_panel.add(volumeSlider);
+	    volumeSlider.setVisible(true);
+	    volumeSlider.setPreferredSize(new java.awt.Dimension(300,10));
 
 
 	    SpringLayout.Constraints cons = layout_musicplayer.getConstraints(music_button_1);
@@ -125,6 +149,30 @@ public class GPSUI
 	    cons = layout_musicplayer.getConstraints(music_label_1);
 	    cons.setX(Spring.constant(355));
 	    cons.setY(Spring.constant(250));
+
+	    cons = layout_musicplayer.getConstraints(songTime);
+	    cons.setX(Spring.constant(220));
+	    cons.setY(Spring.constant(270));
+
+	    cons = layout_musicplayer.getConstraints(volumeLabel);
+	    cons.setX(Spring.constant(180));
+	    cons.setY(Spring.constant(145));
+
+	    cons = layout_musicplayer.getConstraints(startTime);
+	    cons.setX(Spring.constant(180));
+	    cons.setY(Spring.constant(267));
+
+	    cons = layout_musicplayer.getConstraints(endTime);
+	    cons.setX(Spring.constant(630));
+	    cons.setY(Spring.constant(267));
+
+	    cons = layout_musicplayer.getConstraints(currentTime);
+	    cons.setX(Spring.constant(400));
+	    cons.setY(Spring.constant(284));
+
+	    cons = layout_musicplayer.getConstraints(volumeSlider);
+	    cons.setX(Spring.constant(255));
+	    cons.setY(Spring.constant(150));
 
 	    java.awt.Dimension obd_dim = new java.awt.Dimension(700,40);
 	    obd_1 = new JButton("Intake Pressure: ");
@@ -174,8 +222,8 @@ public class GPSUI
 	    cons2.setY(Spring.constant(250));
 
 	    cons2 = layout_obd.getConstraints(obd_5);
-	    cons2.setX(Spring.constant(100));
-	    cons2.setY(Spring.constant(135));
+	    cons2.setX(Spring.constant(300));
+	    cons2.setY(Spring.constant(200));
 
 	    gps_home = new JButton("Go Home");
 	    gps_destination = new JButton("Enter Destination");
@@ -231,7 +279,9 @@ public class GPSUI
 	    music_button_3.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { System.out.println("Paused Music"); music_button_2.setVisible(true); music_button_3.setVisible(false); }});
 	    music_button_next.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { currentSong = (currentSong+1)%ALBUM_COUNT; music_label_1.setText("Playing song " + (currentSong+1) + "/" + ALBUM_COUNT); }});
 	    music_button_prev.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent e) { currentSong = (currentSong-1); if(currentSong<0) { currentSong=ALBUM_COUNT-1; } music_label_1.setText("Playing song " + (currentSong+1) + "/" + ALBUM_COUNT); }});
-	
+		songTime.addChangeListener(new ChangeListener() { public void stateChanged(ChangeEvent e) { System.out.println(songTime.getValue() + " (SONG)"); currentTime.setText(numToMS(songTime.getValue())); }});
+		volumeSlider.addChangeListener(new ChangeListener() { public void stateChanged(ChangeEvent e) { System.out.println(volumeSlider.getValue() + " (VOLUME)"); volumeLabel.setText("Volume: " + volumeSlider.getValue());  }} );
+
 	    showCodes.addActionListener(new ActionListener() {
 	        @Override
 	        public void actionPerformed(ActionEvent e) {
@@ -243,17 +293,22 @@ public class GPSUI
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if(obd.isRunning()) {
-                        obd.stop();
-                    }
                     obd.clearCode();
                     updateCodes();
                 }
                 catch (OBDConnectionException ex) {
                     obd_5.setText(ex.getMessage());
                 }
+
             }
         });
+	}
+
+	public static String numToMS(int sec)
+	{
+		int minutes = sec / 60;
+		int seconds = sec % 60;
+		return minutes + ":" + ((seconds < 10) ? "0" : "") + seconds;
 	}
 
 	public static void updateCodes() {
