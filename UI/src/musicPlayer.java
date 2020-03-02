@@ -93,12 +93,13 @@ public class musicPlayer {
     }
 
     public String[] outAll() {
-        int count = 1;
-        ArrayList<String> ret = new ArrayList<>();
+        int count = 0;
+        String[] ret = new String[albums.size()];
         for (album alb : albums) {
-            ret.add(alb.getAlbumName() + "  -  " + alb.getArtist());
+            ret[count] = (alb.getAlbumName() + "  -  " + alb.getArtist());
+            count++;
         }
-        return (String[]) ret.toArray();
+        return ret;
     }
 
     public int nextAlbum(){

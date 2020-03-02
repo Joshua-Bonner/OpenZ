@@ -134,12 +134,13 @@ public class album {
 
     // Delete this later :) or not.. who knows!
     public String[] outAll() {
-        int count = 1;
-        ArrayList<String> ret = new ArrayList<String>();
+        int count = 0;
+        String[] ret = new String[songs.size()];
         for (song s : songs) {
-            ret.add(s.getSongName());
+            ret[count] = s.getSongName();
+            count++;
         }
-        return (String[]) ret.toArray();
+        return ret;
     }
     public song getSong() {
         return songs.get(currentSongIndex);
