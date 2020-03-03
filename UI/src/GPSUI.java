@@ -1,7 +1,11 @@
+import javazoom.jl.decoder.BitstreamException;
+import javazoom.jl.decoder.JavaLayerException;
+
 import javax.swing.*;
 import javax.swing.event.*;
 import java.awt.event.*;
 import java.awt.image.ImageObserver;
+import java.io.IOException;
 
 public class GPSUI {
     private static final int WIDTH = 800;
@@ -12,6 +16,7 @@ public class GPSUI {
     private static int ALBUM_COUNT = 15;
     private static int currentSong = 5;
     private static Thread thread;
+    private static boolean initSong = false;
 
 	private static MusicControl musicController = new MusicControl();
 
@@ -50,7 +55,7 @@ public class GPSUI {
         JSlider songTime;
         JSlider volumeSlider;
 
-		final JButton[] album_cover = new JButton[1];
+		JButton[] album_cover = new JButton[1];
 
         layout_obd = new SpringLayout();
         layout_musicplayer = new SpringLayout();
@@ -114,7 +119,7 @@ public class GPSUI {
             endTime = new JLabel("0:30");
             songTime = new JSlider(0, 30, 0);
         }
-        musicplayer_panel.add(music_label_1);
+        musicplayer_panel.add(music_label_1, null, JLabel.CENTER);
         currentTime = new JLabel("0:00");
 
         musicplayer_panel.add(volumeLabel);
@@ -298,7 +303,15 @@ public class GPSUI {
 			public void componentHidden(ComponentEvent componentEvent) {
 				System.out.println("SadnesS");
 				java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage(musicController.getAlbumCover());
-				// Paint the fun times album cover :) ask blum :( i am sad
+                // Paint the fun times album cover :) ask blum :( i am sad
+                System.out.println("Started Playing");
+                thread = new Thread(musicController);
+                thread.start();
+                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
+                music_button_2.setVisible(false);
+                music_button_3.setVisible(true);
+
+                initSong = true;
 
 			}
 		});
@@ -312,33 +325,50 @@ public class GPSUI {
         });
         music_button_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Started Playing");
-                thread = new Thread(musicController);
-                thread.start();
-                music_button_2.setVisible(false);
-                music_button_3.setVisible(true);
+                if (initSong) {
+                    System.out.println("Started Playing");
+                    thread = new Thread(musicController);
+                    thread.start();
+                    music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
+                    music_button_2.setVisible(false);
+                    music_button_3.setVisible(true);
+                }
             }
         });
         music_button_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Paused Music");
+                musicController.pause();
                 music_button_2.setVisible(true);
                 music_button_3.setVisible(false);
             }
         });
         music_button_next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                currentSong = (currentSong + 1) % ALBUM_COUNT;
-                music_label_1.setText("Playing song " + (currentSong + 1) + "/" + ALBUM_COUNT);
+                musicController.pause();
+                musicController.loadNext();
+                thread.interrupt();
+                thread = new Thread(musicController);
+                thread.start();
+                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
+                if (music_button_2.isVisible()) {
+                    music_button_2.setVisible(false);
+                    music_button_3.setVisible(true);
+                }
             }
         });
         music_button_prev.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                currentSong = (currentSong - 1);
-                if (currentSong < 0) {
-                    currentSong = ALBUM_COUNT - 1;
+                musicController.pause();
+                musicController.loadPrev();
+                thread.interrupt();
+                thread = new Thread(musicController);
+                thread.start();
+                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
+                if (music_button_2.isVisible()) {
+                    music_button_2.setVisible(false);
+                    music_button_3.setVisible(true);
                 }
-                music_label_1.setText("Playing song " + (currentSong + 1) + "/" + ALBUM_COUNT);
             }
         });
         songTime.addChangeListener(new ChangeListener() {
@@ -351,6 +381,11 @@ public class GPSUI {
             public void stateChanged(ChangeEvent e) {
                 System.out.println(volumeSlider.getValue() + " (VOLUME)");
                 volumeLabel.setText("Volume: " + volumeSlider.getValue());
+                try {
+                    Runtime.getRuntime().exec("amixer -D pulse sset Master " + volumeSlider.getValue() + "%");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 

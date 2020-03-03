@@ -1,4 +1,7 @@
+import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.JavaLayerException;
+
+import java.io.IOException;
 
 public class MusicControl implements Runnable{
     private musicPlayer player;
@@ -8,6 +11,7 @@ public class MusicControl implements Runnable{
     private song songChoice;
     private Thread thread;
     private int frame;
+    private int songLength;
     private boolean newSong;
 
     public MusicControl() {
@@ -34,14 +38,62 @@ public class MusicControl implements Runnable{
     @Override
     public void run() {
         try {
-            driver = new MusicDriver(songChoice.getSongLocation());
+            if ( driver == null || driver.getState() != MusicDriver.PAUSE_STATE) {
+                System.err.println(":::::");
+                driver = new MusicDriver(songChoice.getSongLocation());
+            }
         } catch (JavaLayerException e) {
             System.err.println("AHHHH");
         }
+        if (thread != null) {
+            thread.stop();
+        }
         thread = new Thread(driver);
         thread.start();
-        while (true) { // change this shit later
 
+        while (true) { // change this shit later
+            if (driver.getState() == MusicDriver.FINISHED_STATE) {
+                System.out.println("But soft what light through yonder window breaks");
+                driver.stopThread(false);
+                songChoice = albumChoice.getSong(albumChoice.nextSong());
+                try {
+                    driver = new MusicDriver(songChoice.getSongLocation());
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+                thread = new Thread(driver);
+                thread.start();
+            }
         }
+    }
+
+    public void loadNext()  {
+        driver.stopThread(false);
+        songChoice = albumChoice.getSong(albumChoice.nextSong());
+        driver.setState(MusicDriver.FINISHED_STATE);
+    }
+
+    public void loadPrev() {
+        driver.stopThread(false);
+        songChoice = albumChoice.getSong(albumChoice.previousSong());
+        driver.setState(MusicDriver.FINISHED_STATE);
+    }
+
+    public String getSong() {
+        return songChoice.getSongName();
+    }
+
+    public String getArtist() {
+        return albumChoice.getArtist();
+    }
+
+    public void pause() {
+        driver.stopThread(false);
+    }
+
+
+    public int getSongLength() throws BitstreamException, IOException {
+        System.out.println(driver);
+        return driver.getSongFrames();
     }
 }

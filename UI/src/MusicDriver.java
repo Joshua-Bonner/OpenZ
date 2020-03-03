@@ -16,7 +16,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     private FileInputStream mp3File;
     private long startTime;
     private int pauseFrame = 0;
-    private int STATE = 0;
+    private volatile int STATE = 0;
     private boolean trackFinished = false;
 
     public static final int PLAY_STATE     = 1;
@@ -97,4 +97,5 @@ public class MusicDriver extends PlaybackListener implements Runnable{
         return (int) h.total_ms((int) mp3File.getChannel().size());
     }
     public int getState() {return STATE;}
+    public void setState(int state) {STATE = state;}
 }
