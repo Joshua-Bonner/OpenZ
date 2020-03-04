@@ -10,9 +10,12 @@ public class MusicControl implements Runnable{
     private int albumIndx;
     private song songChoice;
     private Thread thread;
+    private long startTime = 0;
+    private long elapsedTime = 0;
     private int frame;
     private int songLength;
     private boolean newSong = false;
+    private boolean startTrackingTime = false;
 
     public MusicControl() {
         player = new musicPlayer();
@@ -40,26 +43,36 @@ public class MusicControl implements Runnable{
         try {
             if ( driver == null || driver.getState() != MusicDriver.PAUSE_STATE) {
                 driver = new MusicDriver(songChoice.getSongLocation());
+                startTrackingTime = true;
+                startTime = System.currentTimeMillis();
             }
         } catch (JavaLayerException e) {
             System.err.println("AHHHH");
         }
         if (thread != null) {
-            thread.stop();
+            thread.interrupt();
         }
 
+
+
+        thread = new Thread(driver, "driver");
+        thread.start();
         try {
+            Thread.sleep(500);
             GPSUI.endTime.setText(GPSUI.numToMS(driver.getSongFrames() / 1000));
         } catch (BitstreamException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-        thread = new Thread(driver);
-        thread.start();
-
         while (true) { // change this shit later
+            if (startTrackingTime) {
+                elapsedTime = (System.currentTimeMillis() - startTime);
+                GPSUI.currentTime.setText(GPSUI.numToMS(elapsedTime / 1000));
+            }
+
             if (newSong) {
                 try {
                     Thread.sleep(500);
@@ -71,7 +84,10 @@ public class MusicControl implements Runnable{
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                startTime = System.currentTimeMillis();
+                elapsedTime = (System.currentTimeMillis() - startTime);
                 newSong = false;
+                startTrackingTime = true;
             }
 
             if (driver.getState() == MusicDriver.NEED_NEXT_STATE) {
@@ -84,10 +100,13 @@ public class MusicControl implements Runnable{
                     e.printStackTrace();
                 }
                 GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
-                thread = new Thread(driver);
+                thread = new Thread(driver, "Load New");
                 thread.start();
                 newSong = true;
+                startTrackingTime = false;
             }
+
+
         }
     }
 

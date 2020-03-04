@@ -25,6 +25,8 @@ public class GPSUI {
     public static JLabel endTime;
     public static JLabel currentTime;
 
+    private static long songLengthMilli = 0;
+
 	private static MusicControl musicController = new MusicControl();
 
     public static void main(String[] args) {
@@ -315,7 +317,7 @@ public class GPSUI {
                 album_cover[0].setIcon(new ImageIcon(albumArt.getImage()
                                                      .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
                 System.out.println("Started Playing");
-                thread = new Thread(musicController);
+                thread = new Thread(musicController, "New Song");
                 thread.start();
                 music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 music_button_2.setVisible(false);
@@ -337,7 +339,7 @@ public class GPSUI {
             public void actionPerformed(ActionEvent e) {
                 if (initSong) {
                     System.out.println("Started Playing");
-                    thread = new Thread(musicController);
+                    thread = new Thread(musicController, "Play Button");
                     thread.start();
                     music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                     music_button_2.setVisible(false);
@@ -358,7 +360,7 @@ public class GPSUI {
                 musicController.pause();
                 musicController.loadNext();
                 thread.interrupt();
-                thread = new Thread(musicController);
+                thread = new Thread(musicController, "Next Button");
                 thread.start();
                 music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 if (music_button_2.isVisible()) {
@@ -372,7 +374,7 @@ public class GPSUI {
                 musicController.pause();
                 musicController.loadPrev();
                 thread.interrupt();
-                thread = new Thread(musicController);
+                thread = new Thread(musicController, "Prev Button");
                 thread.start();
                 music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 if (music_button_2.isVisible()) {
@@ -395,10 +397,11 @@ public class GPSUI {
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
+                    // breaks something w/ this me thinks
                     musicController.pause();
                     thread.interrupt();
                     musicController.setDriverFrames(skipFrame / 26);
-                    thread = new Thread(musicController);
+                    thread = new Thread(musicController, "Time Changer");
                     thread.start();
                 }
             }
@@ -436,9 +439,9 @@ public class GPSUI {
         });
     }
 
-    public static String numToMS(int sec) {
-        int minutes = sec / 60;
-        int seconds = sec % 60;
+    public static String numToMS(long sec) {
+        long minutes = sec / 60;
+        long seconds = sec % 60;
         return minutes + ":" + ((seconds < 10) ? "0" : "") + seconds;
     }
 
