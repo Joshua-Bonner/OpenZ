@@ -12,7 +12,7 @@ public class MusicControl implements Runnable{
     private Thread thread;
     private int frame;
     private int songLength;
-    private boolean newSong;
+    private boolean newSong = false;
 
     public MusicControl() {
         player = new musicPlayer();
@@ -39,7 +39,6 @@ public class MusicControl implements Runnable{
     public void run() {
         try {
             if ( driver == null || driver.getState() != MusicDriver.PAUSE_STATE) {
-                System.err.println(":::::");
                 driver = new MusicDriver(songChoice.getSongLocation());
             }
         } catch (JavaLayerException e) {
@@ -48,11 +47,34 @@ public class MusicControl implements Runnable{
         if (thread != null) {
             thread.stop();
         }
+
+        try {
+            GPSUI.endTime.setText(GPSUI.numToMS(driver.getSongFrames() / 1000));
+        } catch (BitstreamException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         thread = new Thread(driver);
         thread.start();
 
         while (true) { // change this shit later
-            if (driver.getState() == MusicDriver.FINISHED_STATE) {
+            if (newSong) {
+                try {
+                    Thread.sleep(500);
+                    GPSUI.endTime.setText(GPSUI.numToMS(driver.getSongFrames() / 1000));
+                } catch (BitstreamException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                newSong = false;
+            }
+
+            if (driver.getState() == MusicDriver.NEED_NEXT_STATE) {
                 System.out.println("But soft what light through yonder window breaks");
                 driver.stopThread(false);
                 songChoice = albumChoice.getSong(albumChoice.nextSong());
@@ -61,8 +83,10 @@ public class MusicControl implements Runnable{
                 } catch (JavaLayerException e) {
                     e.printStackTrace();
                 }
+                GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
                 thread = new Thread(driver);
                 thread.start();
+                newSong = true;
             }
         }
     }
@@ -93,7 +117,10 @@ public class MusicControl implements Runnable{
 
 
     public int getSongLength() throws BitstreamException, IOException {
-        System.out.println(driver);
         return driver.getSongFrames();
+    }
+
+    public void setDriverFrames(int frameNum) {
+        driver.setPauseFrame(frameNum);
     }
 }

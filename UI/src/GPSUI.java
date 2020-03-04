@@ -3,6 +3,7 @@ import javazoom.jl.decoder.JavaLayerException;
 
 import javax.swing.*;
 import javax.swing.event.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.ImageObserver;
 import java.io.IOException;
@@ -12,11 +13,17 @@ public class GPSUI {
     private static final int HEIGHT = 480;
     private static JButton obd_1, obd_2, obd_3, obd_4;
     private static JLabel obd_5;
+    public static JLabel music_label_1;
     private static OBDClient obd;
     private static int ALBUM_COUNT = 15;
     private static int currentSong = 5;
     private static Thread thread;
+    private static ImageIcon albumArt;
     private static boolean initSong = false;
+
+    public static JLabel startTime;
+    public static JLabel endTime;
+    public static JLabel currentTime;
 
 	private static MusicControl musicController = new MusicControl();
 
@@ -38,11 +45,7 @@ public class GPSUI {
         JButton music_button_3;
         JButton music_button_prev;
         JButton music_button_next;
-        JLabel music_label_1;
         JLabel volumeLabel;
-        JLabel startTime;
-        JLabel endTime;
-        JLabel currentTime;
 
         JButton showCodes;
         JButton clearCodes;
@@ -111,13 +114,19 @@ public class GPSUI {
 
         music_label_1 = new JLabel("temp");
         volumeLabel = new JLabel("Volume: 50");
+        try {
+            Runtime.getRuntime().exec("amixer -D pulse sset Master " + 50 + "%");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
         startTime = new JLabel("0:00");
         if (args.length > 0) {
             endTime = new JLabel(numToMS(Integer.parseInt(args[0])));
             songTime = new JSlider(0, Integer.parseInt(args[0]), 0);
         } else {
             endTime = new JLabel("0:30");
-            songTime = new JSlider(0, 30, 0);
+            songTime = new JSlider(0, 100, 0);
         }
         musicplayer_panel.add(music_label_1, null, JLabel.CENTER);
         currentTime = new JLabel("0:00");
@@ -268,12 +277,11 @@ public class GPSUI {
         cons3.setX(Spring.constant(600));
         cons3.setY(Spring.constant(350));
 
-        java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage("album_image.jpg");
-        album_cover[0] = new JButton() {
-            public void paint(java.awt.Graphics g) {
-                g.drawImage(img, 0, 0, 150, 150, null);
-            }
-        };
+        //java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage("album_image.jpg");
+        album_cover[0] = new JButton();
+        album_cover[0].setIcon(new ImageIcon(
+                                (new ImageIcon("album_image.jpg")).getImage()
+                                        .getScaledInstance(150, 150,  java.awt.Image.SCALE_SMOOTH)));
         album_cover[0].setPreferredSize(new java.awt.Dimension(150, 150));
         musicplayer_panel.add(album_cover[0]);
 
@@ -303,7 +311,9 @@ public class GPSUI {
 			public void componentHidden(ComponentEvent componentEvent) {
 				System.out.println("SadnesS");
 				java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage(musicController.getAlbumCover());
-                // Paint the fun times album cover :) ask blum :( i am sad
+                albumArt = new ImageIcon(musicController.getAlbumCover());
+                album_cover[0].setIcon(new ImageIcon(albumArt.getImage()
+                                                     .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
                 System.out.println("Started Playing");
                 thread = new Thread(musicController);
                 thread.start();
@@ -375,6 +385,22 @@ public class GPSUI {
             public void stateChanged(ChangeEvent e) {
                 System.out.println(songTime.getValue() + " (SONG)");
                 currentTime.setText(numToMS(songTime.getValue()));
+
+                if (!((JSlider) e.getSource()).getValueIsAdjusting()) {
+                    int skipFrame = 0;
+                    try {
+                        skipFrame = (int) ((songTime.getValue() * 1.0 / 100) * musicController.getSongLength());
+                    } catch (BitstreamException ex) {
+                        ex.printStackTrace();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    musicController.pause();
+                    thread.interrupt();
+                    musicController.setDriverFrames(skipFrame / 26);
+                    thread = new Thread(musicController);
+                    thread.start();
+                }
             }
         });
         volumeSlider.addChangeListener(new ChangeListener() {

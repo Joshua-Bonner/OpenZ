@@ -22,7 +22,7 @@ public class AlbumSelect extends JFrame
 		//pane.add(songList,BorderLayout.EAST);
 		SpringLayout layout = new SpringLayout();
 		this.setLayout(layout);
-		setSize(800,600);
+		setSize(800,480);
 		map = new ArrayList<ArrayList<String>>();
 		musicControl = mc;
 		albumNames = new ArrayList<String>();
@@ -32,8 +32,8 @@ public class AlbumSelect extends JFrame
 		songList = new JList<String>();
 		songList.setVisible(true);
 		add(songList);
-		albumList.setSize(400,800);
-		songList.setSize(400,800);
+		albumList.setSize(400,480);
+		songList.setSize(400,480);
 		SpringLayout.Constraints cons = layout.getConstraints(albumList);
 		cons.setX(Spring.constant(0));
 		cons.setY(Spring.constant(0));

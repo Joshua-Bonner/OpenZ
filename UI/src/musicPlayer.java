@@ -45,7 +45,7 @@ public class musicPlayer {
 
         for (File folder : albumDirs) {
             albumArtist = "UNKNOWN";
-            coverLocation = "UNKNOWN";
+            coverLocation = "album_image.jpg";
             albumLocation = folder.toString() + "/";
             for (String fileName : folder.list()) {
                 tempLocation = folder.toString() + "/" + fileName;
