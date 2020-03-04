@@ -288,7 +288,7 @@ public class TurnByTurn extends Application
     public void setStartMarker(Point location)
     {
         setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND,RED_COLOR,BLUE_COLOR );
-        mapView.setViewpointCenterAsync( startPoint );
+        mapView.setViewpointCenterAsync( startPoint, 11000 );
     }
 
     public void setEndMarker( Point location )
@@ -340,7 +340,9 @@ public class TurnByTurn extends Application
                     GeocodeResult result = results.get( 0 );
                     displayResult(result, which);
                 } else {
-                    Alert alert = new Alert( Alert.AlertType.INFORMATION, "No results found" );
+                    //if street found but house number not found, will return a location in the middle of the street
+                    //if street not found, will return a similar named street: OakShire Road -> Oakshire Drive
+                    Alert alert = new Alert( Alert.AlertType.INFORMATION, "Address not found" );
                     alert.show();
                 }
             } catch (InterruptedException | ExecutionException e)
