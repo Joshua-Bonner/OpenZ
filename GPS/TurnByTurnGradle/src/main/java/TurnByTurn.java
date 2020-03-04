@@ -380,11 +380,13 @@ public class TurnByTurn extends Application
                     directionsList.getItems().add( step.getDirectionText() );
                     System.out.println( step.getDirectionText() );
                 }
-                
+
+                turnByTurnBox.getChildren().remove( NextTurn  );
                 NextTurn.getItems().clear();
                 List< DirectionManeuver > directionManeuvers = route.getDirectionManeuvers();
                 DirectionManeuver step = directionManeuvers.get( 1 );
                 NextTurn.getItems().add( step.getDirectionText()  );
+                turnByTurnBox.getChildren().add( NextTurn );
 
                 System.out.println( "------------------------------------------------------------------" );
 
