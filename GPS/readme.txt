@@ -9,3 +9,5 @@ Extensive testing on how to input the addresses has not been done so input the a
 of captiol and lower case letters.
 
 MockCoordinates is an additional java class for feeding coordinates to the map to simulate getting GPS coordinates from an antenna.
+
+Email sent to Mike Mrsa (PSU) about Mobile Map Package file.
