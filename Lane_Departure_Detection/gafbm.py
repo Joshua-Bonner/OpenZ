@@ -1,4 +1,5 @@
 import io
+import threading
 import pygame
 import math
 import time
@@ -231,40 +232,24 @@ def main():
 				stream.seek(0)
 				break
 		
-		frame_time += (time.time() - start_time)
-		print "Time to take pic: ", (time.time() - start_time) * 1000, "ms"
-		start_time = time.time()
-		
-		picture = Image.open(stream)
-		#picture = picture.resize(screenSize)
-		picture = picture.convert('LA')
-		#picture = picture.filter(ImageFilter.GaussianBlur(radius = 3))
-		picture = picture.convert('RGB')
-		
-		frame_time += (time.time() - start_time)
-		print "Time to process image in PIL: ", (time.time() - start_time) * 1000, "ms"
-		start_time = time.time()
+		thread = threading.Thread(target=on_thread, args=(stream,))
+		thread.start()
 
-		in_lines = draw_gafbm(picture)
-		
-		frame_time += (time.time() - start_time)
-		print "Time to algorithm on picture: ", (time.time() - start_time) * 1000, "ms"
-		start_time = time.time()
+def on_thread(stream):
+	picture = Image.open(stream)
+	picture = picture.convert('LA')
+	# Comment this out / remove this in the end
+	picture = picture.convert('RGB')
+	in_lines = draw_gafbm(picture)
+	pic_str = picture.tobytes("raw",'RGB')
+	pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
+	
+	if (not in_lines):
+		pygame.draw.line(screen, (255,0,0), (0,0), (800,480))
+		pygame.draw.line(screen, (255,0,0), (800,0), (0, 480))
 
-		pic_str = picture.tobytes("raw", 'RGB')
-		pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
-		screen.blit(pygame_surface, (0,0))
-		
-		if (not in_lines):
-			pygame.draw.line(screen, (255,0,0), (0,0), (800,480))
-			pygame.draw.line(screen, (255,0,0), (800,0), (0, 480))
-
-		pygame.display.flip()
-		frame_time += (time.time() - start_time)
-		print "Time to draw pic on pygame: ", (time.time() - start_time) * 1000, "ms"
-		print "TOTAL FRAME TIME: ", frame_time * 1000 , "ms"
-		frame_time = 0
-
+	pygame.display.flip()
+	
 
 def draw_gafbm(pic):
 	matrix = box_matrix()
