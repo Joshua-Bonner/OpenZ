@@ -15,7 +15,7 @@ public class album {
     private int currentSongIndex;
     private ArrayList<song> songs;
 
-    private void trackSort(int tagVersion) throws IOException, TagException {
+    private void trackSort(int tagVersion) throws IOException, TagException, NumberFormatException {
         String[] trackNumTokens;
         switch (tagVersion) {
             case 0: // Unknown ID version
@@ -129,6 +129,8 @@ public class album {
             e.printStackTrace();
         } catch (TagException e) {
             e.printStackTrace();
+        } catch (NumberFormatException e) {
+            System.err.println("error sorting tracks");
         }
     }
 

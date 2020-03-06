@@ -90,6 +90,8 @@ public class GPSUI {
         musicplayer_panel.setLayout(layout_musicplayer);
         gps_panel.setLayout(layout_gps);
 
+        //gps_panel.setBackground(new Color(34,34,34));
+        musicplayer_panel.setBackground(new Color(34,34,34));
 
         music_button_1 = new JButton("Select Album");
         musicplayer_panel.add(music_button_1);
@@ -116,7 +118,11 @@ public class GPSUI {
         music_button_prev.setVisible(true);
 
         music_label_1 = new JLabel("temp");
+        music_label_1.setForeground(new Color(242,242,255));
+
         volumeLabel = new JLabel("Volume: 50");
+        volumeLabel.setForeground(new Color(242,242,255));
+
         try {
             Runtime.getRuntime().exec("amixer -D pulse sset Master " + 50 + "%");
         } catch (IOException ex) {
@@ -124,8 +130,11 @@ public class GPSUI {
         }
 
         startTime = new JLabel("0%");
+        startTime.setForeground(new Color(242,242,255));
 
         endTime = new JLabel("100%");
+        endTime.setForeground(new Color(242,242,255));
+        
         songTime = new JSlider(0, 100, 0);
 
         musicplayer_panel.add(music_label_1, null, JLabel.CENTER);
