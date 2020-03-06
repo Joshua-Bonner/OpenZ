@@ -9,7 +9,6 @@ public class MusicControl implements Runnable{
     private album albumChoice;
     private int albumIndx;
     private song songChoice;
-    private Thread thread;
     private long startTime = 0;
     private long elapsedTime = 0;
     private int frame;
@@ -49,41 +48,18 @@ public class MusicControl implements Runnable{
         } catch (JavaLayerException e) {
             System.err.println("AHHHH");
         }
-        if (thread != null) {
-            thread.interrupt();
+        if (GPSUI.thread != null) {
+            GPSUI.thread.interrupt();
         }
 
 
 
-        thread = new Thread(driver, "driver");
-        thread.start();
-        try {
-            Thread.sleep(500);
-            GPSUI.endTime.setText(GPSUI.numToMS(driver.getSongFrames() / 1000));
-        } catch (BitstreamException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        GPSUI.thread = new Thread(driver, "driver");
+        GPSUI.thread.start();
+
         while (true) { // change this shit later
-            if (startTrackingTime) {
-                elapsedTime = (System.currentTimeMillis() - startTime);
-                GPSUI.currentTime.setText(GPSUI.numToMS(elapsedTime / 1000));
-            }
 
             if (newSong) {
-                try {
-                    Thread.sleep(500);
-                    GPSUI.endTime.setText(GPSUI.numToMS(driver.getSongFrames() / 1000));
-                } catch (BitstreamException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 startTime = System.currentTimeMillis();
                 elapsedTime = (System.currentTimeMillis() - startTime);
                 newSong = false;
@@ -100,26 +76,40 @@ public class MusicControl implements Runnable{
                     e.printStackTrace();
                 }
                 GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
-                thread = new Thread(driver, "Load New");
-                thread.start();
+                GPSUI.thread = new Thread(driver, "Load New");
+                GPSUI.thread.start();
                 newSong = true;
                 startTrackingTime = false;
+                return;
             }
 
-
+            if (driver.getState() == MusicDriver.NEED_PREV_STATE) {
+                System.out.println("It is the east and Juliet is the Sun");
+                driver.stopThread(false);
+                songChoice = albumChoice.getSong(albumChoice.previousSong());
+                try {
+                    driver = new MusicDriver(songChoice.getSongLocation());
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+                GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
+                GPSUI.thread = new Thread(driver, "Load Prev");
+                GPSUI.thread.start();
+                newSong = true;
+                startTrackingTime = false;
+                return;
+            }
         }
     }
 
     public void loadNext()  {
         driver.stopThread(false);
-        songChoice = albumChoice.getSong(albumChoice.nextSong());
-        driver.setState(MusicDriver.FINISHED_STATE);
+        driver.setState(MusicDriver.NEED_NEXT_STATE);
     }
 
     public void loadPrev() {
         driver.stopThread(false);
-        songChoice = albumChoice.getSong(albumChoice.previousSong());
-        driver.setState(MusicDriver.FINISHED_STATE);
+        driver.setState(MusicDriver.NEED_PREV_STATE);
     }
 
     public String getSong() {

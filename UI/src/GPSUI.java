@@ -17,13 +17,14 @@ public class GPSUI {
     private static OBDClient obd;
     private static int ALBUM_COUNT = 15;
     private static int currentSong = 5;
-    private static Thread thread;
+
     private static ImageIcon albumArt;
     private static boolean initSong = false;
 
     public static JLabel startTime;
     public static JLabel endTime;
     public static JLabel currentTime;
+    public static Thread thread;
 
     private static long songLengthMilli = 0;
 
@@ -122,14 +123,11 @@ public class GPSUI {
             ex.printStackTrace();
         }
 
-        startTime = new JLabel("0:00");
-        if (args.length > 0) {
-            endTime = new JLabel(numToMS(Integer.parseInt(args[0])));
-            songTime = new JSlider(0, Integer.parseInt(args[0]), 0);
-        } else {
-            endTime = new JLabel("0:30");
-            songTime = new JSlider(0, 100, 0);
-        }
+        startTime = new JLabel("0%");
+
+        endTime = new JLabel("100%");
+        songTime = new JSlider(0, 100, 0);
+
         musicplayer_panel.add(music_label_1, null, JLabel.CENTER);
         currentTime = new JLabel("0:00");
 
@@ -317,6 +315,9 @@ public class GPSUI {
                 album_cover[0].setIcon(new ImageIcon(albumArt.getImage()
                                                      .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
                 System.out.println("Started Playing");
+                if (GPSUI.thread != null) {
+                    GPSUI.thread.stop();
+                }
                 thread = new Thread(musicController, "New Song");
                 thread.start();
                 music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
@@ -324,7 +325,6 @@ public class GPSUI {
                 music_button_3.setVisible(true);
 
                 initSong = true;
-
 			}
 		});
         album_panel.refreshAlbums();
@@ -359,9 +359,6 @@ public class GPSUI {
             public void actionPerformed(ActionEvent e) {
                 musicController.pause();
                 musicController.loadNext();
-                thread.interrupt();
-                thread = new Thread(musicController, "Next Button");
-                thread.start();
                 music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 if (music_button_2.isVisible()) {
                     music_button_2.setVisible(false);
@@ -373,9 +370,6 @@ public class GPSUI {
             public void actionPerformed(ActionEvent e) {
                 musicController.pause();
                 musicController.loadPrev();
-                thread.interrupt();
-                thread = new Thread(musicController, "Prev Button");
-                thread.start();
                 music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 if (music_button_2.isVisible()) {
                     music_button_2.setVisible(false);
@@ -386,11 +380,11 @@ public class GPSUI {
         songTime.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 System.out.println(songTime.getValue() + " (SONG)");
-                currentTime.setText(numToMS(songTime.getValue()));
 
                 if (!((JSlider) e.getSource()).getValueIsAdjusting()) {
                     int skipFrame = 0;
                     try {
+                        currentTime.setText(songTime.getValue() + "%");
                         skipFrame = (int) ((songTime.getValue() * 1.0 / 100) * musicController.getSongLength());
                     } catch (BitstreamException ex) {
                         ex.printStackTrace();

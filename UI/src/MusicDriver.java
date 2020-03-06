@@ -24,6 +24,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     public static final int PAUSE_STATE     = 2;
     public static final int FINISHED_STATE  = 3;
     public static final int NEED_NEXT_STATE = 4;
+    public static final int NEED_PREV_STATE = 5;
     public static final int NO_STATE        = 0;
 
     public MusicDriver(String path) throws JavaLayerException {
