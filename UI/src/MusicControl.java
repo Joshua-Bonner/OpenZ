@@ -16,6 +16,10 @@ public class MusicControl implements Runnable{
     private boolean newSong = false;
     private boolean startTrackingTime = false;
 
+    public volatile boolean killProcess = false;
+    public volatile boolean readyToResume = false;
+    public volatile boolean isRunning = false;
+
     public MusicControl() {
         player = new musicPlayer();
     }
@@ -52,10 +56,9 @@ public class MusicControl implements Runnable{
             GPSUI.thread.interrupt();
         }
 
-
-
         GPSUI.thread = new Thread(driver, "driver");
         GPSUI.thread.start();
+        isRunning = true;
 
         while (true) { // change this shit later
 
@@ -80,7 +83,6 @@ public class MusicControl implements Runnable{
                 GPSUI.thread.start();
                 newSong = true;
                 startTrackingTime = false;
-                return;
             }
 
             if (driver.getState() == MusicDriver.NEED_PREV_STATE) {
@@ -97,6 +99,41 @@ public class MusicControl implements Runnable{
                 GPSUI.thread.start();
                 newSong = true;
                 startTrackingTime = false;
+            }
+
+            if (driver.getState() == MusicDriver.NEED_LOAD_STATE) {
+                System.out.println("Arise Fair Sun and Kill the envious Moon");
+                driver.stopThread(false);
+                songChoice = albumChoice.getSong(albumChoice.nextSong());
+                try {
+                    driver = new MusicDriver(songChoice.getSongLocation());
+                } catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+                GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
+                GPSUI.thread = new Thread(driver, "Load New");
+                GPSUI.thread.start();
+                newSong = true;
+                startTrackingTime = false;
+            }
+
+            if (driver.getState() == MusicDriver.PAUSE_STATE && readyToResume) {
+                System.out.println("For She is sick and pale with grief");
+                GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
+                GPSUI.thread = new Thread(driver, "Resume");
+                GPSUI.thread.start();
+                newSong = false;
+                startTrackingTime = false;
+                readyToResume = false;
+            }
+
+            if (killProcess) {
+                killProcess = false;
+                driver.stopThread(false);
+                return;
+            }
+
+            if (!driver.getSongPath().equals(songChoice.getSongLocation())) {
                 return;
             }
         }
@@ -122,6 +159,7 @@ public class MusicControl implements Runnable{
 
     public void pause() {
         driver.stopThread(false);
+        readyToResume = false;
     }
 
 
@@ -132,4 +170,5 @@ public class MusicControl implements Runnable{
     public void setDriverFrames(int frameNum) {
         driver.setPauseFrame(frameNum);
     }
+
 }

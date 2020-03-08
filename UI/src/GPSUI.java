@@ -78,13 +78,13 @@ public class GPSUI {
         top_panel.add(tab_panel);
 
         obd_panel = new JPanel();
-        tab_panel.add("                       OBD                      ", obd_panel);
+        tab_panel.add("                         OBD                         ", obd_panel);
 
         musicplayer_panel = new JPanel();
-        tab_panel.add("                  Music Player                  ", musicplayer_panel);
+        tab_panel.add("                    Music Player                     ", musicplayer_panel);
 
         gps_panel = new JPanel();
-        tab_panel.add("                       GPS                      ", gps_panel);
+        tab_panel.add("                         GPS                         ", gps_panel);
 
         obd_panel.setLayout(layout_obd);
         musicplayer_panel.setLayout(layout_musicplayer);
@@ -324,15 +324,17 @@ public class GPSUI {
                 album_cover[0].setIcon(new ImageIcon(albumArt.getImage()
                                                      .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
                 System.out.println("Started Playing");
-                if (GPSUI.thread != null) {
-                    GPSUI.thread.stop();
+                if (thread != null) {
+                    System.out.println("TESTING");
+                    thread.stop();
                 }
-                thread = new Thread(musicController, "New Song");
-                thread.start();
-                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
+
                 music_button_2.setVisible(false);
                 music_button_3.setVisible(true);
 
+                thread = new Thread(musicController, "New Song");
+                thread.start();
+                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 initSong = true;
 			}
 		});
@@ -348,8 +350,7 @@ public class GPSUI {
             public void actionPerformed(ActionEvent e) {
                 if (initSong) {
                     System.out.println("Started Playing");
-                    thread = new Thread(musicController, "Play Button");
-                    thread.start();
+                    musicController.readyToResume = true;
                     music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                     music_button_2.setVisible(false);
                     music_button_3.setVisible(true);
@@ -366,9 +367,7 @@ public class GPSUI {
         });
         music_button_next.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                musicController.pause();
                 musicController.loadNext();
-                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 if (music_button_2.isVisible()) {
                     music_button_2.setVisible(false);
                     music_button_3.setVisible(true);
@@ -377,9 +376,7 @@ public class GPSUI {
         });
         music_button_prev.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                musicController.pause();
                 musicController.loadPrev();
-                music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                 if (music_button_2.isVisible()) {
                     music_button_2.setVisible(false);
                     music_button_3.setVisible(true);
@@ -400,7 +397,7 @@ public class GPSUI {
                     }
                     // breaks something w/ this me thinks
                     musicController.pause();
-                    thread.interrupt();
+                    musicController.killProcess = true;
                     musicController.setDriverFrames(skipFrame / 26);
                     thread = new Thread(musicController, "Time Changer");
                     thread.start();

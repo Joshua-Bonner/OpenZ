@@ -55,7 +55,6 @@ public class AlbumSelect extends JFrame
 					musicControl.setSongChoice(songList.getSelectedIndex());
 					System.out.println("Playing song " + songList.getSelectedIndex() + " of album " + albumList.getSelectedIndex() + "!");
 					thisPanel.setVisible(false);
-
 				}
 			}
 		});

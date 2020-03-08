@@ -26,6 +26,8 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     public static final int NEED_NEXT_STATE = 4;
     public static final int NEED_PREV_STATE = 5;
     public static final int NO_STATE        = 0;
+    public static final int NEED_LOAD_STATE = 6;
+    public static final int WAITING_TO_PLAY = 7;
 
     public MusicDriver(String path) throws JavaLayerException {
         songPath = path;
@@ -82,7 +84,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
             STATE = PAUSE_STATE;
             if (calledInternally) {
                 trackFinished = true;
-                STATE = NEED_NEXT_STATE;
+                STATE = NEED_LOAD_STATE;
             }
             else {
                 trackFinished = false;
@@ -101,4 +103,5 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     }
     public int getState() {return STATE;}
     public void setState(int state) {STATE = state;}
+    public String getSongPath() {return songPath;}
 }
