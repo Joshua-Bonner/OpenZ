@@ -78,13 +78,13 @@ public class GPSUI {
         top_panel.add(tab_panel);
 
         obd_panel = new JPanel();
-        tab_panel.add("OBD", obd_panel);
+        tab_panel.add("                       OBD                      ", obd_panel);
 
         musicplayer_panel = new JPanel();
-        tab_panel.add("Music Player", musicplayer_panel);
+        tab_panel.add("                  Music Player                  ", musicplayer_panel);
 
         gps_panel = new JPanel();
-        tab_panel.add("GPS", gps_panel);
+        tab_panel.add("                       GPS                      ", gps_panel);
 
         obd_panel.setLayout(layout_obd);
         musicplayer_panel.setLayout(layout_musicplayer);
@@ -136,6 +136,7 @@ public class GPSUI {
         endTime.setForeground(new Color(242,242,255));
         
         songTime = new JSlider(0, 100, 0);
+        songTime.setBackground(new Color(34,34,34));
 
         musicplayer_panel.add(music_label_1, null, JLabel.CENTER);
         currentTime = new JLabel("0:00");
@@ -319,7 +320,6 @@ public class GPSUI {
 			@Override
 			public void componentHidden(ComponentEvent componentEvent) {
 				System.out.println("SadnesS");
-				java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage(musicController.getAlbumCover());
                 albumArt = new ImageIcon(musicController.getAlbumCover());
                 album_cover[0].setIcon(new ImageIcon(albumArt.getImage()
                                                      .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
@@ -388,8 +388,6 @@ public class GPSUI {
         });
         songTime.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                System.out.println(songTime.getValue() + " (SONG)");
-
                 if (!((JSlider) e.getSource()).getValueIsAdjusting()) {
                     int skipFrame = 0;
                     try {
@@ -409,6 +407,7 @@ public class GPSUI {
                 }
             }
         });
+        volumeSlider.setBackground(new Color(34,34,34));
         volumeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 System.out.println(volumeSlider.getValue() + " (VOLUME)");
