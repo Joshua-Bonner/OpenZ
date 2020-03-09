@@ -236,6 +236,7 @@ def main():
 		thread.start()
 
 def on_thread(stream):
+	screenSize = (800,480)
 	picture = Image.open(stream)
 	picture = picture.convert('LA')
 	# Comment this out / remove this in the end
