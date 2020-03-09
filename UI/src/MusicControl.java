@@ -81,6 +81,7 @@ public class MusicControl implements Runnable{
                 GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
                 GPSUI.thread = new Thread(driver, "Load New");
                 GPSUI.thread.start();
+                GPSUI.songTime.setValue(0);
                 newSong = true;
                 startTrackingTime = false;
             }
@@ -97,6 +98,7 @@ public class MusicControl implements Runnable{
                 GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
                 GPSUI.thread = new Thread(driver, "Load Prev");
                 GPSUI.thread.start();
+                GPSUI.songTime.setValue(0);
                 newSong = true;
                 startTrackingTime = false;
             }
@@ -113,6 +115,7 @@ public class MusicControl implements Runnable{
                 GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
                 GPSUI.thread = new Thread(driver, "Load New");
                 GPSUI.thread.start();
+                GPSUI.songTime.setValue(0);
                 newSong = true;
                 startTrackingTime = false;
             }

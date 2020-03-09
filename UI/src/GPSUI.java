@@ -24,6 +24,7 @@ public class GPSUI {
     public static JLabel startTime;
     public static JLabel endTime;
     public static JLabel currentTime;
+    public static JSlider songTime;
     public static Thread thread;
 
     private static long songLengthMilli = 0;
@@ -58,7 +59,6 @@ public class GPSUI {
         JButton gps_turn;
         JButton gps_eat;
 
-        JSlider songTime;
         JSlider volumeSlider;
 
 		JButton[] album_cover = new JButton[1];
@@ -93,35 +93,40 @@ public class GPSUI {
         //gps_panel.setBackground(new Color(34,34,34));
         musicplayer_panel.setBackground(new Color(34,34,34));
 
-        music_button_1 = new JButton("Select Album");
+        music_button_1 = new JButton();
+        music_button_1.setIcon(new ImageIcon("music_albumselect.png"));
         musicplayer_panel.add(music_button_1);
         music_button_1.setPreferredSize(new java.awt.Dimension(600, 80));
 
-        music_button_2 = new JButton("Play");
+        music_button_2 = new JButton();
+        music_button_2.setIcon(new ImageIcon("music_play.png"));
         musicplayer_panel.add(music_button_2);
         music_button_2.setPreferredSize(new java.awt.Dimension(80, 80));
         music_button_2.setVisible(true);
 
-        music_button_3 = new JButton("Pause");
+        music_button_3 = new JButton();
+        music_button_3.setIcon(new ImageIcon("music_pause.png"));
         musicplayer_panel.add(music_button_3);
         music_button_3.setPreferredSize(new java.awt.Dimension(80, 80));
         music_button_3.setVisible(false);
 
-        music_button_next = new JButton("Next");
+        music_button_next = new JButton();
+        music_button_next.setIcon(new ImageIcon("music_next.png"));
         musicplayer_panel.add(music_button_next);
         music_button_next.setPreferredSize(new java.awt.Dimension(70, 70));
         music_button_next.setVisible(true);
 
-        music_button_prev = new JButton("Prev");
+        music_button_prev = new JButton();
+        music_button_prev.setIcon(new ImageIcon("music_prev.png"));
         musicplayer_panel.add(music_button_prev);
         music_button_prev.setPreferredSize(new java.awt.Dimension(70, 70));
         music_button_prev.setVisible(true);
 
         music_label_1 = new JLabel("temp");
-        music_label_1.setForeground(new Color(242,242,255));
+        music_label_1.setForeground(new Color(255,200,200));
 
         volumeLabel = new JLabel("Volume: 50");
-        volumeLabel.setForeground(new Color(242,242,255));
+        volumeLabel.setForeground(new Color(255,200,200));
 
         try {
             Runtime.getRuntime().exec("amixer -D pulse sset Master " + 50 + "%");
@@ -130,12 +135,13 @@ public class GPSUI {
         }
 
         startTime = new JLabel("0%");
-        startTime.setForeground(new Color(242,242,255));
+        startTime.setForeground(new Color(255,200,200));
 
         endTime = new JLabel("100%");
-        endTime.setForeground(new Color(242,242,255));
+        endTime.setForeground(new Color(255,200,200));
         
         songTime = new JSlider(0, 100, 0);
+        songTime.setForeground(new Color(255,0,0));
         songTime.setBackground(new Color(34,34,34));
 
         musicplayer_panel.add(music_label_1, null, JLabel.CENTER);
@@ -151,6 +157,7 @@ public class GPSUI {
         songTime.setPreferredSize(new java.awt.Dimension(400, 15));
 
         volumeSlider = new JSlider(0, 100, 50);
+        volumeSlider.setForeground(new Color(255,0,0));
         musicplayer_panel.add(volumeSlider);
         volumeSlider.setVisible(true);
         volumeSlider.setPreferredSize(new java.awt.Dimension(300, 10));
@@ -339,7 +346,6 @@ public class GPSUI {
 			}
 		});
         album_panel.refreshAlbums();
-
         music_button_1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 album_panel.setVisible(true);
