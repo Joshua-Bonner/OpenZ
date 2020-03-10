@@ -49,7 +49,7 @@ public class TurnByTurn extends Application
     private RouteTask routeTask;
     private RouteParameters routeParameters;
     private TransportationNetworkDataset transportationNetwork;
-    private ListView<String> directionsList = new ListView<>(  );
+    //private ListView<String> directionsList = new ListView<>(  );
     List< Stop > routeStops = new ArrayList<>(  );
     private ListView<String> NextTurn = new ListView<>(  );
 
@@ -67,7 +67,7 @@ public class TurnByTurn extends Application
     private Point currentPoint = null;
 
     private StackPane stackPane;
-    private VBox controlsVBox;
+    //private VBox controlsVBox;
     private VBox searchBox;
     private VBox turnByTurnBox;
 
@@ -94,8 +94,10 @@ public class TurnByTurn extends Application
 		
     public static void main ( String[] args )
     {
-        Application.launch( args );
-
+        Runnable runnable = () ->
+        {
+            Application.launch( args );
+        };
     }
 
     @Override
@@ -112,17 +114,17 @@ public class TurnByTurn extends Application
         stage.setScene( scene );
 
 
-        controlsVBox = new VBox(6);
-        controlsVBox.setBackground( new Background( new BackgroundFill( Paint.valueOf( "rgba(0,0,0,0.3)" ),
-                CornerRadii.EMPTY, Insets.EMPTY ) ) );
-        controlsVBox.setPadding( new Insets( 5.0 ) );
-        controlsVBox.setMaxSize( 400,300 );
-        controlsVBox.getStyleClass().add( "panel-region" );
-
-        Label directionsLabel = new Label("Route directions");
-        directionsLabel.getStyleClass().add( "panel-label" );
-
-        controlsVBox.getChildren().addAll( directionsLabel, directionsList);
+//        controlsVBox = new VBox(6);
+//        controlsVBox.setBackground( new Background( new BackgroundFill( Paint.valueOf( "rgba(0,0,0,0.3)" ),
+//                CornerRadii.EMPTY, Insets.EMPTY ) ) );
+//        controlsVBox.setPadding( new Insets( 5.0 ) );
+//        controlsVBox.setMaxSize( 400,300 );
+//        controlsVBox.getStyleClass().add( "panel-region" );
+//
+//        Label directionsLabel = new Label("Route directions");
+//        directionsLabel.getStyleClass().add( "panel-label" );
+//
+//        controlsVBox.getChildren().addAll( directionsLabel, directionsList);
 
         turnByTurnBox = new VBox( 6 );
         turnByTurnBox.setBackground( new Background( new BackgroundFill( Paint.valueOf( "rgba(0,0,0,0.3)" ),
@@ -193,53 +195,55 @@ public class TurnByTurn extends Application
         currentPoint = new Point(mc.getCurrentXCoord(), mc.getCurrentYCoord(), _4326);
     }
 
-    private void setupMobileMap() throws InterruptedException
+    private void setupMobileMap()
     {
-        System.out.println( "SetupMobileMap Function" );
+            System.out.println( "SetupMobileMap Function" );
 
-        if(mapView != null)
-        {
-            mapPackage.addDoneLoadingListener( () -> {
+            if(mapView != null)
+            {
+                mapPackage.addDoneLoadingListener( () -> {
 
-                if(mapPackage.getLoadStatus() == LoadStatus.LOADED && mapPackage.getMaps().size() > 0)
-                {
-                    double latitude = 34.05293;
-                    double longitude = -118.24368;
-                    double scale = 220000;
+                    if(mapPackage.getLoadStatus() == LoadStatus.LOADED && mapPackage.getMaps().size() > 0)
+                    {
+                        double latitude = 34.05293;
+                        double longitude = -118.24368;
+                        double scale = 220000;
 
-                    ArcGISMap map = mapPackage.getMaps().get(0);
-                    transportationNetwork = map.getTransportationNetworks().get( 0 );
-                    mapView.setMap( map );
-                    map.setInitialViewpoint( new Viewpoint( latitude,longitude,scale ) );
+                        ArcGISMap map = mapPackage.getMaps().get(0);
+                        transportationNetwork = map.getTransportationNetworks().get( 0 );
+                        mapView.setMap( map );
+                        map.setInitialViewpoint( new Viewpoint( latitude,longitude,scale ) );
 
-                   stackPane.getChildren().addAll(mapView, controlsVBox, searchBox, turnByTurnBox);
-                    //stackPane.getChildren().addAll(mapView, controlsVBox, searchBox);
-                    StackPane.setAlignment(controlsVBox, Pos.TOP_RIGHT);
-                    StackPane.setMargin(controlsVBox, new Insets(10, 10, 0, 0));
-                    StackPane.setAlignment( searchBox, Pos.TOP_LEFT );
-                    StackPane.setMargin( searchBox, new Insets( 10, 5, 0, 0 ) );
-                    StackPane.setAlignment(turnByTurnBox, Pos.BOTTOM_CENTER);
-                    StackPane.setMargin(turnByTurnBox, new Insets(0, 0, 10, 0));
+//                   stackPane.getChildren().addAll(mapView, controlsVBox, searchBox, turnByTurnBox);
+                        stackPane.getChildren().addAll(mapView, searchBox, turnByTurnBox);
+//                    StackPane.setAlignment(controlsVBox, Pos.TOP_RIGHT);
+//                    StackPane.setMargin(controlsVBox, new Insets(10, 10, 0, 0));
+                        StackPane.setAlignment( searchBox, Pos.TOP_LEFT );
+                        StackPane.setMargin( searchBox, new Insets( 10, 5, 0, 0 ) );
+                        StackPane.setAlignment(turnByTurnBox, Pos.BOTTOM_CENTER);
+                        StackPane.setMargin(turnByTurnBox, new Insets(0, 0, 10, 0));
 
-                    System.out.println( "Calling setupRouteTask" );
-                    setupRouteTask();
+                        System.out.println( "Calling setupRouteTask" );
+                        setupRouteTask();
 
-                } else if(mapPackage.getLoadStatus() == LoadStatus.LOADING)
-                {
-                    System.out.println( "Loading" );
-                }
-                else
-                {
-                    new Alert( Alert.AlertType.ERROR, "MMPK failed to load: "
-                            + mapPackage.getLoadError().getMessage() ).show();
-                }
-            } );
-            mapPackage.loadAsync();
+                    } else if(mapPackage.getLoadStatus() == LoadStatus.LOADING)
+                    {
+                        System.out.println( "Loading" );
+                    }
+                    else
+                    {
+                        new Alert( Alert.AlertType.ERROR, "MMPK failed to load: "
+                                + mapPackage.getLoadError().getMessage() ).show();
+                    }
+                } );
+                mapPackage.loadAsync();
 
-        } else
-        {
-            System.out.println( "MapView was Null" );
-        }
+            } else
+            {
+                System.out.println( "MapView was Null" );
+            }
+
+
     }
 
     public void setupRouteTask()
@@ -341,7 +345,7 @@ public class TurnByTurn extends Application
                     displayResult(result, which);
                 } else {
                     //if street found but house number not found, will return a location in the middle of the street
-                    //if street not found, will return a similar named street: OakShire Road -> Oakshire Drive
+                    //if street not found, will return a similar named street in the area: OakShire Road -> Oakshire Drive
                     Alert alert = new Alert( Alert.AlertType.INFORMATION, "Address not found" );
                     alert.show();
                 }
@@ -367,7 +371,8 @@ public class TurnByTurn extends Application
                 List< Route > routes = result.getRoutes();
                 if ( routes.size() < 1 )
                 {
-                    directionsList.getItems().add( "No Routes" );
+                    //directionsList.getItems().add( "No Routes" );
+                    System.out.println( "No route" );
                 }
                 Route route = routes.get( 0 );
 
@@ -375,11 +380,11 @@ public class TurnByTurn extends Application
                 routeGraphic = new Graphic( shape, new SimpleLineSymbol( SimpleLineSymbol.Style.SOLID, BLUE_COLOR, 2 ) );
                 routeGraphicsOverlay.getGraphics().add( routeGraphic );
 
-                for ( DirectionManeuver step : route.getDirectionManeuvers() )
-                {
-                    directionsList.getItems().add( step.getDirectionText() );
-                    System.out.println( step.getDirectionText() );
-                }
+//                for ( DirectionManeuver step : route.getDirectionManeuvers() )
+//                {
+//                    directionsList.getItems().add( step.getDirectionText() );
+//                    System.out.println( step.getDirectionText() );
+//                }
 
                 turnByTurnBox.getChildren().remove( NextTurn  );
                 NextTurn.getItems().clear();
@@ -403,31 +408,27 @@ public class TurnByTurn extends Application
 
     public void reRoute()
     {
-        Runnable runnable = new Runnable()
+        Runnable runnable = () ->
         {
-            @Override
-            public void run ()
+            getGPSCurrentPoint();
+            if(startPoint != currentPoint && currentPoint != endPoint && count < 3)
             {
-                getGPSCurrentPoint();
-                if(startPoint != currentPoint && currentPoint != endPoint && count < 3)
-                {
-                    startPoint = currentPoint;
-                    System.out.println( "reroute" );
-                    routeStops.clear();
-                    routeStops.add( new Stop(startPoint) );
-                    routeStops.add(new Stop(endPoint));
+                startPoint = currentPoint;
+                System.out.println( "reroute" );
+                routeStops.clear();
+                routeStops.add( new Stop(startPoint) );
+                routeStops.add(new Stop(endPoint));
 
-                    routeParameters.clearStops();
-                    routeParameters.setStops(routeStops);
+                routeParameters.clearStops();
+                routeParameters.setStops(routeStops);
 
-                    routeGraphicsOverlay.getGraphics().clear();
-                    setStartMarker( startPoint );
-                    setEndMarker( endPoint );
+                routeGraphicsOverlay.getGraphics().clear();
+                setStartMarker( startPoint );
+                setEndMarker( endPoint );
 
-                    solveForRoute();
-                }
-                count++;
+                solveForRoute();
             }
+            count++;
         };
 
         ScheduledExecutorService svc = Executors.newSingleThreadScheduledExecutor();
