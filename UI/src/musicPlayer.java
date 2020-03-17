@@ -17,7 +17,7 @@ public class musicPlayer {
     private String musicLib;
 
     public musicPlayer(){
-        musicLib = "/home/pi/Music";
+        musicLib = "/home/jacob/Music";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
