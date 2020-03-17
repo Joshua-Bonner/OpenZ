@@ -436,6 +436,9 @@ public class GPSUI {
                 System.out.println(volumeSlider.getValue() + " (VOLUME)");
                 volumeLabel.setText("Volume: " + volumeSlider.getValue());
                 try {
+                    // uncomment this for jar compiling for the pi
+                    //Runtime.getRuntime().exec("amixer set PCM -- " + volumeSlider.getValue() + "%");
+                    // and then comment this for the pi VVVVVV is for Jacob testing
                     Runtime.getRuntime().exec("amixer -D pulse sset Master " + volumeSlider.getValue() + "%");
                 } catch (IOException ex) {
                     ex.printStackTrace();
