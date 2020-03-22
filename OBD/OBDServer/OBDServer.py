@@ -1,12 +1,20 @@
 import SocketServer
 import time
 import obd
+from obd import OBDStatus
 
-connection = obd.Async()
-connection.watch(obd.commands['ENGINE_LOAD'])
-connection.watch(obd.commands['INTAKE_TEMP'])
-connection.watch(obd.commands['INTAKE_PRESSURE'])
-connection.start()
+connected = False
+while not connected:
+    connection = obd.Async()
+    if connection.status() == OBDStatus.CAR_CONNECTED:
+        connection.watch(obd.commands['ENGINE_LOAD'])
+        connection.watch(obd.commands['INTAKE_TEMP'])
+        connection.watch(obd.commands['INTAKE_PRESSURE'])
+        connection.start()
+        connected = True
+    else:
+        print("No OBD adapter connected")
+        time.sleep(10)
 
 
 class OBDServer(SocketServer.BaseRequestHandler):
