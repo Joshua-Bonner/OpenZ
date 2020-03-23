@@ -188,7 +188,7 @@ public class GPSUI {
         cons.setY(Spring.constant(170));
 
         cons = layout_musicplayer.getConstraints(music_label_1);
-        cons.setX(Spring.constant(355));
+        cons.setX(Spring.constant(25));
         cons.setY(Spring.constant(250));
 
         cons = layout_musicplayer.getConstraints(songTime);

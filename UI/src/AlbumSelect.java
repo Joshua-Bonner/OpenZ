@@ -45,7 +45,15 @@ public class AlbumSelect extends JFrame
 		albumList.addListSelectionListener(new ListSelectionListener() { 
 			public void valueChanged(ListSelectionEvent e) { 
 				songList.clearSelection();
-				songList.setListData(musicControl.setAlbum(albumList.getSelectedIndex()));
+				String[] tmp = musicControl.setAlbum(albumList.getSelectedIndex());
+				for (int i=0; i<tmp.length; i++)
+				{
+				if (tmp[i].length() > 50)
+				{
+					tmp[i] = tmp[i].substring(0,50) + "...";
+				}
+			}
+				songList.setListData(tmp);
 			}
 		});
 
@@ -62,6 +70,14 @@ public class AlbumSelect extends JFrame
 
 	public void refreshAlbums()
 	{
-		albumList.setListData(musicControl.getAlbumList());
+		String[] tmp = musicControl.getAlbumList();
+		for (int i=0; i<tmp.length; i++)
+		{
+			if (tmp[i].length() > 50)
+			{
+				tmp[i] = tmp[i].substring(0,50) + "...";
+			}
+		}
+		albumList.setListData(tmp);
 	}
 }
