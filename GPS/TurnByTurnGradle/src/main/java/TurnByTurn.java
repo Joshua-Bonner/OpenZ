@@ -94,10 +94,10 @@ public class TurnByTurn extends Application
 		
     public static void main ( String[] args )
     {
-        Runnable runnable = () ->
-        {
+        //Runnable runnable = () ->
+        //{
             Application.launch( args );
-        };
+        //};
     }
 
     @Override
