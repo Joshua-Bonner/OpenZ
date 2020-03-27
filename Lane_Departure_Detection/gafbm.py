@@ -6,6 +6,9 @@ import time
 import picamera
 from PIL import Image, ImageDraw, ImageFilter
 import sys
+from pydub import AudioSegment
+from pydub.playback import play
+
 night_threshold = 15
 day_threshold = 5
 
@@ -242,15 +245,10 @@ def on_thread(stream):
 	# Comment this out / remove this in the end
 	picture = picture.convert('RGB')
 	in_lines = draw_gafbm(picture)
-	pic_str = picture.tobytes("raw",'RGB')
-	pygame_surface = pygame.image.fromstring(pic_str, screenSize, picture.mode)
 	
-	if (not in_lines):
-		pygame.draw.line(screen, (255,0,0), (0,0), (800,480))
-		pygame.draw.line(screen, (255,0,0), (800,0), (0, 480))
-
-	pygame.display.flip()
-	
+	if (in_lines):
+		boop = AudioSegment.from_wav("boop.wav")
+		play(boop)
 
 def draw_gafbm(pic):
 	matrix = box_matrix()

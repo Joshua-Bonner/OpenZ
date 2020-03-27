@@ -90,7 +90,7 @@ public class GPSUI {
         musicplayer_panel.setLayout(layout_musicplayer);
         gps_panel.setLayout(layout_gps);
 
-        //gps_panel.setBackground(new Color(34,34,34));
+        obd_panel.setBackground(new Color(34,34,34));
         musicplayer_panel.setBackground(new Color(34,34,34));
 
         music_button_1 = new JButton();
@@ -129,6 +129,9 @@ public class GPSUI {
         volumeLabel.setForeground(new Color(255,200,200));
 
         try {
+            // uncomment this for jar compiling for the pi
+            //Runtime.getRuntime().exec("amixer set PCM -- 50%");
+            // and then comment this for the pi VVVVVV is for Jacob testing
             Runtime.getRuntime().exec("amixer -D pulse sset Master " + 50 + "%");
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -185,7 +188,7 @@ public class GPSUI {
         cons.setY(Spring.constant(170));
 
         cons = layout_musicplayer.getConstraints(music_label_1);
-        cons.setX(Spring.constant(355));
+        cons.setX(Spring.constant(25));
         cons.setY(Spring.constant(250));
 
         cons = layout_musicplayer.getConstraints(songTime);
@@ -213,14 +216,32 @@ public class GPSUI {
         cons.setY(Spring.constant(150));
 
         java.awt.Dimension obd_dim = new java.awt.Dimension(700, 40);
-        obd_1 = new JButton("Intake Pressure: ");
-        obd_2 = new JButton("Intake Temperature: ");
-        obd_3 = new JButton("Engine Load");
-        obd_4 = new JButton("Mileage: 50000");
+        // intake pressure
+        obd_1 = new JButton("0");
+        obd_1.setHorizontalTextPosition(SwingConstants.CENTER);
+        obd_1.setForeground(new Color(255,0,0));
+        obd_1.setIcon(new ImageIcon("obd_pressure.png"));
+        // intake temp
+        obd_2 = new JButton("0");
+        obd_2.setHorizontalTextPosition(SwingConstants.CENTER);
+        obd_2.setForeground(new Color(255,0,0));
+        obd_2.setIcon(new ImageIcon("obd_temperature.png"));
+        // engine load
+        obd_3 = new JButton("0");
+        obd_3.setHorizontalTextPosition(SwingConstants.CENTER);
+        obd_3.setForeground(new Color(255,0,0));
+        obd_3.setIcon(new ImageIcon("obd_engine.png"));
+        // Throttle Position
+        obd_4 = new JButton();
+
         obd_5 = new JLabel("Other statistics shown here");
+        obd_5.setForeground(new Color(255,0,0));
+
         updateCodes();
-        showCodes = new JButton("View Trouble Codes");
-        clearCodes = new JButton("Clear Trouble Codes");
+        showCodes = new JButton();
+        showCodes.setIcon(new ImageIcon("obd_show.png"));
+        clearCodes = new JButton();
+        clearCodes.setIcon(new ImageIcon("obd_clear.png"));
         obd_1.setPreferredSize(obd_dim);
         obd_panel.add(obd_1);
         obd_panel.add(obd_2);
@@ -294,7 +315,6 @@ public class GPSUI {
         cons3.setX(Spring.constant(600));
         cons3.setY(Spring.constant(350));
 
-        //java.awt.Image img = java.awt.Toolkit.getDefaultToolkit().getImage("album_image.jpg");
         album_cover[0] = new JButton();
         album_cover[0].setIcon(new ImageIcon(
                                 (new ImageIcon("album_image.jpg")).getImage()
@@ -416,6 +436,9 @@ public class GPSUI {
                 System.out.println(volumeSlider.getValue() + " (VOLUME)");
                 volumeLabel.setText("Volume: " + volumeSlider.getValue());
                 try {
+                    // uncomment this for jar compiling for the pi
+                    //Runtime.getRuntime().exec("amixer set PCM -- " + volumeSlider.getValue() + "%");
+                    // and then comment this for the pi VVVVVV is for Jacob testing
                     Runtime.getRuntime().exec("amixer -D pulse sset Master " + volumeSlider.getValue() + "%");
                 } catch (IOException ex) {
                     ex.printStackTrace();

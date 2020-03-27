@@ -31,8 +31,12 @@ public class album {
                     tempMP3 = new MP3File(new File(s.getSongLocation()));
                     tempID = tempMP3.getID3v1Tag();
                     trackNumTokens = (tempID.getTrackNumberOnAlbum()).split("/");
-                    bucketLoc = Integer.parseInt(trackNumTokens[0]);
-                    songBucket[bucketLoc - 1] =  s;
+                    try {
+                        bucketLoc = Integer.parseInt(trackNumTokens[0]);
+                        songBucket[bucketLoc - 1] =  s;
+                    } catch (NumberFormatException e) {
+                        System.err.println("SORT ERROR");
+                    }
                 }
 
                 for (int i = 0; i < songs.size(); i++) {
@@ -50,8 +54,12 @@ public class album {
                     tempMP3v2 = new MP3File(new File(s.getSongLocation()));
                     tempIDv2 = tempMP3v2.getID3v2Tag();
                     trackNumTokens = (tempIDv2.getTrackNumberOnAlbum()).split("/");
-                    bucketLocv2 = Integer.parseInt(trackNumTokens[0]);
-                    songBucketv2[bucketLocv2 - 1] =  s;
+                    try {
+                        bucketLocv2 = Integer.parseInt(trackNumTokens[0]);
+                        songBucketv2[bucketLocv2 - 1] = s;
+                    } catch (NumberFormatException e) {
+                        System.out.println("BAD");
+                    }
                 }
 
                 for (int i = 0; i < songs.size(); i++) {
@@ -119,7 +127,8 @@ public class album {
                 } catch (TagException e) {
                     System.err.println("ERROR FINDING TAGS");
                 }
-            } else {
+            }
+            else {
                 System.err.println("I don't care about this file");
             }
         }
