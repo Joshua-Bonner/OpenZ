@@ -14,6 +14,10 @@ day_threshold = 5
 
 threshold =  night_threshold
 
+time_debug = True
+matrix_debug = False
+alert_debug = True
+
 class box_matrix:
 	def __init__(self):
 		self.bmL = []
@@ -65,7 +69,7 @@ class box_matrix:
 		left_total = 0
 		right_total = 0
 		count = 0
-
+		
 		current_color = black
 		for square in self.bmL:
 			square_xy = square.get_xy()
@@ -113,6 +117,7 @@ class box_matrix:
 		last_xy = self.bmL[0].get_xy()
 		current_xy = (0,0)
 		row = 0
+	
 		for square in self.bmL:
 			current_xy = square.get_xy()
 			if (last_xy[1] < current_xy[1]):
@@ -133,6 +138,25 @@ class box_matrix:
 
 			(self.bmR_matrix[row]).append(square)
 	
+	def out_matrix(self):
+		print "LEFT MATRIX: "
+		for row in self.bmL_matrix:
+			for square in row:
+				if (square.get_line()):
+					print "#",
+				else:
+					print "_",
+			print ""
+
+		print "RIGHT MATRIX: "
+		for row in self.bmR_matrix:
+			for square in row:
+				if (square.get_line()):
+					print "#",
+				else:
+					print "_",
+			print ""
+
 	def calculate_distances(self, pic):
 		rows = len(self.bmR_matrix)
 		found = False;
@@ -215,7 +239,8 @@ def main():
 	#picture = Image.open("testing.png")
 	screen = pygame.display.set_mode(screenSize, pygame.HWSURFACE)
 	
-	start_time = time.time()
+	if (time_debug):
+		start_time = time.time()
 
 	with picamera.PiCamera() as camera:
 		camera.resolution = screenSize
@@ -224,7 +249,8 @@ def main():
 		camera.framerate = 30
 		time.sleep(2)
 	
-	print "Init Time: ", (time.time() - start_time)
+	if (time_debug):
+		print "Init Time: ", (time.time() - start_time)
 
 	while True:
 		stream = io.BytesIO()
@@ -253,6 +279,9 @@ def on_thread(stream):
 def draw_gafbm(pic):
 	matrix = box_matrix()
 	matrix_length = 32
+	
+	if (time_debug):
+		start_time = time.time()
 
 	#left box
 	for y in range (240, 291, 5):
@@ -263,24 +292,47 @@ def draw_gafbm(pic):
 		for x in range( 485, 646, 5):
 			matrix.add_box(box(x,y), pic, 1)
 	
+	if (time_debug):
+		print "Init Matrix Time: ", (time.time() - start_time)
+	
+	if (time_debug):
+		start_time = time.time()
+
 	matrix.find_avg_color()
 	pic = matrix.paint_lines(pic)
+
+	if (time_debug): 
+		print "Get average Color of Matrix and paint matrix Time: ", (time.time() - start_time)
+	
+	if (time_debug): 
+		start_time = time.time()
+
 	matrix.init_matrices()
 	pic = matrix.calculate_distances(pic)
 
-	print "TOP LEFT: ", matrix.left_avg
-	print "TOP RIGHT: ", matrix.right_avg
+	if (time_debug):
+		print "Build Matrix and Calculate Distances: ", (time.time() - start_time)
 
+	if (alert_debug):
+		if (matrix.left_percent < 0.5) and (matrix.right_percent < 0.5):
+			print "No Lanes Detected - No Signal"
+		elif (matrix.left_percent > 0.5) and (matrix.right_percent < 0.5):
+			print "Left Lane Detected, Signal: ", (matrix.left_avg in range(4, (matrix_length / 4) + 8))
+		elif (matrix.left_percent < 0.5) and (matrix.right_percent > 0.5):
+			print "Right Lane Detected, Signal: ", (matrix.right_avg in range(4 , (matrix_length / 4) + 8))
+		else:
+			print "Both Lanes Detected, Signal: ", (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9))
+	
+	if (matrix_debug):
+		matrix.out_matrix()
+			
 	if (matrix.left_percent < 0.5) and (matrix.right_percent < 0.5):
 		return True
 	elif (matrix.left_percent > 0.5) and (matrix.right_percent < 0.5):
-		print (matrix.left_avg in range(4, (matrix_length / 4) + 8))
 		return (matrix.left_avg in range(4, (matrix_length / 4) + 8))
 	elif (matrix.left_percent < 0.5) and (matrix.right_percent > 0.5):
-		print (matrix.right_avg in range(4 , (matrix_length / 4) + 8))
 		return (matrix.right_avg in range(4, (matrix_length / 4) + 8))
 	else:
-		print (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9))
 		return (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9))
 	
 	
