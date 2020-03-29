@@ -8,4 +8,4 @@ pip install pillow
 pip install pydub
 sudo echo "python /home/pi/OpenZ/Lane_Departure_Detection/gafbm.py &" >> /etc/rc.local
 sudo echo "python /home/pi/OpenZ/OBD/OBDServer/OBDServer.py &" >> /etc/rc.local 
-sudo echo "java -jar  /home/pi/OpenZ/OBD/OBDServer/OBDServer.py &" >> /etc/rc.local #TODO add path of JAR File
+sudo echo "java -jar  /home/pi/OpenZ/UI/out/artifacts/UI_jar/UI.jar &" >> /etc/rc.local #TODO add path of JAR File
