@@ -167,53 +167,53 @@ public class GPSUI {
 
 
         SpringLayout.Constraints cons = layout_musicplayer.getConstraints(music_button_1);
-        cons.setX(Spring.constant(105));
-        cons.setY(Spring.constant(300));
+        cons.setX(Spring.constant(104));
+        cons.setY(Spring.constant(299));
 
 
         cons = layout_musicplayer.getConstraints(music_button_2);
-        cons.setX(Spring.constant(365));
-        cons.setY(Spring.constant(165));
+        cons.setX(Spring.constant(364));
+        cons.setY(Spring.constant(164));
 
         cons = layout_musicplayer.getConstraints(music_button_3);
-        cons.setX(Spring.constant(365));
-        cons.setY(Spring.constant(165));
+        cons.setX(Spring.constant(364));
+        cons.setY(Spring.constant(164));
 
         cons = layout_musicplayer.getConstraints(music_button_prev);
-        cons.setX(Spring.constant(280));
-        cons.setY(Spring.constant(170));
+        cons.setX(Spring.constant(279));
+        cons.setY(Spring.constant(169));
 
         cons = layout_musicplayer.getConstraints(music_button_next);
-        cons.setX(Spring.constant(460));
-        cons.setY(Spring.constant(170));
+        cons.setX(Spring.constant(459));
+        cons.setY(Spring.constant(169));
 
         cons = layout_musicplayer.getConstraints(music_label_1);
-        cons.setX(Spring.constant(25));
-        cons.setY(Spring.constant(250));
+        cons.setX(Spring.constant(24));
+        cons.setY(Spring.constant(249));
 
         cons = layout_musicplayer.getConstraints(songTime);
-        cons.setX(Spring.constant(220));
-        cons.setY(Spring.constant(270));
+        cons.setX(Spring.constant(219));
+        cons.setY(Spring.constant(269));
 
         cons = layout_musicplayer.getConstraints(volumeLabel);
-        cons.setX(Spring.constant(180));
-        cons.setY(Spring.constant(145));
+        cons.setX(Spring.constant(179));
+        cons.setY(Spring.constant(144));
 
         cons = layout_musicplayer.getConstraints(startTime);
-        cons.setX(Spring.constant(180));
-        cons.setY(Spring.constant(267));
+        cons.setX(Spring.constant(179));
+        cons.setY(Spring.constant(266));
 
         cons = layout_musicplayer.getConstraints(endTime);
-        cons.setX(Spring.constant(630));
-        cons.setY(Spring.constant(267));
+        cons.setX(Spring.constant(629));
+        cons.setY(Spring.constant(266));
 
         cons = layout_musicplayer.getConstraints(currentTime);
-        cons.setX(Spring.constant(400));
-        cons.setY(Spring.constant(284));
+        cons.setX(Spring.constant(399));
+        cons.setY(Spring.constant(283));
 
         cons = layout_musicplayer.getConstraints(volumeSlider);
-        cons.setX(Spring.constant(255));
-        cons.setY(Spring.constant(150));
+        cons.setX(Spring.constant(254));
+        cons.setY(Spring.constant(149));
 
         java.awt.Dimension obd_dim = new java.awt.Dimension(700, 40);
         // intake pressure
