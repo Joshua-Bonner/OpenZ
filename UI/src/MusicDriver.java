@@ -46,7 +46,6 @@ public class MusicDriver extends PlaybackListener implements Runnable{
         });
     }
     public void run(){
-        System.out.println("Running thread");
         startTime = System.currentTimeMillis();
         try {
             if (STATE == NO_STATE || STATE == FINISHED_STATE) {
@@ -79,7 +78,6 @@ public class MusicDriver extends PlaybackListener implements Runnable{
         }
     }
     public void stopThread(boolean calledInternally) {
-        System.out.println("Do Only I call this?");
         if (STATE == PLAY_STATE) {
             STATE = PAUSE_STATE;
             if (calledInternally) {

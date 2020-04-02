@@ -70,7 +70,6 @@ public class MusicControl implements Runnable{
             }
 
             if (driver.getState() == MusicDriver.NEED_NEXT_STATE) {
-                System.out.println("But soft what light through yonder window breaks");
                 driver.stopThread(false);
                 songChoice = albumChoice.getSong(albumChoice.nextSong());
                 try {
@@ -87,7 +86,6 @@ public class MusicControl implements Runnable{
             }
 
             if (driver.getState() == MusicDriver.NEED_PREV_STATE) {
-                System.out.println("It is the east and Juliet is the Sun");
                 driver.stopThread(false);
                 songChoice = albumChoice.getSong(albumChoice.previousSong());
                 try {
@@ -104,7 +102,6 @@ public class MusicControl implements Runnable{
             }
 
             if (driver.getState() == MusicDriver.NEED_LOAD_STATE) {
-                System.out.println("Arise Fair Sun and Kill the envious Moon");
                 driver.stopThread(false);
                 songChoice = albumChoice.getSong(albumChoice.nextSong());
                 try {
@@ -121,7 +118,6 @@ public class MusicControl implements Runnable{
             }
 
             if (driver.getState() == MusicDriver.PAUSE_STATE && readyToResume) {
-                System.out.println("For She is sick and pale with grief");
                 GPSUI.music_label_1.setText("Playing Song: " + songChoice.getSongName() + " | By: " + albumChoice.getArtist());
                 GPSUI.thread = new Thread(driver, "Resume");
                 GPSUI.thread.start();

@@ -79,8 +79,6 @@ public class album {
 
         boolean foundAlbumName;
 
-        System.out.println("In Album Constructor");
-
         File folder = new File(albumLoc);
         String[] filesInDir = folder.list();
         String[] fileTokens;

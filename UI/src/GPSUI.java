@@ -346,13 +346,10 @@ public class GPSUI {
 
 			@Override
 			public void componentHidden(ComponentEvent componentEvent) {
-				System.out.println("SadnesS");
                 albumArt = new ImageIcon(musicController.getAlbumCover());
                 album_cover[0].setIcon(new ImageIcon(albumArt.getImage()
                                                      .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
-                System.out.println("Started Playing");
                 if (thread != null) {
-                    System.out.println("TESTING");
                     thread.stop();
                 }
 
@@ -375,7 +372,6 @@ public class GPSUI {
         music_button_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (initSong) {
-                    System.out.println("Started Playing");
                     musicController.readyToResume = true;
                     music_label_1.setText("Playing Song: " + musicController.getSong() + " | By: " + musicController.getArtist());
                     music_button_2.setVisible(false);
@@ -385,7 +381,6 @@ public class GPSUI {
         });
         music_button_3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Paused Music");
                 musicController.pause();
                 music_button_2.setVisible(true);
                 music_button_3.setVisible(false);
@@ -433,7 +428,6 @@ public class GPSUI {
         volumeSlider.setBackground(new Color(34,34,34));
         volumeSlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                System.out.println(volumeSlider.getValue() + " (VOLUME)");
                 volumeLabel.setText("Volume: " + volumeSlider.getValue());
                 try {
                     // uncomment this for jar compiling for the pi
