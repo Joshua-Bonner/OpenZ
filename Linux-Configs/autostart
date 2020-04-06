@@ -2,4 +2,7 @@
 @pcmanfm --desktop --profile LXDE-pi
 @xscreensaver -no-splash
 point-rpi
-java -jar /home/pi/UI.jar
+java -jar  /home/pi/OpenZ/UI/out/artifacts/UI_jar/UI.jar &
+python /home/pi/OpenZ/Lane_Departure_Detection/gafbm.py &
+python /home/pi/OpenZ/OBD/OBDServer/OBDServer.py &
+
