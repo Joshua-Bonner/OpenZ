@@ -26,5 +26,6 @@
 </div>
 <br>
 <div id=MP>
-	Music Player
+	Music Player utilizes two Java libraries, Java ID3 Tag Library and the Javazoom Jlayer Library. The Java ID3 Tag library is used to pull the tag information from the music files while Javazoom Jlayer actually makes the songs play. Playing the music occurs on a separate thread and swapping between songs is done another thread utilizing state changes that are called from button presses from the UI or callbacks from Jlayer. 
+	We sort album tracks by a modified bucket sort when track numbers are available. Volume changes are done by using an ALSA Mixer to interface with the raspberry pi's audio out drivers which are connected to the speakers in the vehicle.
 </div>
