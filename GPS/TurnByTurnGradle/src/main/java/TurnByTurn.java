@@ -17,22 +17,20 @@ import com.esri.arcgisruntime.tasks.geocode.LocatorTask;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.*;
 
+import static java.lang.System.exit;
 
 public class TurnByTurn extends Application
 {
@@ -40,16 +38,14 @@ public class TurnByTurn extends Application
     private RouteTask routeTask;
     private RouteParameters routeParameters;
     private TransportationNetworkDataset transportationNetwork;
-    //private ListView<String> directionsList = new ListView<>(  );
-    List< Stop > routeStops = new ArrayList<>(  );
-    private ListView<String> NextTurn = new ListView<>(  );
+    List< Stop > routeStops = new ArrayList<>();
+    private ListView< String > NextTurn = new ListView<>();
 
     private Graphic routeGraphic;
     private GraphicsOverlay routeGraphicsOverlay;
 
     private final SpatialReference _4326 = SpatialReference.create( 4326 );
 
-    private static final int WHITE_COLOR = 0xffffffff;
     private static final int BLUE_COLOR = 0xFF0000FF;
     private static final int RED_COLOR = 0xFFFF0000;
 
@@ -58,7 +54,6 @@ public class TurnByTurn extends Application
     private Point currentPoint = null;
 
     private StackPane stackPane;
-    //private VBox controlsVBox;
     private VBox searchBox;
     private VBox turnByTurnBox;
 
@@ -70,11 +65,9 @@ public class TurnByTurn extends Application
     private String mmpkFile = "Greater_Los_Angeles.mmpk";
     private final MobileMapPackage mapPackage = new MobileMapPackage( mmpkFile );
 
-    boolean rerouteTrue = false;
-    int count = 0;
     int GPSCoordCount = 0;
     boolean atEnd;
-    
+
     // THE FOLLOWING IS USED TO ACCESS DATA FROM THE ANTENNA
     // UNBLOCK FOLLOWING BLOCK ONCE THE ANTENNA HAS BEEN CONNECTED
     /*
@@ -85,20 +78,17 @@ public class TurnByTurn extends Application
 		gpsLayer.setMode(Mode.NAVIGATION);
 		gpsLayer.setNavigationPointHeightFactor(0.3);
 		*/
-		
+
     public static void main ( String[] args )
     {
-        //Runnable runnable = () ->
-        //{
-            Application.launch( args );
-        //};
+        Application.launch( args );
     }
 
     @Override
     public void start ( Stage stage ) throws InterruptedException
     {
         System.out.println( "Start Function" );
-        stackPane = new StackPane(  );
+        stackPane = new StackPane();
         Scene scene = new Scene( stackPane );
 
         stage.setTitle( "Navigation" );
@@ -107,27 +97,14 @@ public class TurnByTurn extends Application
         stage.show();
         stage.setScene( scene );
 
-
-//        controlsVBox = new VBox(6);
-//        controlsVBox.setBackground( new Background( new BackgroundFill( Paint.valueOf( "rgba(0,0,0,0.3)" ),
-//                CornerRadii.EMPTY, Insets.EMPTY ) ) );
-//        controlsVBox.setPadding( new Insets( 5.0 ) );
-//        controlsVBox.setMaxSize( 400,300 );
-//        controlsVBox.getStyleClass().add( "panel-region" );
-//
-//        Label directionsLabel = new Label("Route directions");
-//        directionsLabel.getStyleClass().add( "panel-label" );
-//
-//        controlsVBox.getChildren().addAll( directionsLabel, directionsList);
-
         turnByTurnBox = new VBox( 6 );
         turnByTurnBox.setBackground( new Background( new BackgroundFill( Paint.valueOf( "rgba(0,0,0,0.3)" ),
                 CornerRadii.EMPTY, Insets.EMPTY ) ) );
-        turnByTurnBox.setPadding( new Insets(5.0 ) );
+        turnByTurnBox.setPadding( new Insets( 5.0 ) );
         turnByTurnBox.setMaxSize( 300, 200 );
-        turnByTurnBox.getStyleClass().add("panel-region");
-        Label turnLabel = new Label ("Next Turn");
-        turnLabel.getStyleClass().add("panel-region");
+        turnByTurnBox.getStyleClass().add( "panel-region" );
+        Label turnLabel = new Label( "Next Turn" );
+        turnLabel.getStyleClass().add( "panel-region" );
 
         turnByTurnBox.getChildren().addAll( turnLabel, NextTurn );
 
@@ -140,36 +117,36 @@ public class TurnByTurn extends Application
         System.out.println( "exit start" );
     }
 
-    private void setupGraphicsOverlay()
+    private void setupGraphicsOverlay ()
     {
         System.out.println( "SetupGraphicsOverlay Function" );
 
-        if(mapView != null)
+        if ( mapView != null )
         {
-            routeGraphicsOverlay = new GraphicsOverlay(  );
+            routeGraphicsOverlay = new GraphicsOverlay();
             mapView.getGraphicsOverlays().add( routeGraphicsOverlay );
-
         }
         System.out.println( "Exit SetupGraphicsOverlay Function" );
     }
 
-    private void setupTextField()
+    private void setupTextField ()
     {
         searchBox = new VBox( 6 );
         searchBox.setPadding( new Insets( 5.0 ) );
-        searchBox.setMaxSize( 400,100 );
+        searchBox.setMaxSize( 400, 100 );
 
-        endPointBox = new TextField(  );
+        endPointBox = new TextField();
         endPointBox.setMaxWidth( 300 );
         endPointBox.setPromptText( "Enter destination address" );
 
-        searchBox.getChildren().addAll(  endPointBox );
+        searchBox.getChildren().addAll( endPointBox );
 
         getGPSStartPoint();
 
-        endPointBox.setOnAction( event -> {
+        endPointBox.setOnAction( event ->
+        {
             String query = endPointBox.getText();
-            if(! "".equals( query ))
+            if ( !"".equals( query ) )
             {
                 geocodeQuery( query, "end" );
             }
@@ -177,76 +154,71 @@ public class TurnByTurn extends Application
         System.out.println( "exit setupT ext Field" );
     }
 
-    public void getGPSStartPoint()
+    public void getGPSStartPoint ()
     {
         MockCoordinates mc = new MockCoordinates();
-        startPoint = new Point(mc.x, mc.y, _4326);
+        startPoint = new Point( mc.x, mc.y, _4326 );
     }
 
-    public void getGPSCurrentPoint()
+    public void getGPSCurrentPoint ()
     {
         MockCoordinates mc = new MockCoordinates();
-        currentPoint = new Point(mc.getCurrentXCoord(GPSCoordCount), mc.getCurrentYCoord(GPSCoordCount), _4326);
+        currentPoint = new Point( mc.getCurrentXCoord( GPSCoordCount ), mc.getCurrentYCoord( GPSCoordCount ), _4326 );
         atEnd = mc.atEndpoint( GPSCoordCount );
         GPSCoordCount++;
-//        if (atEnd){
-//            endPoint = currentPoint;
-//        }
         System.out.println( currentPoint );
     }
 
-    private void setupMobileMap()
+    private void setupMobileMap ()
     {
-            System.out.println( "SetupMobileMap Function" );
+        System.out.println( "SetupMobileMap Function" );
 
-            if(mapView != null)
+        if ( mapView != null )
+        {
+            mapPackage.addDoneLoadingListener( () ->
             {
-                mapPackage.addDoneLoadingListener( () -> {
 
-                    if(mapPackage.getLoadStatus() == LoadStatus.LOADED && mapPackage.getMaps().size() > 0)
-                    {
-                        double latitude = 34.05293;
-                        double longitude = -118.24368;
-                        double scale = 220000;
+                if ( mapPackage.getLoadStatus() == LoadStatus.LOADED && mapPackage.getMaps().size() > 0 )
+                {
+                    double latitude = 34.05293;
+                    double longitude = -118.24368;
+                    double scale = 220000;
 
-                        ArcGISMap map = mapPackage.getMaps().get(0);
-                        transportationNetwork = map.getTransportationNetworks().get( 0 );
-                        mapView.setMap( map );
-                        map.setInitialViewpoint( new Viewpoint( latitude,longitude,scale ) );
+                    ArcGISMap map = mapPackage.getMaps().get( 0 );
+                    transportationNetwork = map.getTransportationNetworks().get( 0 );
+                    mapView.setMap( map );
+                    map.setInitialViewpoint( new Viewpoint( latitude, longitude, scale ) );
 
-//                   stackPane.getChildren().addAll(mapView, controlsVBox, searchBox, turnByTurnBox);
-                        stackPane.getChildren().addAll(mapView, searchBox, turnByTurnBox);
-//                    StackPane.setAlignment(controlsVBox, Pos.TOP_RIGHT);
-//                    StackPane.setMargin(controlsVBox, new Insets(10, 10, 0, 0));
-                        StackPane.setAlignment( searchBox, Pos.TOP_LEFT );
-                        StackPane.setMargin( searchBox, new Insets( 10, 5, 0, 0 ) );
-                        StackPane.setAlignment(turnByTurnBox, Pos.BOTTOM_CENTER);
-                        StackPane.setMargin(turnByTurnBox, new Insets(0, 0, 10, 0));
+                    stackPane.getChildren().addAll( mapView, searchBox, turnByTurnBox );
+                    StackPane.setAlignment( searchBox, Pos.TOP_LEFT );
+                    StackPane.setMargin( searchBox, new Insets( 10, 5, 0, 0 ) );
+                    StackPane.setAlignment( turnByTurnBox, Pos.BOTTOM_CENTER );
+                    StackPane.setMargin( turnByTurnBox, new Insets( 0, 0, 10, 0 ) );
 
-                        System.out.println( "Calling setupRouteTask" );
-                        setupRouteTask();
+                    System.out.println( "Calling setupRouteTask" );
+                    setupRouteTask();
 
-                    } else if(mapPackage.getLoadStatus() == LoadStatus.LOADING)
-                    {
-                        System.out.println( "Loading" );
-                    }
-                    else
-                    {
-                        new Alert( Alert.AlertType.ERROR, "MMPK failed to load: "
-                                + mapPackage.getLoadError().getMessage() ).show();
-                    }
-                } );
-                mapPackage.loadAsync();
+                }
+                else if ( mapPackage.getLoadStatus() == LoadStatus.LOADING )
+                {
+                    System.out.println( "Loading" );
+                }
+                else
+                {
+                    new Alert( Alert.AlertType.ERROR, "MMPK failed to load: "
+                            + mapPackage.getLoadError().getMessage() ).show();
+                }
+            } );
+            mapPackage.loadAsync();
 
-            } else
-            {
-                System.out.println( "MapView was Null" );
-            }
-
-
+        }
+        else
+        {
+            System.out.println( "MapView was Null" );
+        }
     }
 
-    public void setupRouteTask()
+    public void setupRouteTask ()
     {
         System.out.println( "SetupRouteTask Function" );
 
@@ -255,9 +227,8 @@ public class TurnByTurn extends Application
 
         routeTask.addDoneLoadingListener( () ->
         {
-            if(routeTask.getLoadStatus() == LoadStatus.LOADED)
+            if ( routeTask.getLoadStatus() == LoadStatus.LOADED )
             {
-
                 try
                 {
                     routeParameters = routeTask.createDefaultParametersAsync().get();
@@ -265,43 +236,44 @@ public class TurnByTurn extends Application
 
                     routeParameters.setReturnStops( true );
                     routeParameters.setReturnDirections( true );
-
-
-                } catch (InterruptedException | ExecutionException e )
+                }
+                catch ( InterruptedException | ExecutionException e )
                 {
                     new Alert( Alert.AlertType.ERROR, "Cannot create RouteTask parameters"
-                            + e.getMessage()).show();
+                            + e.getMessage() ).show();
                 }
-            } else
+            }
+            else
             {
                 new Alert( Alert.AlertType.ERROR, "Unable to load RouteTask" + routeTask.getLoadStatus().toString() ).show();
             }
-        });
+        } );
         System.out.println( "Exit setup route task" );
     }
 
-    public void setMapMarker(Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor){
+    public void setMapMarker ( Point location, SimpleMarkerSymbol.Style style, int markerColor, int outlineColor )
+    {
         final float markerSize = 8;
         final float markerOutlineThickness = 2;
         SimpleMarkerSymbol pointSymbol = new SimpleMarkerSymbol( style, markerColor, markerSize );
-        pointSymbol.setOutline(new SimpleLineSymbol( SimpleLineSymbol.Style.SOLID, outlineColor, markerOutlineThickness ) );
+        pointSymbol.setOutline( new SimpleLineSymbol( SimpleLineSymbol.Style.SOLID, outlineColor, markerOutlineThickness ) );
         Graphic pointGraphic = new Graphic( location, pointSymbol );
         routeGraphicsOverlay.getGraphics().add( pointGraphic );
     }
 
-    public void setStartMarker(Point location)
+    public void setStartMarker ( Point location )
     {
-        setMapMarker(location, SimpleMarkerSymbol.Style.DIAMOND,RED_COLOR,BLUE_COLOR );
+        setMapMarker( location, SimpleMarkerSymbol.Style.DIAMOND, RED_COLOR, BLUE_COLOR );
         mapView.setViewpointCenterAsync( startPoint, 11000 );
     }
 
-    public void setEndMarker( Point location )
+    public void setEndMarker ( Point location )
     {
-        setMapMarker(location, SimpleMarkerSymbol.Style.SQUARE,BLUE_COLOR,RED_COLOR);
+        setMapMarker( location, SimpleMarkerSymbol.Style.SQUARE, BLUE_COLOR, RED_COLOR );
         endPoint = location;
     }
 
-    private void createLocatorTaskWithParameters()
+    private void createLocatorTaskWithParameters ()
     {
         locatorTask = mapPackage.getLocatorTask();
         geocodeParameters = new GeocodeParameters();
@@ -310,60 +282,64 @@ public class TurnByTurn extends Application
         geocodeParameters.setOutputSpatialReference( mapView.getSpatialReference() );
     }
 
-    private void displayResult(GeocodeResult geocodeResult, String which)
+    private void displayResult ( GeocodeResult geocodeResult, String which )
     {
         setStartMarker( startPoint );
-        routeStops.add(new Stop(startPoint));
+        routeStops.add( new Stop( startPoint ) );
 
-        if (which.equals( "end" ))
+        if ( which.equals( "end" ) )
         {
             endPoint = geocodeResult.getDisplayLocation();
             setEndMarker( endPoint );
-            routeStops.add(new Stop(endPoint));
+            routeStops.add( new Stop( endPoint ) );
         }
-        routeParameters.setStops(routeStops);
+        routeParameters.setStops( routeStops );
 
-        if(startPoint != null && endPoint != null)
+        if ( startPoint != null && endPoint != null )
         {
             solveForRoute();
         }
     }
 
     //get the location on the map of the end point
-    private void geocodeQuery(String query, String which)
+    private void geocodeQuery ( String query, String which )
     {
         System.out.println( query );
-        ListenableFuture<List<GeocodeResult>> geocode = locatorTask.geocodeAsync( query, geocodeParameters );
+        ListenableFuture< List< GeocodeResult > > geocode = locatorTask.geocodeAsync( query, geocodeParameters );
 
-        geocode.addDoneListener( () ->{
+        geocode.addDoneListener( () ->
+        {
             try
             {
-                List<GeocodeResult> results = geocode.get();
+                List< GeocodeResult > results = geocode.get();
 
-                if(results.size()> 0)
+                if ( results.size() > 0 )
                 {
                     GeocodeResult result = results.get( 0 );
-                    displayResult(result, which);
-                } else {
+                    displayResult( result, which );
+                }
+                else
+                {
                     //if street found but house number not found, will return a location in the middle of the street
                     //if street not found, will return a similar named street in the area: OakShire Road -> Oakshire Drive
                     Alert alert = new Alert( Alert.AlertType.INFORMATION, "Address not found" );
                     alert.show();
                 }
-            } catch (InterruptedException | ExecutionException e)
+            }
+            catch ( InterruptedException | ExecutionException e )
             {
                 e.printStackTrace();
-                Alert alert = new Alert (Alert.AlertType.ERROR, "Error getting result");
+                Alert alert = new Alert( Alert.AlertType.ERROR, "Error getting result" );
                 alert.show();
             }
         } );
     }
 
-    public void solveForRoute()
+    public void solveForRoute ()
     {
         System.out.println( "SolveForRoute Function" );
 
-        if(startPoint != null && endPoint != null)
+        if ( startPoint != null && endPoint != null )
         {
             try
             {
@@ -384,8 +360,8 @@ public class TurnByTurn extends Application
 
                 DirectionManeuver step = directionManeuvers.get( 1 );
                 System.out.println( step.getDirectionText() );
-
-                NextTurn.getItems().add( step.getDirectionText()  );
+                NextTurn.getItems().clear();
+                NextTurn.getItems().add( step.getDirectionText() );
 
                 reRoute();
 
@@ -393,103 +369,21 @@ public class TurnByTurn extends Application
             catch ( InterruptedException | ExecutionException e )
             {
                 e.printStackTrace();
-                new Alert( Alert.AlertType.ERROR,  e.getMessage() + e.getMessage() ).show();
+                new Alert( Alert.AlertType.ERROR, e.getMessage() + e.getMessage() ).show();
             }
         }
     }
 
-//    public void reRoute() throws InterruptedException
-//    {
-//        Runnable runnable = () ->
-//        {
-//            getGPSCurrentPoint();
-//            if(!atEnd)
-//            {
-//                try
-//                {
-//                    startPoint = currentPoint;
-//                    routeStops.clear();
-//                    routeStops.add( new Stop(startPoint) );
-//                    routeStops.add( new Stop(endPoint) );
-//
-//                    routeParameters.clearStops();
-//                    routeParameters.setStops( routeStops );
-//
-//                    routeGraphicsOverlay.getGraphics().clear();
-//                    setStartMarker( startPoint );
-//                    setEndMarker( endPoint );
-//                    RouteResult result = routeTask.solveRouteAsync( routeParameters ).get();
-//
-//                    List< Route > routes = result.getRoutes();
-//                    if ( routes.size() < 1 )
-//                    {
-//                        System.out.println( "No route" );
-//                    }
-//                    Route route = routes.get( 0 );
-//
-//                    Geometry shape = route.getRouteGeometry();
-//                    routeGraphic = new Graphic( shape, new SimpleLineSymbol( SimpleLineSymbol.Style.SOLID, BLUE_COLOR, 2 ) );
-//                    routeGraphicsOverlay.getGraphics().add( routeGraphic );
-//                    System.out.println( "not here" );
-//                    turnByTurnBox.getChildren().remove( NextTurn ); //stops on this line.....
-//                    System.out.println( "there" );
-//                    NextTurn.getItems().clear();
-//                    System.out.println( "here" );
-//                    List< DirectionManeuver > directionManeuvers = route.getDirectionManeuvers();
-//
-//                    DirectionManeuver step = directionManeuvers.get( 1 );
-//                    System.out.println( step.getDirectionText() );
-//
-//                    NextTurn.getItems().add( step.getDirectionText()  );
-//
-//                    turnByTurnBox.getChildren().add( NextTurn );
-//                }
-//                catch ( InterruptedException | ExecutionException e )
-//                {
-//                    e.printStackTrace();
-//                    new Alert( Alert.AlertType.ERROR,  e.getMessage() + e.getMessage() ).show();
-//                }
-//            }
-
-//            if(atEnd){
-//                try
-//                {
-//                    pause();
-//                }
-//                catch ( InterruptedException e )
-//                {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-//
-//        ScheduledExecutorService svc = Executors.newScheduledThreadPool( 10 );
-//        svc.scheduleWithFixedDelay( runnable, 3, 4, TimeUnit.SECONDS );
-//        //svc.scheduleAtFixedRate( runnable, 3, 4, TimeUnit.SECONDS );
-//        //svc.schedule( runnable,4,TimeUnit.SECONDS );
-//
-//    }
-
-    public void reRoute() throws InterruptedException
+    public void reRoute ()
     {
-        final RouteResult[] result = new RouteResult[1];
-        ScheduledExecutorService svc = Executors.newScheduledThreadPool( 5 );
-
-
-        Runnable runnable = () -> {
-            try {
-                result[0] = routeTask.solveRouteAsync( routeParameters ).get();
-                long start = System.currentTimeMillis();
-                while (start > System.currentTimeMillis() - 4000){}
-            } catch ( InterruptedException | ExecutionException e) {
-                e.printStackTrace();
-            }
-        };
-
-        while ( !atEnd )
+        if ( atEnd )
+        {
+            pause();
+        }
+        Runnable runnable = () ->
         {
             getGPSCurrentPoint();
-            startPoint = this.currentPoint;
+            startPoint = currentPoint;
             routeStops.clear();
             routeStops.add( new Stop( startPoint ) );
             routeStops.add( new Stop( endPoint ) );
@@ -501,54 +395,33 @@ public class TurnByTurn extends Application
             setStartMarker( startPoint );
             setEndMarker( endPoint );
 
-            Future<?> f = svc.submit( runnable );
-            while(!f.isDone()){
-                //wait till runnable is done
-            }
+            Platform.runLater( this::solveForRoute );
+        };
 
-            System.out.println( Platform.isFxApplicationThread() );
-            System.out.println( result[0].getRoutes().toString() );
-                List< Route > routes = result[0].getRoutes();
-                if ( routes.size() < 1 )
-                {
-                    System.out.println( "No route" );
-                }
-                Route route = routes.get( 0 );
-
-                Geometry shape = route.getRouteGeometry();
-                routeGraphic = new Graphic( shape, new SimpleLineSymbol( SimpleLineSymbol.Style.SOLID, BLUE_COLOR, 2 ) );
-                routeGraphicsOverlay.getGraphics().add( routeGraphic );
-                System.out.println( "not here" );
-                turnByTurnBox.getChildren().remove( NextTurn );
-                System.out.println( "there" );
-                NextTurn.getItems().clear();
-                System.out.println( "here" );
-                List< DirectionManeuver > directionManeuvers = route.getDirectionManeuvers();
-
-                DirectionManeuver step = directionManeuvers.get( 1 );
-                System.out.println( step.getDirectionText() );
-
-                NextTurn.getItems().add( step.getDirectionText() );
-
-                turnByTurnBox.getChildren().add( NextTurn );
-        }
-        pause();
-
+        ScheduledExecutorService svc = Executors.newSingleThreadScheduledExecutor();
+        svc.scheduleWithFixedDelay( runnable, 3, 4, TimeUnit.SECONDS );
     }
 
     @Override
     public void stop ()
     {
-        if(mapView != null)
+        if ( mapView != null )
         {
             mapView.dispose();
         }
     }
 
-    public void pause() throws InterruptedException
+    public void pause ()
     {
         new Alert( Alert.AlertType.INFORMATION, "You have reached your destination." ).showAndWait();
-//        stop();
-//        exit( 0 );
+        stop();
+
+        Alert alert = new Alert( Alert.AlertType.CONFIRMATION, "Exit GPS?", ButtonType.YES, ButtonType.NO );
+        Optional< ButtonType > result = alert.showAndWait();
+
+        if ( result.get() == ButtonType.YES )
+        {
+            exit( 0 );
+        }
     }
 }
