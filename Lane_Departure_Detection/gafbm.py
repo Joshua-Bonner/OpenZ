@@ -1,6 +1,5 @@
 import io
 import threading
-import pygame
 import math
 import time
 import picamera
@@ -235,10 +234,9 @@ class box:
 def main():
 	frame_time = 0
 	screenSize = (800,480)
-	pygame.init()
-	#picture = Image.open("testing.png")
-	screen = pygame.display.set_mode(screenSize, pygame.HWSURFACE)
 	
+	threadExists = False
+
 	if (time_debug):
 		start_time = time.time()
 
@@ -260,21 +258,34 @@ def main():
 				stream.truncate()
 				stream.seek(0)
 				break
-		
-		thread = threading.Thread(target=on_thread, args=(stream,))
-		thread.start()
 
-def on_thread(stream):
-	screenSize = (800,480)
-	picture = Image.open(stream)
-	picture = picture.convert('LA')
+		#thread = threading.Thread(target=on_thread, args=(stream,))
+		#thread.start()
+		picture = Image.open(stream)
+		picture = picture.convert('LA')
+		picture = picture.convert('RGB')
+		in_lines = draw_gafbm(picture)
+		if (in_lines):
+			if threadExists:
+				thread.join()
+				threadExists = False
+			thread = threading.Thread(target=on_thread)
+			thread.start()
+			threadExists = True
+
+
+def on_thread():
+	# REMOVED MULTITHREADED CALCULATIONS
+	#screenSize = (800,480)
+	#picture = Image.open(stream)
+	#picture = picture.convert('LA')
 	# Comment this out / remove this in the end
-	picture = picture.convert('RGB')
-	in_lines = draw_gafbm(picture)
+	#icture = picture.convert('RGB')
+	#in_lines = draw_gafbm(picture)
 	
-	if (in_lines):
-		boop = AudioSegment.from_wav("boop.wav")
-		play(boop)
+	#if (in_lines):
+	boop = AudioSegment.from_wav("boop.wav")
+	play(boop)
 
 def draw_gafbm(pic):
 	matrix = box_matrix()
