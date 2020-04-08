@@ -13,8 +13,8 @@ day_threshold = 5
 
 threshold =  night_threshold
 
-time_debug = True
-matrix_debug = False
+time_debug = False
+matrix_debug = True
 alert_debug = True
 
 class box_matrix:
@@ -328,11 +328,14 @@ def draw_gafbm(pic):
 		if (matrix.left_percent < 0.5) and (matrix.right_percent < 0.5):
 			print "No Lanes Detected - No Signal"
 		elif (matrix.left_percent > 0.5) and (matrix.right_percent < 0.5):
-			print "Left Lane Detected, Signal: ", (matrix.left_avg in range(4, (matrix_length / 4) + 8))
+			print "Left Lane Detected, Signal: ", (matrix.left_avg in range(4, (matrix_length / 4) + 8)),
+			print "Lane Position: ", matrix.left_avg, " Acceptiable Range: 4 -> ", (matrix_length / 4) + 8
 		elif (matrix.left_percent < 0.5) and (matrix.right_percent > 0.5):
-			print "Right Lane Detected, Signal: ", (matrix.right_avg in range(4 , (matrix_length / 4) + 8))
+			print "Right Lane Detected, Signal: ", (matrix.right_avg in range(4 , (matrix_length / 4) + 8)),
+			print "Lane Position: ", matrix.right_avg, " Acceptiable Range: 4 -> ", (matrix_length / 4) + 8
 		else:
-			print "Both Lanes Detected, Signal: ", (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9))
+			print "Both Lanes Detected, Signal: ", (matrix.left_avg in range(matrix.right_avg - 9, matrix.right_avg + 9)),
+			print "Left Lane Position: ", matrix.left_avg, " Acceptiable Range: ", matrix.right_avg - 9, " -> " matrix.right_avg + 9
 	
 	if (matrix_debug):
 		matrix.out_matrix()
