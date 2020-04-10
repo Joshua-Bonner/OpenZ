@@ -216,7 +216,9 @@ def main():
 	with picamera.PiCamera() as camera:
 		camera.resolution = screenSize
 		camera.start_preview()
-		camera.shutter_speed = 100
+		camera.shutter_speed = 20
+		# if sun doesn't work, change it to 'beach'
+		camera.exposure_mode = 'sun'
 		camera.framerate = 30
 		time.sleep(2)
 	
