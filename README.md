@@ -50,30 +50,30 @@ sudo chmod +x install.sh
 
 ## Developers
 Alyssa "Siamesegomouw" Abram - https://github.com/Siamesegomouw-PSU
-	* GPS Research
-	* GPS Implementation
-	* Documentation Expert
+* GPS Research
+* GPS Implementation
+* Documentation Expert
 
 Ariel "AlimorelManx" Rupp - https://github.com/AlimorelManx
-    * GPS Research
-    * GPS Implementation
+* GPS Research
+* GPS Implementation
 
 Jacob "SageTheWizard" Gallucci - https://github.com/SageTheWizard
-    * Lane Departure Detection
-    * Music Player
-    * Auto start Script
+* Lane Departure Detection
+* Music Player
+* Auto start Script
 
 Jonathan Edsell - https://github.com/JonEdsell
-    * UI Developer
-    * Graphic Design
+* UI Developer
+* Graphic Design
 
 Joshua Bonner - https://github.com/Joshua-Bonner
-	* Parking Collision Warning
-	* Install into vehicle 
-	* Testing (he owns the 350z)
+* Parking Collision Warning
+* Install into vehicle 
+* Testing (he owns the 350z)
 
 Richard Bowser - https://github.com/richardb1998
-    * Hardware Expert
-    * On Board Diagnostics
-    * Install Scripts
+* Hardware Expert
+* On Board Diagnostics
+* Install Scripts
 
