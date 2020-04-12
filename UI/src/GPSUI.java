@@ -78,13 +78,73 @@ public class GPSUI {
         top_panel.add(tab_panel);
 
         obd_panel = new JPanel();
-        tab_panel.add("                         OBD                         ", obd_panel);
+        tab_panel.add("                    OBD                    ", obd_panel);
 
         musicplayer_panel = new JPanel();
-        tab_panel.add("                    Music Player                     ", musicplayer_panel);
+        tab_panel.add("                Music Player                 ", musicplayer_panel);
 
         gps_panel = new JPanel();
-        tab_panel.add("                         GPS                         ", gps_panel);
+        tab_panel.add("                   GPS                  ", gps_panel);
+
+        JPanel settings_panel = new JPanel();
+        tab_panel.add("                  Settings                  ", settings_panel);
+
+
+        JSlider colorR = new JSlider(0,255,34);
+        JSlider colorG = new JSlider(0,255,34);
+        JSlider colorB = new JSlider(0,255,34);
+        JLabel colorR_lab = new JLabel("Red Val: 34");
+        JLabel colorG_lab = new JLabel("Green Val: 34");
+        JLabel colorB_lab = new JLabel("Blue Val: 34");
+        settings_panel.add(colorR);
+        settings_panel.add(colorG);
+        settings_panel.add(colorB);
+        settings_panel.add(colorR_lab);
+        settings_panel.add(colorG_lab);
+        settings_panel.add(colorB_lab);
+
+
+        colorR.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                musicplayer_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                obd_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                settings_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                gps_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorR_lab.setText("Red Val: " + colorR.getValue());
+
+                colorR.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorG.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorB.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+            }
+        });
+
+        colorG.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                musicplayer_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                obd_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                settings_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                gps_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorG_lab.setText("Green Val: " + colorG.getValue());
+
+                colorR.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorG.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorB.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+            }
+        });
+
+        colorB.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                musicplayer_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                obd_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                settings_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                gps_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorB_lab.setText("Blue Val: " + colorB.getValue());
+
+                colorR.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorG.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                colorB.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+            }
+        });
 
         obd_panel.setLayout(layout_obd);
         musicplayer_panel.setLayout(layout_musicplayer);
@@ -214,6 +274,27 @@ public class GPSUI {
         cons = layout_musicplayer.getConstraints(volumeSlider);
         cons.setX(Spring.constant(254));
         cons.setY(Spring.constant(149));
+
+        SpringLayout layout_settings = new SpringLayout();
+        settings_panel.setLayout(layout_settings);
+        cons = layout_settings.getConstraints(colorR);
+        cons.setX(Spring.constant(160));
+        cons.setY(Spring.constant(100));
+        cons = layout_settings.getConstraints(colorG);
+        cons.setX(Spring.constant(160));
+        cons.setY(Spring.constant(135));
+        cons = layout_settings.getConstraints(colorB);
+        cons.setX(Spring.constant(160));
+        cons.setY(Spring.constant(170));
+        cons = layout_settings.getConstraints(colorR_lab);
+        cons.setX(Spring.constant(50));
+        cons.setY(Spring.constant(100));
+        cons = layout_settings.getConstraints(colorG_lab);
+        cons.setX(Spring.constant(50));
+        cons.setY(Spring.constant(135));
+        cons = layout_settings.getConstraints(colorB_lab);
+        cons.setX(Spring.constant(50));
+        cons.setY(Spring.constant(170));
 
         java.awt.Dimension obd_dim = new java.awt.Dimension(700, 40);
         // intake pressure
