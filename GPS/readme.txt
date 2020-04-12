@@ -11,3 +11,9 @@ of captiol and lower case letters.
 MockCoordinates is an additional java class for feeding coordinates to the map to simulate getting GPS coordinates from an antenna.
 
 Email sent to Mike Mrsa (PSU) about Mobile Map Package file.
+
+Working on integrating GPS into the UI. To do this, I am not working in the files in the repo. I copy the GPS and UI files into a different
+directory in case I mess something up and can not get back to the working code. I am looking into using .jar files for ArcGis and JavaFx as
+gradle seems to be causing many issues with merging GPS and UI together. I have an example working with the .jar files, but currently only
+for one OS at a time. As the Pi is Linux based, I will most likely boot up my Virtual Machine that runs on Linux, and will continue 
+development on that OS.
