@@ -572,4 +572,8 @@ public class GPSUI {
         obd_1.setText("Intake Pressure: " + pressure);
     }
 
+    public static void updateThrottlePos(String throttle) {
+        obd_4.setText("Throttle Position: " + throttle);
+    }
+
 }

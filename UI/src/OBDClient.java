@@ -30,11 +30,12 @@ private Thread queryLoop;
         query.set(true);
         while(query.get()) {
             try {
-                String[] response = query("ENGINE_LOAD/INTAKE_TEMP/INTAKE_PRESSURE").split("/");
+                String[] response = query("ENGINE_LOAD/INTAKE_TEMP/INTAKE_PRESSURE/THROTTLE_POSITION").split("/");
                 if (response.length >= 3) {
                     GPSUI.updateEngineLoad(response[0]);
                     GPSUI.updateIntakeTemp(response[1]);
                     GPSUI.updateIntakePressure(response[2]);
+                    GPSUI.updateThrottlePos(response[3]);
                 }
             } catch (OBDConnectionException e) {
                 e.printStackTrace();
