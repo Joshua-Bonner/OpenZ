@@ -126,6 +126,20 @@ public class MusicControl implements Runnable{
                 readyToResume = false;
             }
 
+            if (driver.getState() == MusicDriver.NEW_SONG && !readyToResume) {
+                newSong = true;
+                driver.stopThread(false);
+                try {
+                    driver = new MusicDriver(songChoice.getSongLocation());
+                }
+                catch (JavaLayerException e) {
+                    e.printStackTrace();
+                }
+                GPSUI.thread = new Thread(driver, "New on Pause");
+                GPSUI.thread.start();
+
+            }
+
             if (killProcess) {
                 killProcess = false;
                 driver.stopThread(false);
@@ -170,4 +184,7 @@ public class MusicControl implements Runnable{
         driver.setPauseFrame(frameNum);
     }
 
+    public void driverNewSongOnPause() {driver.setState(MusicDriver.NEW_SONG);}
+
+    public int getDriverState() {return driver.getState();}
 }

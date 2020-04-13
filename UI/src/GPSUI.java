@@ -432,6 +432,9 @@ public class GPSUI {
                                                      .getScaledInstance(150,150, Image.SCALE_SMOOTH)));
                 if (thread != null) {
                     thread.stop();
+                    if (musicController.getDriverState() == MusicDriver.PAUSE_STATE) {
+                        musicController.driverNewSongOnPause();
+                    }
                 }
 
                 music_button_2.setVisible(false);

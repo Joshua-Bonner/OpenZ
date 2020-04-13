@@ -27,7 +27,7 @@ public class MusicDriver extends PlaybackListener implements Runnable{
     public static final int NEED_PREV_STATE = 5;
     public static final int NO_STATE        = 0;
     public static final int NEED_LOAD_STATE = 6;
-    public static final int WAITING_TO_PLAY = 7;
+    public static final int NEW_SONG= 7;
 
     public MusicDriver(String path) throws JavaLayerException {
         songPath = path;
