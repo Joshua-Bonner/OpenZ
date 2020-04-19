@@ -12,7 +12,19 @@ public class AlbumSelect extends JFrame
 	private JList<String> songList;
 	private ArrayList<String> albumNames;
 
+	//album buttons
+	private JButton[] albumButtons = new JButton[10];
+	private JButton albumScrollUp = new JButton();
+	private JButton albumScrollDown = new JButton();
+	//song buttons
+	private JButton[] songButtons = new JButton[10];
+	private JButton songScrollUp = new JButton();
+	private JButton songScrollDown = new JButton();
 
+	//dimensions for song selection button
+	java.awt.Dimension select_dim = new java.awt.Dimension(330, 44);
+	//dimensions for scrolling
+	java.awt.Dimension scroll_dim = new java.awt.Dimension(80, 220);
 
 	public AlbumSelect(MusicControl mc)
 	{
@@ -41,6 +53,31 @@ public class AlbumSelect extends JFrame
 		cons.setX(Spring.constant(400));
 		cons.setY(Spring.constant(0));
 		JFrame thisPanel = this;
+
+		//layout all the buttons, starting with the album buttons
+		for(int i = 0; i < albumButtons.length; i++) {
+			albumButtons[i] = new JButton();
+			albumButtons[i].setPreferredSize(select_dim);
+			add(albumButtons[i]);
+			SpringLayout.Constraints constraints = layout.getConstraints(albumButtons[i]);
+			constraints.setX(Spring.constant(0));
+			constraints.setY(Spring.constant(i * 44)); //this will place one button below the other
+		}
+
+		//add the scroll buttons for the albums
+		SpringLayout.Constraints scrollCons;
+		albumScrollDown.setPreferredSize(scroll_dim);
+		add(albumScrollDown);
+		scrollCons = layout.getConstraints(albumScrollDown);
+		scrollCons.setX(Spring.constant(330));
+		scrollCons.setY(Spring.constant(220));
+		albumScrollUp.setPreferredSize(scroll_dim);
+		add(albumScrollUp);
+		scrollCons = layout.getConstraints(albumScrollUp);
+		scrollCons.setX(Spring.constant(330));
+		scrollCons.setY(Spring.constant(0));
+
+
 		
 		albumList.addListSelectionListener(new ListSelectionListener() { 
 			public void valueChanged(ListSelectionEvent e) { 
@@ -74,9 +111,11 @@ public class AlbumSelect extends JFrame
 		{
 			if (tmp[i].length() > 50)
 			{
-				tmp[i] = tmp[i].substring(0,50) + "...";
+				albumNames.add(tmp[i].substring(0,50) + "...");
+			}
+			else {
+				albumNames.add(tmp[i]);
 			}
 		}
-		albumList.setListData(tmp);
 	}
 }

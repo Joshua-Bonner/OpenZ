@@ -16,8 +16,8 @@ public class musicPlayer {
     private int pausedSongTime;
     private String musicLib;
 
-    public musicPlayer(){
-        musicLib = "/home/jacob/Music";
+    public musicPlayer() {
+        musicLib = "F:\\music";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
@@ -59,8 +59,7 @@ public class musicPlayer {
                         if (tempMp3.hasID3v1Tag()) {
                             tempID1 = tempMp3.getID3v1Tag();
                             albumArtist = tempID1.getArtist();
-                        }
-                        else if (tempMp3.hasID3v2Tag()) {
+                        } else if (tempMp3.hasID3v2Tag()) {
                             tempID2 = tempMp3.getID3v2Tag();
                             albumArtist = tempID2.getLeadArtist();
                         }
@@ -69,17 +68,15 @@ public class musicPlayer {
                     } catch (TagException e) {
                         System.err.println("ERROR WITH TAGS");
                     }
-                }
-                else if ((fileExtension.equals("PNG") || fileExtension.equals("JPG") || fileExtension.equals("JPEG")) && !(pulledCover)) {
+                } else if ((fileExtension.equals("PNG") || fileExtension.equals("JPG") || fileExtension.equals("JPEG")) && !(pulledCover)) {
                     pulledCover = true;
                     coverLocation = tempLocation;
                 }
             }
             if (pulledCover) {
-                albums.add(new album(albumArtist, coverLocation, albumLocation ));
+                albums.add(new album(albumArtist, coverLocation, albumLocation));
                 pulledCover = false;
-            }
-            else {
+            } else {
                 albums.add(new album(albumArtist, "Change this later to path to dummy file", albumLocation));
             }
 
@@ -88,7 +85,7 @@ public class musicPlayer {
 
     }
 
-    public album getAlbum(int albumIndex){
+    public album getAlbum(int albumIndex) {
         return albums.get(albumIndex);
     }
 
@@ -102,17 +99,17 @@ public class musicPlayer {
         return ret;
     }
 
-    public int nextAlbum(){
+    public int nextAlbum() {
         currentAlbumIndex++;
         if (currentAlbumIndex >= albums.size()) currentAlbumIndex = 0;
         return currentAlbumIndex;
     }
 
-    public void pause(){
+    public void pause() {
         //TODO: Implement this method
     }
 
-    public void play()  {
+    public void play() {
         //TODO: Implement this method
         song currentSong;
 
@@ -120,23 +117,23 @@ public class musicPlayer {
 
     }
 
-    public int nextSong(){
+    public int nextSong() {
         return albums.get(currentAlbumIndex).nextSong();
     }
 
-    public int previousSong(){
+    public int previousSong() {
         return albums.get(currentAlbumIndex).previousSong();
     }
 
-    public void selectAlbum(int selection){
+    public void selectAlbum(int selection) {
         //TODO: Implement this method
     }
 
-    public void syncUSB(){
+    public void syncUSB() {
         //TODO: Implement this method
     }
 
-    public void drawVisualizer(){
+    public void drawVisualizer() {
         //TODO: Implement this method
     }
 }
