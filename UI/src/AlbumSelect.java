@@ -22,7 +22,7 @@ public class AlbumSelect extends JFrame
 	private JButton songScrollDown = new JButton();
 
 	//dimensions for song selection button
-	java.awt.Dimension select_dim = new java.awt.Dimension(330, 44);
+	java.awt.Dimension select_dim = new java.awt.Dimension(310, 44);
 	//dimensions for scrolling
 	java.awt.Dimension scroll_dim = new java.awt.Dimension(80, 220);
 
@@ -69,14 +69,35 @@ public class AlbumSelect extends JFrame
 		albumScrollDown.setPreferredSize(scroll_dim);
 		add(albumScrollDown);
 		scrollCons = layout.getConstraints(albumScrollDown);
-		scrollCons.setX(Spring.constant(330));
+		scrollCons.setX(Spring.constant(310));
 		scrollCons.setY(Spring.constant(220));
 		albumScrollUp.setPreferredSize(scroll_dim);
 		add(albumScrollUp);
 		scrollCons = layout.getConstraints(albumScrollUp);
-		scrollCons.setX(Spring.constant(330));
+		scrollCons.setX(Spring.constant(310));
 		scrollCons.setY(Spring.constant(0));
 
+		//now layout all of the song buttons
+		for(int i = 0; i < albumButtons.length; i++) {
+			songButtons[i] = new JButton();
+			songButtons[i].setPreferredSize(select_dim);
+			add(songButtons[i]);
+			SpringLayout.Constraints constraints = layout.getConstraints(songButtons[i]);
+			constraints.setX(Spring.constant(390));
+			constraints.setY(Spring.constant(i * 44));
+		}
+
+		//now add the scroll buttons for the songs
+		songScrollDown.setPreferredSize(scroll_dim);
+		add(songScrollDown);
+		scrollCons = layout.getConstraints(songScrollDown);
+		scrollCons.setX(Spring.constant(700));
+		scrollCons.setY(Spring.constant(220));
+		songScrollUp.setPreferredSize(scroll_dim);
+		add(songScrollUp);
+		scrollCons = layout.getConstraints(songScrollUp);
+		scrollCons.setX(Spring.constant(700));
+		scrollCons.setY(Spring.constant(0));
 
 		
 		albumList.addListSelectionListener(new ListSelectionListener() { 
