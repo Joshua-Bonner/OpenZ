@@ -109,12 +109,14 @@ public class AlbumSelect extends JFrame {
                 albumNames.add(tmp[i]);
             }
         }
+        albumPos = 0;
         populateAlbums();
     }
 
     public void handleAlbumAction(int buttonPos) {
         songNames.clear();
         songPos = 0;
+        selectedAlbum = getAlbumIndex(buttonPos);
         String[] tmp = musicControl.setAlbum(getAlbumIndex(buttonPos));
         for (int i = 0; i < tmp.length; i++) {
             if (tmp[i].length() > 50) {
@@ -134,17 +136,14 @@ public class AlbumSelect extends JFrame {
     }
 
     public void populateAlbums() {
-        if (albumNames.size() < 10) {
-
-        } else {
-            for (int i = 0; i < albumButtons.length; i++) {
-                if (albumPos + i < albumNames.size()) { //only populate buttons if we have enough albums to do so
-                    albumButtons[i].setText(albumNames.get(albumPos + i));
-                } else {
-                    albumButtons[i].setText("");
-                }
+        for (int i = 0; i < albumButtons.length; i++) {
+            if (albumPos + i < albumNames.size()) { //only populate buttons if we have enough albums to do so
+                albumButtons[i].setText(albumNames.get(albumPos + i));
+            } else {
+                albumButtons[i].setText("");
             }
         }
+
     }
 
     public void populateSongs() {
