@@ -17,3 +17,5 @@ directory in case I mess something up and can not get back to the working code. 
 gradle seems to be causing many issues with merging GPS and UI together. I have an example working with the .jar files, but currently only
 for one OS at a time. As the Pi is Linux based, I will most likely boot up my Virtual Machine that runs on Linux, and will continue 
 development on that OS.
+
+Linux VM is up and running. GPS is integrated, file wise, into the UI. GPS map is displayed within the UI panel. Working on re-doing threading in GPS. All this is done in manually copied UI and GPS files, not in the Repo, in case I mess up the UI beyond repair.
