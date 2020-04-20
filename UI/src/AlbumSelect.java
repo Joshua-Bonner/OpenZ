@@ -4,139 +4,166 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 
-public class AlbumSelect extends JFrame
-{
-	private ArrayList<ArrayList<String>> map;
-	private MusicControl musicControl;
-	private JList<String> albumList;
-	private JList<String> songList;
-	private ArrayList<String> albumNames;
+public class AlbumSelect extends JFrame {
+    private ArrayList<ArrayList<String>> map;
+    private MusicControl musicControl;
+    private ArrayList<String> albumNames;
+    private ArrayList<String> songNames;
 
-	//album buttons
-	private JButton[] albumButtons = new JButton[10];
-	private JButton albumScrollUp = new JButton();
-	private JButton albumScrollDown = new JButton();
-	//song buttons
-	private JButton[] songButtons = new JButton[10];
-	private JButton songScrollUp = new JButton();
-	private JButton songScrollDown = new JButton();
+    //album buttons
+    private JButton[] albumButtons = new JButton[10];
+    private JButton albumScrollUp = new JButton();
+    private JButton albumScrollDown = new JButton();
+    //song buttons
+    private JButton[] songButtons = new JButton[10];
+    private JButton songScrollUp = new JButton();
+    private JButton songScrollDown = new JButton();
 
-	//dimensions for song selection button
-	java.awt.Dimension select_dim = new java.awt.Dimension(310, 44);
-	//dimensions for scrolling
-	java.awt.Dimension scroll_dim = new java.awt.Dimension(80, 220);
+    //positions for song and album
+    int albumPos, songPos, selectedAlbum = -1;
 
-	public AlbumSelect(MusicControl mc)
-	{
-		//Container pane = this.getContentPane();
-		//pane.setLayout(new BorderLayout());
-		//pane.add(albumList,BorderLayout.WEST);
-		//pane.add(songList,BorderLayout.EAST);
-		SpringLayout layout = new SpringLayout();
-		this.setLayout(layout);
-		setSize(800,480);
-		map = new ArrayList<ArrayList<String>>();
-		musicControl = mc;
-		albumNames = new ArrayList<String>();
-		albumList = new JList<String>();
-		add(albumList);
-		albumList.setVisible(true);
-		songList = new JList<String>();
-		songList.setVisible(true);
-		add(songList);
-		albumList.setSize(400,480);
-		songList.setSize(400,480);
-		SpringLayout.Constraints cons = layout.getConstraints(albumList);
-		cons.setX(Spring.constant(0));
-		cons.setY(Spring.constant(0));
-		cons = layout.getConstraints(songList);
-		cons.setX(Spring.constant(400));
-		cons.setY(Spring.constant(0));
-		JFrame thisPanel = this;
+    //dimensions for song selection button
+    java.awt.Dimension select_dim = new java.awt.Dimension(310, 44);
+    //dimensions for scrolling
+    java.awt.Dimension scroll_dim = new java.awt.Dimension(80, 220);
 
-		//layout all the buttons, starting with the album buttons
-		for(int i = 0; i < albumButtons.length; i++) {
-			albumButtons[i] = new JButton();
-			albumButtons[i].setPreferredSize(select_dim);
-			add(albumButtons[i]);
-			SpringLayout.Constraints constraints = layout.getConstraints(albumButtons[i]);
-			constraints.setX(Spring.constant(0));
-			constraints.setY(Spring.constant(i * 44)); //this will place one button below the other
-		}
+    public AlbumSelect(MusicControl mc) {
+        SpringLayout layout = new SpringLayout();
+        this.setLayout(layout);
+        setSize(800, 480);
+        map = new ArrayList<ArrayList<String>>();
+        musicControl = mc;
+        albumNames = new ArrayList<String>();
+        songNames = new ArrayList<>();
 
-		//add the scroll buttons for the albums
-		SpringLayout.Constraints scrollCons;
-		albumScrollDown.setPreferredSize(scroll_dim);
-		add(albumScrollDown);
-		scrollCons = layout.getConstraints(albumScrollDown);
-		scrollCons.setX(Spring.constant(310));
-		scrollCons.setY(Spring.constant(220));
-		albumScrollUp.setPreferredSize(scroll_dim);
-		add(albumScrollUp);
-		scrollCons = layout.getConstraints(albumScrollUp);
-		scrollCons.setX(Spring.constant(310));
-		scrollCons.setY(Spring.constant(0));
+        //layout all the buttons, starting with the album buttons
+        for (int i = 0; i < albumButtons.length; i++) {
+            albumButtons[i] = new JButton();
+            albumButtons[i].setPreferredSize(select_dim);
+            add(albumButtons[i]);
+            int finalI = i;
+            albumButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handleAlbumAction(finalI); //we do it this way so we can get the position of the button that triggered the action, the only other way to do this is to get the text of the button but that could cause issues
+                }
+            });
+            SpringLayout.Constraints constraints = layout.getConstraints(albumButtons[i]);
+            constraints.setX(Spring.constant(0));
+            constraints.setY(Spring.constant(i * 44)); //this will place one button below the other
+        }
 
-		//now layout all of the song buttons
-		for(int i = 0; i < albumButtons.length; i++) {
-			songButtons[i] = new JButton();
-			songButtons[i].setPreferredSize(select_dim);
-			add(songButtons[i]);
-			SpringLayout.Constraints constraints = layout.getConstraints(songButtons[i]);
-			constraints.setX(Spring.constant(390));
-			constraints.setY(Spring.constant(i * 44));
-		}
+        //add the scroll buttons for the albums
+        //TODO create icons for the scroll buttons
+        SpringLayout.Constraints scrollCons;
+        albumScrollDown.setPreferredSize(scroll_dim);
+        add(albumScrollDown);
+        scrollCons = layout.getConstraints(albumScrollDown);
+        scrollCons.setX(Spring.constant(310));
+        scrollCons.setY(Spring.constant(220));
+        albumScrollUp.setPreferredSize(scroll_dim);
+        add(albumScrollUp);
+        scrollCons = layout.getConstraints(albumScrollUp);
+        scrollCons.setX(Spring.constant(310));
+        scrollCons.setY(Spring.constant(0));
 
-		//now add the scroll buttons for the songs
-		songScrollDown.setPreferredSize(scroll_dim);
-		add(songScrollDown);
-		scrollCons = layout.getConstraints(songScrollDown);
-		scrollCons.setX(Spring.constant(700));
-		scrollCons.setY(Spring.constant(220));
-		songScrollUp.setPreferredSize(scroll_dim);
-		add(songScrollUp);
-		scrollCons = layout.getConstraints(songScrollUp);
-		scrollCons.setX(Spring.constant(700));
-		scrollCons.setY(Spring.constant(0));
+        //now layout all of the song buttons
+        for (int i = 0; i < albumButtons.length; i++) {
+            songButtons[i] = new JButton();
+            songButtons[i].setPreferredSize(select_dim);
+            add(songButtons[i]);
+            int finalI = i;
+            songButtons[i].addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    handleSongAction(finalI);
+                }
+            });
+            SpringLayout.Constraints constraints = layout.getConstraints(songButtons[i]);
+            constraints.setX(Spring.constant(390));
+            constraints.setY(Spring.constant(i * 44));
+        }
 
-		
-		albumList.addListSelectionListener(new ListSelectionListener() { 
-			public void valueChanged(ListSelectionEvent e) { 
-				songList.clearSelection();
-				String[] tmp = musicControl.setAlbum(albumList.getSelectedIndex());
-				for (int i=0; i<tmp.length; i++)
-				{
-				if (tmp[i].length() > 50)
-				{
-					tmp[i] = tmp[i].substring(0,50) + "...";
-				}
-			}
-				songList.setListData(tmp);
-			}
-		});
+        //now add the scroll buttons for the songs
+        //TODO create icons for the scroll buttons
+        songScrollDown.setPreferredSize(scroll_dim);
+        add(songScrollDown);
+        scrollCons = layout.getConstraints(songScrollDown);
+        scrollCons.setX(Spring.constant(700));
+        scrollCons.setY(Spring.constant(220));
+        songScrollUp.setPreferredSize(scroll_dim);
+        add(songScrollUp);
+        scrollCons = layout.getConstraints(songScrollUp);
+        scrollCons.setX(Spring.constant(700));
+        scrollCons.setY(Spring.constant(0));
 
-		songList.addListSelectionListener(new ListSelectionListener() { 
-			public void valueChanged(ListSelectionEvent e) {
-				if (songList.getSelectedIndex() >= 0) {
-					musicControl.setSongChoice(songList.getSelectedIndex());
-					thisPanel.setVisible(false);
-				}
-			}
-		});
-	}
 
-	public void refreshAlbums()
-	{
-		String[] tmp = musicControl.getAlbumList();
-		for (int i=0; i<tmp.length; i++)
-		{
-			if (tmp[i].length() > 50)
-			{
-				albumNames.add(tmp[i].substring(0,50) + "...");
-			}
-			else {
-				albumNames.add(tmp[i]);
-			}
-		}
-	}
+    }
+
+    public void refreshAlbums() {
+        String[] tmp = musicControl.getAlbumList();
+        for (int i = 0; i < tmp.length; i++) {
+            if (tmp[i].length() > 50) {
+                albumNames.add(tmp[i].substring(0, 50) + "...");
+            } else {
+                albumNames.add(tmp[i]);
+            }
+        }
+        populateAlbums();
+    }
+
+    public void handleAlbumAction(int buttonPos) {
+        songNames.clear();
+        songPos = 0;
+        String[] tmp = musicControl.setAlbum(getAlbumIndex(buttonPos));
+        for (int i = 0; i < tmp.length; i++) {
+            if (tmp[i].length() > 50) {
+                songNames.add(tmp[i].substring(0, 50) + "...");
+            } else {
+                songNames.add(tmp[i]);
+            }
+            populateSongs();
+        }
+    }
+
+    public void handleSongAction(int buttonPos) {
+        if (getSongIndex(buttonPos) >= 0) {
+            musicControl.setSongChoice(getSongIndex(buttonPos));
+            this.setVisible(false);
+        }
+    }
+
+    public void populateAlbums() {
+        if (albumNames.size() < 10) {
+
+        } else {
+            for (int i = 0; i < albumButtons.length; i++) {
+                if (albumPos + i < albumNames.size()) { //only populate buttons if we have enough albums to do so
+                    albumButtons[i].setText(albumNames.get(albumPos + i));
+                } else {
+                    albumButtons[i].setText("");
+                }
+            }
+        }
+    }
+
+    public void populateSongs() {
+        if (selectedAlbum >= 0) { //don't populate songs if an album isn't selected (it will be set to -1)
+            for (int i = 0; i < songButtons.length; i++) {
+                if (songPos + i < songNames.size()) { //only populate the buttons if we have enough songs to do so
+                    songButtons[i].setText(songNames.get(songPos + i));
+                } else {
+                    songButtons[i].setText("");
+                }
+            }
+        }
+    }
+
+    public int getAlbumIndex(int buttonPos) {
+        return albumPos + buttonPos;
+    }
+
+    public int getSongIndex(int buttonPos) {
+        return songPos + buttonPos;
+    }
 }
