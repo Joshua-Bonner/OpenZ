@@ -26,6 +26,8 @@ public class GPSUI {
     public static JLabel currentTime;
     public static JSlider songTime;
     public static Thread thread;
+    private static JSlider volumeSlider;
+    private static JLabel volumeLabel;
 
     private static long songLengthMilli = 0;
 
@@ -49,7 +51,6 @@ public class GPSUI {
         JButton music_button_3;
         JButton music_button_prev;
         JButton music_button_next;
-        JLabel volumeLabel;
 
         JButton showCodes;
         JButton clearCodes;
@@ -58,8 +59,6 @@ public class GPSUI {
         JButton gps_destination;
         JButton gps_turn;
         JButton gps_eat;
-
-        JSlider volumeSlider;
 
 		JButton[] album_cover = new JButton[1];
 
@@ -96,13 +95,24 @@ public class GPSUI {
         JLabel colorR_lab = new JLabel("Red Val: 34");
         JLabel colorG_lab = new JLabel("Green Val: 34");
         JLabel colorB_lab = new JLabel("Blue Val: 34");
+        JSlider textR = new JSlider(0,255,34);
+        JSlider textG = new JSlider(0,255,34);
+        JSlider textB = new JSlider(0,255,34);
+        JLabel textR_lab = new JLabel("Text Red: 34");
+        JLabel textG_lab = new JLabel("Text Green: 34");
+        JLabel textB_lab = new JLabel("Text Blue: 34");
         settings_panel.add(colorR);
         settings_panel.add(colorG);
         settings_panel.add(colorB);
         settings_panel.add(colorR_lab);
         settings_panel.add(colorG_lab);
         settings_panel.add(colorB_lab);
-
+        settings_panel.add(textR);
+        settings_panel.add(textG);
+        settings_panel.add(textB);
+        settings_panel.add(textR_lab);
+        settings_panel.add(textG_lab);
+        settings_panel.add(textB_lab);
 
         colorR.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
@@ -111,10 +121,15 @@ public class GPSUI {
                 settings_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
                 gps_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
                 colorR_lab.setText("Red Val: " + colorR.getValue());
-
-                colorR.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
-                colorG.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
-                colorB.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                Color col = new Color(colorR.getValue(),colorG.getValue(),colorB.getValue());
+                colorR.setBackground(col);
+                colorG.setBackground(col);
+                colorB.setBackground(col);
+                textR.setBackground(col);
+                textG.setBackground(col);
+                textB.setBackground(col);
+                volumeSlider.setBackground(col);
+                songTime.setBackground(col);
             }
         });
 
@@ -126,9 +141,15 @@ public class GPSUI {
                 gps_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
                 colorG_lab.setText("Green Val: " + colorG.getValue());
 
-                colorR.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
-                colorG.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
-                colorB.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                Color col = new Color(colorR.getValue(),colorG.getValue(),colorB.getValue());
+                colorR.setBackground(col);
+                colorG.setBackground(col);
+                colorB.setBackground(col);
+                textR.setBackground(col);
+                textG.setBackground(col);
+                textB.setBackground(col);
+                volumeSlider.setBackground(col);
+                songTime.setBackground(col);
             }
         });
 
@@ -140,9 +161,69 @@ public class GPSUI {
                 gps_panel.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
                 colorB_lab.setText("Blue Val: " + colorB.getValue());
 
-                colorR.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
-                colorG.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
-                colorB.setBackground(new Color(colorR.getValue(),colorG.getValue(),colorB.getValue()));
+                Color col = new Color(colorR.getValue(),colorG.getValue(),colorB.getValue());
+                colorR.setBackground(col);
+                colorG.setBackground(col);
+                colorB.setBackground(col);
+                textR.setBackground(col);
+                textG.setBackground(col);
+                textB.setBackground(col);
+                volumeSlider.setBackground(col);
+                songTime.setBackground(col);
+            }
+        });
+
+        textR.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                textR_lab.setText("Text Red: " + textR.getValue());
+                Color col = new Color(textR.getValue(),textG.getValue(),textB.getValue());
+                startTime.setForeground(col);
+                endTime.setForeground(col);
+                currentTime.setForeground(col);
+                colorR_lab.setForeground(col);
+                colorG_lab.setForeground(col);
+                colorB_lab.setForeground(col);
+                textR_lab.setForeground(col);
+                textB_lab.setForeground(col);
+                textG_lab.setForeground(col);
+                volumeLabel.setForeground(col);
+                music_label_1.setForeground(col);
+            }
+        });
+
+        textG.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                textG_lab.setText("Text Green: " + textG.getValue());
+                Color col = new Color(textR.getValue(),textG.getValue(),textB.getValue());
+                startTime.setForeground(col);
+                endTime.setForeground(col);
+                currentTime.setForeground(col);
+                colorR_lab.setForeground(col);
+                colorG_lab.setForeground(col);
+                colorB_lab.setForeground(col);
+                textR_lab.setForeground(col);
+                textB_lab.setForeground(col);
+                textG_lab.setForeground(col);
+                volumeLabel.setForeground(col);
+                music_label_1.setForeground(col);
+            }
+        });
+
+        textB.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                textB_lab.setText("Text Blue: " + textB.getValue());
+                Color col = new Color(textR.getValue(),textG.getValue(),textB.getValue());
+                startTime.setForeground(col);
+                endTime.setForeground(col);
+                currentTime.setForeground(col);
+                colorR_lab.setForeground(col);
+                colorG_lab.setForeground(col);
+                colorB_lab.setForeground(col);
+                textR_lab.setForeground(col);
+                textB_lab.setForeground(col);
+                textG_lab.setForeground(col);
+                volumeLabel.setForeground(col);
+                music_label_1.setForeground(col);
             }
         });
 
@@ -294,6 +375,25 @@ public class GPSUI {
         cons.setY(Spring.constant(135));
         cons = layout_settings.getConstraints(colorB_lab);
         cons.setX(Spring.constant(50));
+        cons.setY(Spring.constant(170));
+
+        cons = layout_settings.getConstraints(textR);
+        cons.setX(Spring.constant(400));
+        cons.setY(Spring.constant(100));
+        cons = layout_settings.getConstraints(textG);
+        cons.setX(Spring.constant(400));
+        cons.setY(Spring.constant(135));
+        cons = layout_settings.getConstraints(textB);
+        cons.setX(Spring.constant(400));
+        cons.setY(Spring.constant(170));
+        cons = layout_settings.getConstraints(textR_lab);
+        cons.setX(Spring.constant(600));
+        cons.setY(Spring.constant(100));
+        cons = layout_settings.getConstraints(textG_lab);
+        cons.setX(Spring.constant(600));
+        cons.setY(Spring.constant(135));
+        cons = layout_settings.getConstraints(textB_lab);
+        cons.setX(Spring.constant(600));
         cons.setY(Spring.constant(170));
 
         java.awt.Dimension obd_dim = new java.awt.Dimension(700, 40);
