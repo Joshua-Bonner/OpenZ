@@ -38,6 +38,7 @@ public class AlbumSelect extends JFrame {
 
         //layout all the buttons, starting with the album buttons
         for (int i = 0; i < albumButtons.length; i++) {
+            //TODO add coloring here
             albumButtons[i] = new JButton();
             albumButtons[i].setPreferredSize(select_dim);
             add(albumButtons[i]);
@@ -55,20 +56,41 @@ public class AlbumSelect extends JFrame {
 
         //add the scroll buttons for the albums
         //TODO create icons for the scroll buttons
+        //TODO color buttons
         SpringLayout.Constraints scrollCons;
         albumScrollDown.setPreferredSize(scroll_dim);
         add(albumScrollDown);
         scrollCons = layout.getConstraints(albumScrollDown);
         scrollCons.setX(Spring.constant(310));
         scrollCons.setY(Spring.constant(220));
+        albumScrollDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(albumPos + albumButtons.length < albumNames.size()) { //only change if we have more albums to populate
+                    albumPos += albumButtons.length;
+                    populateAlbums();
+                }
+            }
+        });
         albumScrollUp.setPreferredSize(scroll_dim);
         add(albumScrollUp);
         scrollCons = layout.getConstraints(albumScrollUp);
         scrollCons.setX(Spring.constant(310));
         scrollCons.setY(Spring.constant(0));
+        albumScrollUp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                albumPos -= 10;
+                if(albumPos < 0) {
+                    albumPos = 0; //makes sure we don't go too far
+                }
+                populateAlbums();
+            }
+        });
 
         //now layout all of the song buttons
         for (int i = 0; i < albumButtons.length; i++) {
+            //TODO add coloring here
             songButtons[i] = new JButton();
             songButtons[i].setPreferredSize(select_dim);
             add(songButtons[i]);
@@ -86,17 +108,36 @@ public class AlbumSelect extends JFrame {
 
         //now add the scroll buttons for the songs
         //TODO create icons for the scroll buttons
+        //TODO color buttons
         songScrollDown.setPreferredSize(scroll_dim);
         add(songScrollDown);
         scrollCons = layout.getConstraints(songScrollDown);
         scrollCons.setX(Spring.constant(700));
         scrollCons.setY(Spring.constant(220));
+        songScrollDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(songPos + songButtons.length < songNames.size()) { //only scroll down if we'll see more songs
+                    songPos += songButtons.length;
+                    populateSongs();
+                }
+            }
+        });
         songScrollUp.setPreferredSize(scroll_dim);
         add(songScrollUp);
         scrollCons = layout.getConstraints(songScrollUp);
         scrollCons.setX(Spring.constant(700));
         scrollCons.setY(Spring.constant(0));
-
+        songScrollUp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                songPos -= 10;
+                if(songPos < 0) {
+                    songPos = 0; //makes sure we don't go too far
+                }
+                populateSongs();
+            }
+        });
 
     }
 
