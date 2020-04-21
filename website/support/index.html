@@ -1,0 +1,95 @@
+<style>
+    body {
+        background-color:#222222
+    }
+    h1 {
+        text-align: center;
+        color:#e9ccff;
+        font-family: "Courier New", Courier, monospace;
+    }
+    h2 {
+        text-align: center;
+        color:#e9ccff;
+        font-family: "Courier New", Courier, monospace;
+    }
+    h3 {
+        text-align:center;
+        color:#e9ccff;
+        font-family: "Courier New", Courier, monospace;
+    }
+    a {
+        color:#e9ccff;
+    }
+    .txt {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        text-align: left;
+        color: #e9ccff;
+        font-family: "Courier New", Courier, monospace;
+        border: double;
+        padding: 20px;
+        background: rgba(23, 23, 23, 0.5);
+    }
+</style>
+<h1> SUPPORT </h1>
+<h3>
+    <a href="http://OpenZ.ga/">HOME</a> ----
+    <a href="http://OpenZ.ga/">ABOUT</a> ----
+    <a href="http://OpenZ.ga/tryme">DOWNLOAD</a> ----
+    <a href="http://OpenZ.ga/support">SUPPORT</a> ----
+    <a href="http://OpenZ.ga/docs">DOCS</a> ----
+    <a href="http://OpenZ.ga/developers">DEVELOPERS</a>
+</h3>
+<h2>Hardware Required</h2>
+<div class="txt">
+    <ul>
+        <li>
+            <a href="https://www.amazon.com/Raspberry-Model-2019-Quad-Bluetooth/dp/B07TC2BK1X/ref=sr_1_3?dchild=1&keywords=raspberry%2Bpi%2B4&qid=1587508270&sr=8-3&th=1">Raspberry Pi 4</a>
+        </li>
+        <li>
+            <a href="https://www.amazon.com/Raspberry-Pi-7-Touchscreen-Display/dp/B0153R2A9I/ref=sr_1_3?dchild=1&keywords=raspberry+pi+screen&qid=1587508329&sr=8-3">Raspberry Pi Touchscreen</a>
+        </li>
+        <li>
+            <a href="https://www.amazon.com/Raspberry-Pi-NoIR-Camera-Module/dp/B01ER2SMHY/ref=sr_1_1?dchild=1&keywords=noir+v2&qid=1587508360&sr=8-1">Raspberry Pi Camera</a>
+            <ul>
+                <li> Note: A cheaper camera can be used, however this camera is the minimum required to work at night.</li>
+            </ul>
+        </li>
+        <li>
+            <a href="https://www.amazon.com/VINT-TT55502-modified-Windows-ELMconfig-compatible/dp/B01N18TOFB/ref=sr_1_6?dchild=1&keywords=OBD2+usb&qid=1587508539&sr=8-6">OBD2 USB Cable</a>
+        </li>
+        <li>
+            <a href="https://store.arduino.cc/usa/arduino-uno-rev3">Arduino Uno</a>
+            <ul>
+                <li> Note: Connecting wires and breadboards needed to connect the sensors are also required for a full 4 sensor array</li>
+            </ul>
+        </li>
+        <li>
+            <a href="https://www.amazon.com/ELEGOO-HC-SR04-Ultrasonic-Distance-MEGA2560/dp/B01COSN7O6/ref=sr_1_3?dchild=1&keywords=sr04+sensors&qid=1587509320&sr=8-3">HC-SRO4 Ultrasonic Distance Sensor (4 total)</a>
+        </li>
+        <li>
+            <a href="https://www.amazon.com/Converter-DROK-Regulator-Inverter-Transformer/dp/B01NALDSJ0/ref=sr_1_6?dchild=1&keywords=12v+5amp+step+down&qid=1587508965&sr=8-6">12v to 5v 5a Voltage Regulator</a>
+            <ul>
+                <li> Used to run the Pi and its peripherals off the car battery</li>
+            </ul>
+        </li>
+        <li>
+            You will also need whatever cables are required to connect to your vehicle of choice's speaker system.
+        </li>
+        <li>
+            A 3D printer was used to create mounts and housings.  File can be found <a href="https://github.com/Joshua-Bonner/OpenZ/tree/master/3d_STLs">HERE</a>.
+        </li>
+    </ul>
+</div>
+<h2>Installation into Vehicle</h2>
+<div class="txt">
+    Installation will vary heavily from vehicle to vehicle.  Hardware required to connect to the speakers in the car will also vary.
+    Refer to your vehicle's make / model installation guides of After Market Headunits.  The process will be relatively similar. <br><br>
+    Links to clips of when we installed it in the 350z can be found <a href="https://github.com/Joshua-Bonner/OpenZ/blob/master/videos/videoLinks.txt">HERE</a>.
+</div>
+<h2>Installation of OpenZ on the Raspberry Pi</h2>
+<div class="txt">
+    Install scripts can be found <a href="https://github.com/Joshua-Bonner/OpenZ/tree/master/scripts">HERE</a>. <br>
+    Running "chmod +x install.sh" followed by "./install.sh" will automatically install everything onto the Raspberry Pi and configure the start up script to launch OpenZ Software on Boot.
+</div>

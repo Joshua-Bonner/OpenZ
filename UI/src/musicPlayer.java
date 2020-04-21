@@ -17,7 +17,7 @@ public class musicPlayer {
     private String musicLib;
 
     public musicPlayer() {
-        musicLib = "F:\\music";
+        musicLib = "/home/jacob/Music/OpenZ";
         albumIndex = 0;
         albums = new ArrayList<>();
         currentAlbumIndex = 0;
