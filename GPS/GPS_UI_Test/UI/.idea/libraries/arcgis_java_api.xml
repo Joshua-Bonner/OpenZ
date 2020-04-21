@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="arcgis-java-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/arcgis-java-api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-codec-1.13.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-logging-1.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/gson-2.8.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
