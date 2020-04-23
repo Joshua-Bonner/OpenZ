@@ -228,6 +228,7 @@ def main():
 		stream = io.BytesIO()
 		start_time = time.time()
 		with picamera.PiCamera(resolution=screenSize, framerate=35) as camera:
+			camera.awb_mode = 'sunlight'
 			print camera.exposure_compensation
 			print camera.awb_mode
 			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
