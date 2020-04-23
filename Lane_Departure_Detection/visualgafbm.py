@@ -218,7 +218,7 @@ def main():
 		camera.start_preview()
 		# removed shutter speed, maybe default will place nice
 		# if sun doesn't work, change it to 'beach'
-		camera.exposure_mode = 'sun'
+		#camera.exposure_mode = 'sun'
 		camera.framerate = 30
 		time.sleep(2)
 	
