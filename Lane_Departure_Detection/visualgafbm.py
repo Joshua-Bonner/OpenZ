@@ -219,6 +219,12 @@ def main():
 		# removed shutter speed, maybe default will place nice
 		# if sun doesn't work, change it to 'beach'
 		#camera.exposure_mode = 'sun'
+		camera.iso = 100
+		camera.shutter_speed = camera.exposure_speed
+		camera.exposure_mode = 'off'
+		g = camera.awb_gains
+		camrea.awb_mode = 'off'
+		camera.awb_gains = g
 		camera.framerate = 30
 		time.sleep(2)
 	
@@ -228,7 +234,6 @@ def main():
 		stream = io.BytesIO()
 		start_time = time.time()
 		with picamera.PiCamera(resolution=screenSize, framerate=35) as camera:
-			camera.awb_mode = 'sunlight'
 			print camera.exposure_compensation
 			print camera.awb_mode
 			for foo in camera.capture_continuous(stream, format='jpeg', use_video_port=True):
