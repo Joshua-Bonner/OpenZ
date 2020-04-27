@@ -36,6 +36,11 @@ public class AlbumSelect extends JFrame {
         albumNames = new ArrayList<String>();
         songNames = new ArrayList<>();
 
+        albumScrollDown.setIcon(new ImageIcon("scrolldown.png"));
+        songScrollDown.setIcon(new ImageIcon("scrolldown.png"));
+        albumScrollUp.setIcon(new ImageIcon("scrollup.png"));
+        songScrollUp.setIcon(new ImageIcon("scrollup.png"));
+
         //layout all the buttons, starting with the album buttons
         for (int i = 0; i < albumButtons.length; i++) {
             //TODO add coloring here

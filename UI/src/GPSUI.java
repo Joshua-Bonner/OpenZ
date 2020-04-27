@@ -55,11 +55,6 @@ public class GPSUI {
         JButton showCodes;
         JButton clearCodes;
 
-        JButton gps_home;
-        JButton gps_destination;
-        JButton gps_turn;
-        JButton gps_eat;
-
 		JButton[] album_cover = new JButton[1];
 
         layout_obd = new SpringLayout();
@@ -464,37 +459,6 @@ public class GPSUI {
         cons2 = layout_obd.getConstraints(obd_5);
         cons2.setX(Spring.constant(300));
         cons2.setY(Spring.constant(200));
-
-        gps_home = new JButton("Go Home");
-        gps_destination = new JButton("Enter Destination");
-        gps_turn = new JButton("Next Turn: Olmsted 700 Feet");
-        gps_eat = new JButton("EAT: 2 min");
-
-        gps_panel.add(gps_home);
-        gps_panel.add(gps_destination);
-        gps_panel.add(gps_turn);
-        gps_panel.add(gps_eat);
-
-        gps_home.setPreferredSize(new java.awt.Dimension(155, 50));
-        gps_destination.setPreferredSize(new java.awt.Dimension(155, 50));
-        gps_turn.setPreferredSize(new java.awt.Dimension(155, 50));
-        gps_eat.setPreferredSize(new java.awt.Dimension(155, 50));
-
-        SpringLayout.Constraints cons3 = layout_gps.getConstraints(gps_home);
-        cons3.setX(Spring.constant(10));
-        cons3.setY(Spring.constant(350));
-
-        cons3 = layout_gps.getConstraints(gps_destination);
-        cons3.setX(Spring.constant(220));
-        cons3.setY(Spring.constant(350));
-
-        cons3 = layout_gps.getConstraints(gps_turn);
-        cons3.setX(Spring.constant(410));
-        cons3.setY(Spring.constant(350));
-
-        cons3 = layout_gps.getConstraints(gps_eat);
-        cons3.setX(Spring.constant(600));
-        cons3.setY(Spring.constant(350));
 
         album_cover[0] = new JButton();
         album_cover[0].setIcon(new ImageIcon(
