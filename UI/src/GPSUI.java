@@ -41,7 +41,6 @@ public class GPSUI {
 
         JFrame top_panel;
 
-        JTabbedPane tab_panel;
         JPanel musicplayer_panel;
         JPanel obd_panel;
         JPanel gps_panel;
@@ -65,24 +64,71 @@ public class GPSUI {
         top_panel.setSize(WIDTH, HEIGHT);
         top_panel.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         top_panel.setVisible(true);
-
-        tab_panel = new JTabbedPane();
-        tab_panel.setVisible(true);
-
-        top_panel.add(tab_panel);
+        SpringLayout layout_topframe = new SpringLayout();
+        top_panel.setLayout(layout_topframe);
 
         obd_panel = new JPanel();
-        tab_panel.add("                    OBD                    ", obd_panel);
 
         musicplayer_panel = new JPanel();
-        tab_panel.add("                Music Player                 ", musicplayer_panel);
 
         gps_panel = new JPanel();
-        tab_panel.add("                   GPS                  ", gps_panel);
 
         JPanel settings_panel = new JPanel();
-        tab_panel.add("                  Settings                  ", settings_panel);
 
+        top_panel.add(obd_panel);
+        top_panel.add(musicplayer_panel);
+        top_panel.add(gps_panel);
+        top_panel.add(settings_panel);
+
+        obd_panel.setVisible(true);
+        musicplayer_panel.setVisible(false);
+        gps_panel.setVisible(false);
+        settings_panel.setVisible(false);
+
+        JButton obd_button = new JButton();
+        top_panel.add(obd_button);
+        obd_button.setText("OBD");
+        obd_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                obd_panel.setVisible(true);
+                musicplayer_panel.setVisible(false);
+                gps_panel.setVisible(false);
+                settings_panel.setVisible(false);
+            }
+        });
+        JButton musicplayer_button = new JButton();
+        top_panel.add(musicplayer_button);
+        musicplayer_button.setText("Music Player");
+        musicplayer_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                obd_panel.setVisible(false);
+                musicplayer_panel.setVisible(true);
+                gps_panel.setVisible(false);
+                settings_panel.setVisible(false);
+            }
+        });
+        JButton gps_button = new JButton();
+        top_panel.add(gps_button);
+        gps_button.setText("GPS");
+        gps_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                obd_panel.setVisible(false);
+                musicplayer_panel.setVisible(false);
+                gps_panel.setVisible(true);
+                settings_panel.setVisible(false);
+            }
+        });
+        JButton settings_button = new JButton();
+        top_panel.add(settings_button);
+        settings_button.setText("Settings");
+        settings_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                obd_panel.setVisible(false);
+                musicplayer_panel.setVisible(false);
+                gps_panel.setVisible(false);
+                settings_panel.setVisible(true);
+            }
+        });
 
         JSlider colorR = new JSlider(0,255,34);
         JSlider colorG = new JSlider(0,255,34);
@@ -390,6 +436,44 @@ public class GPSUI {
         cons = layout_settings.getConstraints(textB_lab);
         cons.setX(Spring.constant(600));
         cons.setY(Spring.constant(170));
+
+        cons = layout_topframe.getConstraints(obd_button);
+        cons.setX(Spring.constant(0));
+        cons.setY(Spring.constant(0));
+        cons = layout_topframe.getConstraints(musicplayer_button);
+        cons.setX(Spring.constant(200));
+        cons.setY(Spring.constant(0));
+        cons = layout_topframe.getConstraints(gps_button);
+        cons.setX(Spring.constant(400));
+        cons.setY(Spring.constant(0));
+        cons = layout_topframe.getConstraints(settings_button);
+        cons.setX(Spring.constant(600));
+        cons.setY(Spring.constant(0));
+
+        cons = layout_topframe.getConstraints(obd_panel);
+        cons.setX(Spring.constant(0));
+        cons.setY(Spring.constant(50));
+        cons = layout_topframe.getConstraints(musicplayer_panel);
+        cons.setX(Spring.constant(0));
+        cons.setY(Spring.constant(50));
+        cons = layout_topframe.getConstraints(gps_panel);
+        cons.setX(Spring.constant(0));
+        cons.setY(Spring.constant(50));
+        cons = layout_topframe.getConstraints(settings_panel);
+        cons.setX(Spring.constant(0));
+        cons.setY(Spring.constant(50));
+
+        java.awt.Dimension switchDim = new java.awt.Dimension(200,50);
+        obd_button.setPreferredSize(switchDim);
+        musicplayer_button.setPreferredSize(switchDim);
+        gps_button.setPreferredSize(switchDim);
+        settings_button.setPreferredSize(switchDim);
+
+        java.awt.Dimension notSwitchDim = new java.awt.Dimension(800,550);
+        obd_panel.setPreferredSize(notSwitchDim);
+        gps_panel.setPreferredSize(notSwitchDim);
+        musicplayer_panel.setPreferredSize(notSwitchDim);
+        settings_panel.setPreferredSize(notSwitchDim);
 
         java.awt.Dimension obd_dim = new java.awt.Dimension(700, 40);
         // intake pressure
