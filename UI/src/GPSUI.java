@@ -87,7 +87,7 @@ public class GPSUI {
 
         JButton obd_button = new JButton();
         top_panel.add(obd_button);
-        obd_button.setText("OBD");
+        obd_button.setIcon(new ImageIcon("obd_button.png"));
         obd_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 obd_panel.setVisible(true);
@@ -98,7 +98,7 @@ public class GPSUI {
         });
         JButton musicplayer_button = new JButton();
         top_panel.add(musicplayer_button);
-        musicplayer_button.setText("Music Player");
+        musicplayer_button.setIcon(new ImageIcon("musicplayer_button.png"));
         musicplayer_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 obd_panel.setVisible(false);
@@ -109,7 +109,7 @@ public class GPSUI {
         });
         JButton gps_button = new JButton();
         top_panel.add(gps_button);
-        gps_button.setText("GPS");
+        gps_button.setIcon(new ImageIcon("gps_button.png"));
         gps_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 obd_panel.setVisible(false);
@@ -120,7 +120,7 @@ public class GPSUI {
         });
         JButton settings_button = new JButton();
         top_panel.add(settings_button);
-        settings_button.setText("Settings");
+        settings_button.setIcon(new ImageIcon("settings_button.png"));
         settings_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 obd_panel.setVisible(false);
