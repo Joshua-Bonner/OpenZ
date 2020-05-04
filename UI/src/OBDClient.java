@@ -30,7 +30,7 @@ private Thread queryLoop;
         query.set(true);
         while(query.get()) {
             try {
-                String[] response = query("ENGINE_LOAD/INTAKE_TEMP/INTAKE_PRESSURE/THROTTLE_POSITION").split("/");
+                String[] response = query("ENGINE_LOAD/INTAKE_TEMP/INTAKE_PRESSURE/THROTTLE_POS").split("/");
                 if (response.length >= 3) {
                     GPSUI.updateEngineLoad(response[0]);
                     GPSUI.updateIntakeTemp(response[1]);
